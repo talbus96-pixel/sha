@@ -58,6 +58,7 @@ const I18n = (() => {
 
             // breathing sheet
             'breathing.title': 'Breathing',
+            'recommended': 'Recommended',
             'tab.techniques': 'Techniques',
             'tab.custom': 'Custom',
             'howTo': 'How to do it',
@@ -139,6 +140,14 @@ const I18n = (() => {
 
             // settings
             'settings.title': 'Settings',
+            'menu.title': 'Menu',
+            'settings.look': 'Look',
+            'about.short': 'About',
+            'aria.mute': 'Mute all sounds',
+            'aria.unmute': 'Turn sounds back on',
+            'sum.noAmbience': 'no background',
+            'tour.ctaTitle': 'New here? Take the tour',
+            'tour.ctaText': 'A one-minute walk through the app',
             'settings.language': 'Language',
             'settings.length': 'Session length',
             'settings.visual': 'Visual',
@@ -204,10 +213,10 @@ const I18n = (() => {
             'tour.play.text': 'After a short countdown, the session begins. Tap again to pause.',
             'tour.length.title': 'Session length',
             'tour.length.text': 'How many minutes to breathe. For Wim Hof, it shows the number of rounds.',
-            'tour.sounds.title': 'Sounds',
-            'tour.sounds.text': 'Pick a gentle cue for each step, and mix in rain, ocean, forest and more.',
-            'tour.settings.title': 'Settings',
-            'tour.settings.text': 'Language, colour themes, the wave view, reminders, and this tour.',
+            'tour.sounds.title': 'Sound on and off',
+            'tour.sounds.text': 'Mute or unmute everything with one tap. To choose the sounds themselves, open the menu.',
+            'tour.settings.title': 'Menu',
+            'tour.settings.text': 'Sounds, session length, reminders, colours, language, and this tour. Tap a heading to open it.',
             'tour.calm.title': 'Calm mode',
             'tour.calm.text': 'While you breathe, the buttons fade away. Touch the screen to bring them back. Enjoy!'
         },
@@ -262,6 +271,7 @@ const I18n = (() => {
             'done.button': 'סיום',
 
             'breathing.title': 'תרגילי נשימה',
+            'recommended': 'מומלץ',
             'tab.techniques': 'טכניקות',
             'tab.custom': 'מותאם אישית',
             'howTo': 'איך עושים את זה',
@@ -340,6 +350,14 @@ const I18n = (() => {
             'amb.brown': 'רעש רך',
 
             'settings.title': 'הגדרות',
+            'menu.title': 'תפריט',
+            'settings.look': 'מראה',
+            'about.short': 'אודות',
+            'aria.mute': 'השתקת כל הצלילים',
+            'aria.unmute': 'הפעלת הצלילים מחדש',
+            'sum.noAmbience': 'בלי רקע',
+            'tour.ctaTitle': 'חדשים כאן? בואו לסיור',
+            'tour.ctaText': 'הסבר של דקה על האפליקציה',
             'settings.language': 'שפה',
             'settings.length': 'משך האימון',
             'settings.visual': 'תצוגה',
@@ -403,10 +421,10 @@ const I18n = (() => {
             'tour.play.text': 'אחרי ספירה קצרה האימון מתחיל. לחיצה נוספת עוצרת אותו.',
             'tour.length.title': 'משך האימון',
             'tour.length.text': 'כמה דקות לנשום. בווים הוף מוצג כאן מספר הסבבים.',
-            'tour.sounds.title': 'צלילים',
-            'tour.sounds.text': 'בחרו צליל עדין לכל שלב, והוסיפו גשם, ים, יער ועוד.',
-            'tour.settings.title': 'הגדרות',
-            'tour.settings.text': 'שפה, ערכות צבעים, תצוגת גל, תזכורות והסיור הזה.',
+            'tour.sounds.title': 'הפעלה והשתקה',
+            'tour.sounds.text': 'השתקה או הפעלה של כל הצלילים בלחיצה אחת. את הצלילים עצמם בוחרים בתפריט.',
+            'tour.settings.title': 'תפריט',
+            'tour.settings.text': 'צלילים, משך האימון, תזכורות, צבעים, שפה והסיור הזה. לחצו על כותרת כדי לפתוח אותה.',
             'tour.calm.title': 'מצב רוגע',
             'tour.calm.text': 'בזמן הנשימה הכפתורים נעלמים. נגיעה במסך מחזירה אותם. נשימה נעימה!'
         }

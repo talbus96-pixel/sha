@@ -57,6 +57,8 @@ manifest.webmanifest  home-screen install info
 | `session` | `state` is `idle`, `prepare` (get-ready countdown), `running` or `paused`. `time` counts breathing time, `clock` is the position on the timeline, and `holds` collects Wim Hof hold times. |
 | `tick()` | Runs every screen frame. It moves the clock, finds the current step, and when the step changes plays its cue (`onStepStart`). When the time limit is reached, it ends after the next full breath out. |
 | `render()` | Draws the shape or the wave for the current moment. |
+| Menu (`#sheet-settings`) | One sheet of folding sections (`.fold`, `data-fold="sounds"`…). `openFold(key)` opens one and closes the rest, and `updateSummaries()` writes the current choice on each heading. `openSheet('sheet-settings', 'length')` opens the menu with a section already open. |
+| Mute | `settings.muted`, toggled by the speaker button. `Sound.setMuted()` silences everything at the master volume. |
 | Breathing sheet | The Techniques tab is a list leading to a detail page (`showTechnique`, controls built by `renderTechControls`). The Custom tab is the steppers plus a live shape preview (`renderCustom`, `drawPreview`). |
 | Wake lock, vibration, calm mode | As the names say. Switching apps pauses the session, because a web page can't keep accurate time in the background. |
 
@@ -69,7 +71,7 @@ manifest.webmanifest  home-screen install info
 ## js/tour.js (`Tour`)
 - `STEPS` lists what to light up (a CSS selector, or `null` for a message in the middle of the screen). Each step's title and text are `tour.<key>.title` / `tour.<key>.text` in `i18n.js`.
 - The dimming is one element (`.tour-spot`) with a huge shadow around it. It slides over each target, and the card goes below it, above it, or (for big areas) along the bottom of the screen.
-- Started by "How to use the app" in Settings. The app closes any open panel and pauses a running session first.
+- Started by the tour button at the top of the menu, and automatically once on a person's first visit. The app closes any open panel and pauses a running session first.
 - **To add a step:** add an entry to `STEPS`, then add its two texts in both languages.
 
 ## js/audio.js (`Sound`)

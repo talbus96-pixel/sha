@@ -29,6 +29,15 @@
         <symbol id="i-sound" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3l4.5-4v13l-4.5-4H4z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18.2 6.5a8 8 0 0 1 0 11"/></g></symbol>
         <symbol id="i-settings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h9M18 7h2M4 17h3M11 17h9"/><circle cx="15.5" cy="7" r="2.3"/><circle cx="8.8" cy="17" r="2.3"/></g></symbol>
         <symbol id="i-close" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+        <symbol id="i-sound-off" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3l4.5-4v13l-4.5-4H4z"/><path d="M15.5 9.5l5 5M20.5 9.5l-5 5"/></g></symbol>
+        <symbol id="i-timer" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M9.5 3h5"/></g></symbol>
+        <symbol id="i-bell" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></g></symbol>
+        <symbol id="i-palette" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5a8.5 8.5 0 0 0 0 17c1.2 0 1.8-.9 1.5-1.9-.3-1.1.4-2.1 1.6-2.1H17a3.5 3.5 0 0 0 3.5-3.5c0-5.2-3.8-9.5-8.5-9.5z"/><circle cx="8" cy="11" r="1"/><circle cx="11" cy="7.5" r="1"/><circle cx="15.5" cy="8.5" r="1"/></g></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.5 3.5 5.5 3.5 8.5s-1 6-3.5 8.5c-2.5-2.5-3.5-5.5-3.5-8.5s1-6 3.5-8.5z"/></g></symbol>
+        <symbol id="i-toggles" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="5" width="17" height="6" rx="3"/><circle cx="17.5" cy="8" r="1.8" fill="currentColor"/><rect x="3.5" y="13" width="17" height="6" rx="3"/><circle cx="6.5" cy="16" r="1.8"/></g></symbol>
+        <symbol id="i-info" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.2"/></g></symbol>
+        <symbol id="i-help" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.6 2.6 0 0 1 5 1c0 1.8-2.5 2.2-2.5 3.8M12 17.3v.2"/></g></symbol>
         <symbol id="i-back" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
         <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
         <symbol id="i-minus" viewBox="0 0 24 24"><path d="M6 12h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
@@ -45,9 +54,9 @@
 
     <div class="app" id="app">
         <header class="topbar fade-ui">
-            <button class="icon-btn" id="btn-settings" data-i18n-aria="aria.settings" aria-label="Settings"><svg><use href="#i-settings"/></svg></button>
+            <button class="menu-btn" id="btn-settings"><svg><use href="#i-menu"/></svg><span data-i18n="menu.title">Menu</span></button>
             <div class="brand" data-i18n="brand">Breathe</div>
-            <button class="icon-btn" id="btn-sounds" data-i18n-aria="aria.sounds" aria-label="Sounds"><svg><use href="#i-sound"/></svg></button>
+            <button class="icon-btn" id="btn-mute" aria-pressed="false"><svg><use href="#i-sound" id="mute-icon"/></svg></button>
         </header>
 
         <main class="stage" id="stage">
@@ -138,121 +147,155 @@
         </div>
     </section>
 
-    <section class="sheet" id="sheet-sounds" role="dialog" aria-modal="true" aria-labelledby="sounds-title" hidden>
-        <div class="sheet-handle"></div>
-        <header class="sheet-head">
-            <h2 id="sounds-title" data-i18n="sounds.title">Sounds</h2>
-            <button class="icon-btn" data-close data-i18n-aria="aria.close" aria-label="Close"><svg><use href="#i-close"/></svg></button>
-        </header>
-        <div class="sheet-body">
-            <h3 class="section-title" data-i18n="sounds.cue">Breathing cue</h3>
-            <div class="segmented" id="cue-style">
-                <button data-value="bowl" data-i18n="cue.bowl">Bowl</button>
-                <button data-value="chime" data-i18n="cue.chime">Chime</button>
-                <button data-value="tone" data-i18n="cue.tone">Tone</button>
-                <button data-value="off" data-i18n="cue.off">Off</button>
-            </div>
-            <label class="slider-row">
-                <span data-i18n="sounds.cueVolume">Cue volume</span>
-                <input type="range" id="cue-volume" min="0" max="1" step="0.01">
-            </label>
-
-            <h3 class="section-title"><span data-i18n="sounds.ambience">Ambience</span> <small data-i18n="sounds.mixHint">mix as many as you like</small></h3>
-            <div class="ambient-grid" id="ambient-grid"></div>
-            <div class="ambient-mix" id="ambient-mix"></div>
-        </div>
-    </section>
-
     <section class="sheet" id="sheet-settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
         <div class="sheet-handle"></div>
         <header class="sheet-head">
-            <h2 id="settings-title" data-i18n="settings.title">Settings</h2>
+            <h2 id="settings-title" data-i18n="menu.title">Menu</h2>
             <button class="icon-btn" data-close data-i18n-aria="aria.close" aria-label="Close"><svg><use href="#i-close"/></svg></button>
         </header>
         <div class="sheet-body">
-            <h3 class="section-title" data-i18n="settings.language">Language</h3>
-            <div class="segmented" id="language-options"></div>
-
-            <h3 class="section-title" data-i18n="settings.length">Session length</h3>
-            <div class="segmented wrap" id="length-options"></div>
-
-            <h3 class="section-title" data-i18n="settings.visual">Visual</h3>
-            <div class="segmented" id="visual-options">
-                <button data-value="shape" data-i18n="visual.shape">Shape</button>
-                <button data-value="wave" data-i18n="visual.wave">Wave</button>
-            </div>
-
-            <h3 class="section-title" data-i18n="settings.theme">Theme</h3>
-            <div class="theme-list" id="theme-list"></div>
-
-            <h3 class="section-title" data-i18n="settings.options">Options</h3>
-            <label class="toggle-row">
-                <span data-i18n="opt.prepare">3-second “get ready” countdown</span>
-                <input type="checkbox" id="opt-prepare"><span class="switch"></span>
-            </label>
-            <label class="toggle-row" id="row-vibrate">
-                <span data-i18n="opt.vibrate">Vibrate on each phase</span>
-                <input type="checkbox" id="opt-vibrate"><span class="switch"></span>
-            </label>
-            <label class="toggle-row" id="row-wake">
-                <span data-i18n="opt.wake">Keep screen on during session</span>
-                <input type="checkbox" id="opt-wake"><span class="switch"></span>
-            </label>
-
-            <button class="link-row" id="btn-open-reminders">
-                <span data-i18n="reminders.title">Reminders</span>
-                <span class="link-row-value" id="reminder-summary"></span>
-                <svg class="chev" width="20" height="20"><use href="#i-chevron"/></svg>
+            <button class="tour-cta" id="btn-tour">
+                <svg class="tour-cta-icon"><use href="#i-help"/></svg>
+                <span class="tour-cta-text">
+                    <strong data-i18n="tour.ctaTitle">New here? Take the tour</strong>
+                    <small data-i18n="tour.ctaText">A one-minute walk through the app</small>
+                </span>
+                <svg class="chev"><use href="#i-chevron"/></svg>
             </button>
 
-            <button class="link-row" id="btn-tour">
-                <span data-i18n="tour.open">How to use the app</span>
-                <svg class="chev" width="20" height="20"><use href="#i-chevron"/></svg>
-            </button>
-
-            <details class="about">
-                <summary data-i18n="about.title">About &amp; sound credits</summary>
-                <p data-i18n="about.text">Breathe is a calm paced-breathing guide. Follow the moving dot: it rises as you breathe in, falls as you breathe out, and travels sideways while you hold. Everything runs on your device. This app is not medical advice.</p>
-                <p data-i18n-html="about.recordings">Ambient recordings (via the open-source <a href="https://github.com/rafaelmardojai/blanket" target="_blank" rel="noopener">Blanket</a> project):</p>
-                <ul>
-                    <li><a href="https://freesound.org/people/alex36917/sounds/524605/" target="_blank" rel="noopener" data-i18n="amb.rain">Rain</a> — alex36917 (CC BY)</li>
-                    <li><a href="https://freesound.org/people/Luftrum/sounds/48412/" target="_blank" rel="noopener" data-i18n="amb.ocean">Ocean</a> — Luftrum (CC BY)</li>
-                    <li><a href="https://freesound.org/people/gluckose/sounds/333987/" target="_blank" rel="noopener" data-i18n="amb.stream">Stream</a> — gluckose (CC0)</li>
-                    <li><a href="https://freesound.org/people/kvgarlic/sounds/156826/" target="_blank" rel="noopener" data-i18n="amb.forest">Forest</a> — kvgarlic (CC0)</li>
-                    <li><a href="https://soundbible.com/1543-Fireplace.html" target="_blank" rel="noopener" data-i18n="amb.fireplace">Fireplace</a> — ezwa (<span data-i18n="about.publicDomain">public domain</span>)</li>
-                    <li><a href="https://soundbible.com/2083-Crickets-Chirping-At-Night.html" target="_blank" rel="noopener" data-i18n="amb.night">Night</a> — Lisa Redfern (<span data-i18n="about.publicDomain">public domain</span>)</li>
-                    <li><a href="https://freesound.org/people/felix.blume/sounds/217506/" target="_blank" rel="noopener" data-i18n="amb.wind">Wind</a> — felix.blume (CC0)</li>
-                </ul>
-                <p data-i18n="about.footer">Recordings were edited by the Blanket project and re-encoded and volume-matched for this app. Bowl, chime and tone cues are synthesised live.</p>
-            </details>
-        </div>
-    </section>
-
-    <section class="sheet" id="sheet-reminders" role="dialog" aria-modal="true" aria-labelledby="reminders-title" hidden>
-        <div class="sheet-handle"></div>
-        <header class="sheet-head">
-            <button class="icon-btn back-btn" id="btn-reminders-back" data-i18n-aria="aria.backSettings" aria-label="Back to settings"><svg><use href="#i-back"/></svg></button>
-            <h2 id="reminders-title" data-i18n="reminders.title">Reminders</h2>
-            <button class="icon-btn" data-close data-i18n-aria="aria.close" aria-label="Close"><svg><use href="#i-close"/></svg></button>
-        </header>
-        <div class="sheet-body">
-            <p class="tech-intro" data-i18n="reminders.intro">Reminders are added to your phone’s calendar, so they reach you even when the app is closed. Tap one to come straight back here.</p>
-
-            <h3 class="section-title" data-i18n="reminders.times">Times</h3>
-            <div class="reminder-times" id="reminder-times"></div>
-            <button class="chip" id="btn-add-time" data-i18n="reminders.add">+ Add a time</button>
-
-            <h3 class="section-title" data-i18n="reminders.repeat">Days</h3>
-            <div class="segmented" id="reminder-days">
-                <button data-value="daily" data-i18n="days.daily">Every day</button>
-                <button data-value="sunthu" data-i18n="days.sunthu">Sun–Thu</button>
-                <button data-value="weekdays" data-i18n="days.weekdays">Mon–Fri</button>
+            <div class="menu-list">
+                <section class="fold" data-fold="sounds">
+                    <button class="fold-head" aria-expanded="false">
+                        <svg class="fold-icon"><use href="#i-sound"/></svg>
+                        <span class="fold-title" data-i18n="sounds.title"></span>
+                        <span class="fold-value" id="sum-sounds"></span>
+                        <svg class="fold-chev"><use href="#i-chevron"/></svg>
+                    </button>
+                    <div class="fold-body" hidden>
+                        <h3 class="section-title" data-i18n="sounds.cue">Breathing cue</h3>
+                        <div class="segmented" id="cue-style">
+                            <button data-value="bowl" data-i18n="cue.bowl">Bowl</button>
+                            <button data-value="chime" data-i18n="cue.chime">Chime</button>
+                            <button data-value="tone" data-i18n="cue.tone">Tone</button>
+                            <button data-value="off" data-i18n="cue.off">Off</button>
+                        </div>
+                        <label class="slider-row">
+                            <span data-i18n="sounds.cueVolume">Cue volume</span>
+                            <input type="range" id="cue-volume" min="0" max="1" step="0.01">
+                        </label>
+                        <h3 class="section-title"><span data-i18n="sounds.ambience">Ambience</span> <small data-i18n="sounds.mixHint">mix as many as you like</small></h3>
+                        <div class="ambient-grid" id="ambient-grid"></div>
+                        <div class="ambient-mix" id="ambient-mix"></div>
+                    </div>
+                </section>
+                <section class="fold" data-fold="length">
+                    <button class="fold-head" aria-expanded="false">
+                        <svg class="fold-icon"><use href="#i-timer"/></svg>
+                        <span class="fold-title" data-i18n="settings.length"></span>
+                        <span class="fold-value" id="sum-length"></span>
+                        <svg class="fold-chev"><use href="#i-chevron"/></svg>
+                    </button>
+                    <div class="fold-body" hidden>
+                        <div class="segmented wrap" id="length-options"></div>
+                    </div>
+                </section>
+                <section class="fold" data-fold="reminders">
+                    <button class="fold-head" aria-expanded="false">
+                        <svg class="fold-icon"><use href="#i-bell"/></svg>
+                        <span class="fold-title" data-i18n="reminders.title"></span>
+                        <span class="fold-value" id="sum-reminders"></span>
+                        <svg class="fold-chev"><use href="#i-chevron"/></svg>
+                    </button>
+                    <div class="fold-body" hidden>
+                        <p class="hint" data-i18n="reminders.intro">Reminders are added to your phone’s calendar, so they reach you even when the app is closed. Tap one to come straight back here.</p>
+                        <h3 class="section-title" data-i18n="reminders.times">Times</h3>
+                        <div class="reminder-times" id="reminder-times"></div>
+                        <button class="chip" id="btn-add-time" data-i18n="reminders.add">+ Add a time</button>
+                        <h3 class="section-title" data-i18n="reminders.repeat">Days</h3>
+                        <div class="segmented" id="reminder-days">
+                            <button data-value="daily" data-i18n="days.daily">Every day</button>
+                            <button data-value="sunthu" data-i18n="days.sunthu">Sun–Thu</button>
+                            <button data-value="weekdays" data-i18n="days.weekdays">Mon–Fri</button>
+                        </div>
+                        <h3 class="section-title" data-i18n="reminders.calendar">Add to your calendar</h3>
+                        <div class="calendar-actions" id="google-links"></div>
+                        <button class="secondary-btn" id="btn-ics" data-i18n="reminders.ics">Apple, Samsung &amp; other calendars</button>
+                        <p class="hint" data-i18n="reminders.hint">Google Calendar opens once per time. If the reminder alert comes early, change it to “At time of event”.</p>
+                    </div>
+                </section>
+                <section class="fold" data-fold="look">
+                    <button class="fold-head" aria-expanded="false">
+                        <svg class="fold-icon"><use href="#i-palette"/></svg>
+                        <span class="fold-title" data-i18n="settings.look"></span>
+                        <span class="fold-value" id="sum-look"></span>
+                        <svg class="fold-chev"><use href="#i-chevron"/></svg>
+                    </button>
+                    <div class="fold-body" hidden>
+                        <h3 class="section-title" data-i18n="settings.theme">Theme</h3>
+                        <div class="theme-list" id="theme-list"></div>
+                        <h3 class="section-title" data-i18n="settings.visual">Visual</h3>
+                        <div class="segmented" id="visual-options">
+                            <button data-value="shape" data-i18n="visual.shape">Shape</button>
+                            <button data-value="wave" data-i18n="visual.wave">Wave</button>
+                        </div>
+                    </div>
+                </section>
+                <section class="fold" data-fold="language">
+                    <button class="fold-head" aria-expanded="false">
+                        <svg class="fold-icon"><use href="#i-globe"/></svg>
+                        <span class="fold-title" data-i18n="settings.language"></span>
+                        <span class="fold-value" id="sum-language"></span>
+                        <svg class="fold-chev"><use href="#i-chevron"/></svg>
+                    </button>
+                    <div class="fold-body" hidden>
+                        <div class="segmented" id="language-options"></div>
+                    </div>
+                </section>
+                <section class="fold" data-fold="options">
+                    <button class="fold-head" aria-expanded="false">
+                        <svg class="fold-icon"><use href="#i-toggles"/></svg>
+                        <span class="fold-title" data-i18n="settings.options"></span>
+                        <span class="fold-value" id="sum-options"></span>
+                        <svg class="fold-chev"><use href="#i-chevron"/></svg>
+                    </button>
+                    <div class="fold-body" hidden>
+                        <label class="toggle-row">
+                            <span data-i18n="opt.prepare">3-second “get ready” countdown</span>
+                            <input type="checkbox" id="opt-prepare"><span class="switch"></span>
+                        </label>
+                        <label class="toggle-row" id="row-vibrate">
+                            <span data-i18n="opt.vibrate">Vibrate on each phase</span>
+                            <input type="checkbox" id="opt-vibrate"><span class="switch"></span>
+                        </label>
+                        <label class="toggle-row" id="row-wake">
+                            <span data-i18n="opt.wake">Keep screen on during session</span>
+                            <input type="checkbox" id="opt-wake"><span class="switch"></span>
+                        </label>
+                    </div>
+                </section>
+                <section class="fold" data-fold="about">
+                    <button class="fold-head" aria-expanded="false">
+                        <svg class="fold-icon"><use href="#i-info"/></svg>
+                        <span class="fold-title" data-i18n="about.short"></span>
+                        <span class="fold-value" id="sum-about"></span>
+                        <svg class="fold-chev"><use href="#i-chevron"/></svg>
+                    </button>
+                    <div class="fold-body" hidden>
+                        <p data-i18n="about.text">Breathe is a calm paced-breathing guide. Follow the moving dot: it rises as you breathe in, falls as you breathe out, and travels sideways while you hold. Everything runs on your device. This app is not medical advice.</p>
+                        <p data-i18n-html="about.recordings">Ambient recordings (via the open-source <a href="https://github.com/rafaelmardojai/blanket" target="_blank" rel="noopener">Blanket</a> project):</p>
+                        <ul>
+                            <li><a href="https://freesound.org/people/alex36917/sounds/524605/" target="_blank" rel="noopener" data-i18n="amb.rain">Rain</a> — alex36917 (CC BY)</li>
+                            <li><a href="https://freesound.org/people/Luftrum/sounds/48412/" target="_blank" rel="noopener" data-i18n="amb.ocean">Ocean</a> — Luftrum (CC BY)</li>
+                            <li><a href="https://freesound.org/people/gluckose/sounds/333987/" target="_blank" rel="noopener" data-i18n="amb.stream">Stream</a> — gluckose (CC0)</li>
+                            <li><a href="https://freesound.org/people/kvgarlic/sounds/156826/" target="_blank" rel="noopener" data-i18n="amb.forest">Forest</a> — kvgarlic (CC0)</li>
+                            <li><a href="https://soundbible.com/1543-Fireplace.html" target="_blank" rel="noopener" data-i18n="amb.fireplace">Fireplace</a> — ezwa (<span data-i18n="about.publicDomain">public domain</span>)</li>
+                            <li><a href="https://soundbible.com/2083-Crickets-Chirping-At-Night.html" target="_blank" rel="noopener" data-i18n="amb.night">Night</a> — Lisa Redfern (<span data-i18n="about.publicDomain">public domain</span>)</li>
+                            <li><a href="https://freesound.org/people/felix.blume/sounds/217506/" target="_blank" rel="noopener" data-i18n="amb.wind">Wind</a> — felix.blume (CC0)</li>
+                        </ul>
+                        <p data-i18n="about.footer">Recordings were edited by the Blanket project and re-encoded and volume-matched for this app. Bowl, chime and tone cues are synthesised live.</p>
+                    </div>
+                </section>
             </div>
-
-            <h3 class="section-title" data-i18n="reminders.calendar">Add to your calendar</h3>
-            <div class="calendar-actions" id="google-links"></div>
-            <button class="secondary-btn" id="btn-ics" data-i18n="reminders.ics">Apple, Samsung &amp; other calendars</button>
-            <p class="hint" data-i18n="reminders.hint">Google Calendar opens once per time. If the reminder alert comes early, change it to “At time of event”.</p>
         </div>
     </section>
 

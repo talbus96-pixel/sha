@@ -26,7 +26,7 @@
     const STORAGE_KEY = 'breathe.settings.v2';
 
     const DEFAULTS = {
-        technique: 'box',            // sigh | box | wimhof | custom
+        technique: 'sigh',           // sigh | box | wimhof | custom
         sigh: { pace: 'steady' },
         box: { count: 4 },
         wimhof: { breaths: 30, rounds: 3, pace: 'medium' },
@@ -42,20 +42,26 @@
         wakeLock: true,
         reminders: { times: ['09:00'], days: 'daily' },  // days: daily | sunthu | weekdays (Mon–Fri)
         lang: I18n.detect(),
-        version: 3
+        muted: false,
+        version: 4
     };
 
     // ---------- settings ----------
+
+    let firstVisit = true;
 
     function loadSettings() {
         const base = JSON.parse(JSON.stringify(DEFAULTS));
         try {
             const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
             if (saved) {
+                firstVisit = false;
                 const merged = { ...base, ...saved };
                 ['sigh', 'box', 'wimhof', 'custom', 'ambient', 'reminders'].forEach(k => { merged[k] = { ...base[k], ...saved[k] }; });
                 // Day became the default theme in version 3; move people off the old default
                 if ((saved.version || 0) < 3 && merged.theme === 'night') merged.theme = 'day';
+                // cyclic sighing became the default technique in version 4
+                if ((saved.version || 0) < 4 && merged.technique === 'box') merged.technique = 'sigh';
                 merged.version = base.version;
                 return merged;
             }
@@ -402,21 +408,18 @@
 
     let currentSheet = null;
 
-    function openSheet(id) {
+    // fold: for the menu, which section to open (none = all closed)
+    function openSheet(id, fold) {
         closeSheet();
         currentSheet = $(id);
         backdrop.hidden = false;
         currentSheet.hidden = false;
         currentSheet.querySelector('.sheet-body').scrollTop = 0;
         showUI();
-        if (id === 'sheet-sounds') {
-            // let the person hear their ambience mix while adjusting it
-            Sound.ensure();
-            Sound.setAmbientGate(true);
+        if (id === 'sheet-settings') {
+            renderMenu();
+            openFold(fold || null);
         }
-        if (id === 'sheet-sounds') renderSoundsSheet();
-        if (id === 'sheet-settings') renderSettingsSheet();
-        if (id === 'sheet-reminders') renderReminders();
     }
 
     function closeSheet() {
@@ -425,20 +428,77 @@
         currentSheet.hidden = true;
         backdrop.hidden = true;
         currentSheet = null;
-        if (id === 'sheet-sounds' && session.state !== 'running' && session.state !== 'prepare') {
-            Sound.setAmbientGate(false);
-        }
+        if (id === 'sheet-settings' && !sessionActive()) Sound.setAmbientGate(false);
         scheduleZen();
     }
 
     backdrop.addEventListener('click', closeSheet);
     document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeSheet));
     $('btn-pattern').addEventListener('click', () => openBreathing());
-    $('btn-sounds').addEventListener('click', () => openSheet('sheet-sounds'));
     $('btn-settings').addEventListener('click', () => openSheet('sheet-settings'));
     $('btn-length').addEventListener('click', () => {
         if (settings.technique === 'wimhof') openBreathing('wimhof');
-        else openSheet('sheet-settings');
+        else openSheet('sheet-settings', 'length');
+    });
+
+    // ---------- menu: folding sections ----------
+
+    const sessionActive = () => session.state === 'running' || session.state === 'prepare';
+
+    function renderMenu() {
+        renderSettingsSheet();
+        renderSoundsSheet();
+        renderReminders();
+    }
+
+    // Opens one section and closes the rest; null closes all.
+    function openFold(key) {
+        document.querySelectorAll('.fold').forEach(f => {
+            const on = f.dataset.fold === key;
+            f.classList.toggle('open', on);
+            f.querySelector('.fold-head').setAttribute('aria-expanded', on);
+            f.querySelector('.fold-body').hidden = !on;
+            if (on) setTimeout(() => f.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 50);
+        });
+        // let the person hear their ambience mix while choosing sounds
+        if (key === 'sounds') {
+            Sound.ensure();
+            Sound.setAmbientGate(true);
+        } else if (!sessionActive()) {
+            Sound.setAmbientGate(false);
+        }
+    }
+
+    document.querySelectorAll('.fold').forEach(f => {
+        f.querySelector('.fold-head').addEventListener('click', () => {
+            openFold(f.classList.contains('open') ? null : f.dataset.fold);
+        });
+    });
+
+    // The current choice shown on each closed section, e.g. "Theme · Day".
+    function updateSummaries() {
+        const amb = AMBIENTS.filter(a => settings.ambient[a.id].on).map(a => t('amb.' + a.id));
+        $('sum-sounds').textContent = `${t('cue.' + settings.cue)} · ${amb.length ? amb.join(', ') : t('sum.noAmbience')}`;
+        $('sum-length').textContent = settings.minutes > 0 ? t('length.min', { n: settings.minutes }) : t('length.none');
+        const r = settings.reminders;
+        $('sum-reminders').textContent = `${r.times.map(Reminders.label).join(', ')} · ${t('days.' + r.days)}`;
+        $('sum-look').textContent = `${t('theme.' + settings.theme)} · ${t('visual.' + settings.visual)}`;
+        $('sum-language').textContent = (I18n.LANGUAGES.find(([c]) => c === settings.lang) || [, ''])[1];
+    }
+
+    // ---------- mute ----------
+
+    function applyMute() {
+        Sound.setMuted(settings.muted);
+        $('mute-icon').setAttribute('href', settings.muted ? '#i-sound-off' : '#i-sound');
+        $('btn-mute').setAttribute('aria-pressed', settings.muted);
+        $('btn-mute').setAttribute('aria-label', t(settings.muted ? 'aria.unmute' : 'aria.mute'));
+    }
+
+    $('btn-mute').addEventListener('click', () => {
+        settings.muted = !settings.muted;
+        saveSettings();
+        applyMute();
     });
 
     // Swipe a sheet down to close it
@@ -513,10 +573,18 @@
             row.className = 'preset' + (settings.technique === id ? ' selected' : '');
             row.innerHTML = `<div><div class="preset-name"></div><div class="preset-desc"></div></div><svg class="chev" width="20" height="20"><use href="#i-chevron"/></svg>`;
             row.querySelector('.preset-name').textContent = Programs.text(id, 'name');
+            if (T[id].recommended) row.querySelector('.preset-name').appendChild(badge());
             row.querySelector('.preset-desc').textContent = Programs.text(id, 'tagline');
             row.addEventListener('click', () => showTechnique(id));
             list.appendChild(row);
         });
+    }
+
+    function badge() {
+        const b = document.createElement('span');
+        b.className = 'badge';
+        b.textContent = t('recommended');
+        return b;
     }
 
     let detailId = null;
@@ -527,6 +595,7 @@
         $('tech-detail').hidden = false;
         $('btn-tech-back').hidden = false;
         $('pattern-title').textContent = tx('name');
+        if (T[id].recommended) $('pattern-title').appendChild(badge());
         $('tech-intro').textContent = tx('intro');
         $('tech-caution').hidden = !tx('caution');
         $('tech-caution').textContent = tx('caution') || '';
@@ -707,6 +776,7 @@
             input.addEventListener('change', saveSettings);
             mix.appendChild(row);
         });
+        updateSummaries();
     }
 
     document.querySelectorAll('#cue-style button').forEach(b => {
@@ -787,14 +857,10 @@
             themes.appendChild(b);
         });
 
-        const r = settings.reminders;
-        $('reminder-summary').textContent = r.times.length
-            ? `${r.times.map(Reminders.label).join(', ')} · ${t('days.' + r.days)}`
-            : '';
-
         $('opt-prepare').checked = settings.prepare;
         $('opt-vibrate').checked = settings.vibrate;
         $('opt-wake').checked = settings.wakeLock;
+        updateSummaries();
     }
 
     document.querySelectorAll('#visual-options button').forEach(b => {
@@ -833,8 +899,9 @@
             phaseLabel.textContent = t('paused');
             phaseCount.textContent = t('pressPlayContinue');
         }
-        setPlayIcon(session.state === 'running' || session.state === 'prepare');
-        renderSettingsSheet();
+        setPlayIcon(sessionActive());
+        applyMute();
+        renderMenu();
     }
 
     // ---------- reminders sheet ----------
@@ -884,9 +951,8 @@
             a.textContent = r.times.length > 1 ? t('reminders.googleAt', { time: Reminders.label(time) }) : t('reminders.google');
             links.appendChild(a);
         });
+        updateSummaries();
     }
-
-    $('btn-open-reminders').addEventListener('click', () => openSheet('sheet-reminders'));
 
     $('btn-tour').addEventListener('click', () => {
         closeSheet();
@@ -896,7 +962,6 @@
         clearTimeout(zenTimer);
         Tour.start();
     });
-    $('btn-reminders-back').addEventListener('click', () => openSheet('sheet-settings'));
 
     $('btn-add-time').addEventListener('click', () => {
         const r = settings.reminders;
@@ -929,11 +994,27 @@
         if (s.on) Sound.setAmbient(a.id, true, s.level);
     });
     applyTheme();
+    applyMute();
     updateChip();
     drawIdle();
 
+    // First time here: show the tour once (Skip is always there).
+    if (firstVisit) {
+        saveSettings();
+        setTimeout(() => Tour.start(), 700);
+    }
+
     // Offline / installable app support (only works when served from a web address, not a file)
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+        // When a new version takes over, reload once to show it, unless someone is mid-session.
+        const hadVersion = !!navigator.serviceWorker.controller;
+        let reloaded = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (hadVersion && !reloaded && !sessionActive()) {
+                reloaded = true;
+                location.reload();
+            }
+        });
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('service-worker.js').catch(() => {});
         });

@@ -12,6 +12,7 @@ const Programs = (() => {
     // '<id>.note' and '<id>.caution'; read them with text(id, 'intro').
     const TECHNIQUES = {
         sigh: {
+            recommended: true,
             controls: [
                 { key: 'pace', label: 'control.pace', options: [['quick', 'pace.quick'], ['steady', 'pace.steady'], ['slow', 'pace.slow'], ['deep', 'pace.deep']] }
             ],

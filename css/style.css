@@ -189,10 +189,10 @@ svg { display: block; }
 .fade-ui { transition: opacity 0.9s ease; }
 body.zen .fade-ui { opacity: 0; pointer-events: none; }
 
-/* settings at the start (left in English, right in Hebrew), name in the middle, sounds at the end */
+/* menu at the start (left in English, right in Hebrew), name in the middle, mute at the end */
 .topbar {
     display: grid;
-    grid-template-columns: 44px 1fr 44px;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     height: 48px;
 }
@@ -205,6 +205,25 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
     color: var(--muted);
     text-align: center;
 }
+
+#btn-mute { justify-self: end; }
+#btn-mute[aria-pressed="true"] { color: var(--text); }
+
+.menu-btn {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    font-size: 0.92rem;
+    color: var(--text);
+}
+.menu-btn svg { width: 20px; height: 20px; }
+.menu-btn:hover { background: var(--surface-strong); }
 
 .icon-btn {
     width: 44px;
@@ -450,6 +469,19 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
 .hint { color: var(--muted); font-size: 0.85rem; margin: 12px 0 0; }
 
 /* Techniques */
+.badge {
+    display: inline-block;
+    margin-inline-start: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    vertical-align: middle;
+}
+
 .tech-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
 
 .back-btn { margin-inline-start: -12px; }
@@ -710,6 +742,53 @@ input[type="range"]::-moz-range-thumb {
 .toggle-row input:checked + .switch { background: var(--accent); }
 .toggle-row input:checked + .switch::after { transform: translateX(18px); }
 
+/* Menu: tour card and folding sections */
+.tour-cta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    margin: 8px 0 18px;
+    padding: 16px;
+    border-radius: 18px;
+    background: var(--accent);
+    color: var(--on-accent);
+    text-align: start;
+    box-shadow: 0 8px 24px var(--glow);
+}
+.tour-cta-icon { width: 34px; height: 34px; flex: none; }
+.tour-cta-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.tour-cta-text strong { font-size: 1.05rem; font-weight: 600; }
+.tour-cta-text small { font-size: 0.85rem; opacity: 0.85; }
+.tour-cta .chev { width: 20px; height: 20px; }
+
+.menu-list { display: flex; flex-direction: column; gap: 8px; }
+.fold { border-radius: 16px; background: var(--surface); }
+.fold-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 15px 16px;
+    text-align: start;
+    font-size: 1rem;
+}
+.fold-icon { width: 22px; height: 22px; flex: none; color: var(--accent); }
+.fold-title { flex: 1; }
+.fold-value {
+    color: var(--muted);
+    font-size: 0.85rem;
+    max-width: 45%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.fold-chev { width: 18px; height: 18px; flex: none; color: var(--muted); transition: transform 0.25s; }
+.fold.open .fold-chev { transform: rotate(90deg); }
+.fold-body { padding: 0 16px 16px; }
+.fold-body > .section-title:first-child { margin-top: 4px; }
+.fold-body > .hint:first-child { margin-top: 0; }
+
 /* Reminders */
 .link-row {
     display: flex;
@@ -844,7 +923,9 @@ a.primary-btn { display: block; text-align: center; text-decoration: none; box-s
 /* ---------- Right-to-left (Hebrew) ---------- */
 [dir="rtl"] .brand { letter-spacing: 0.06em; }
 [dir="rtl"] .back-btn svg,
-[dir="rtl"] .chev { transform: scaleX(-1); }
+[dir="rtl"] .chev,
+[dir="rtl"] .fold-chev { transform: scaleX(-1); }
+[dir="rtl"] .fold.open .fold-chev { transform: rotate(90deg); }
 [dir="rtl"] .toggle-row input:checked + .switch::after { transform: translateX(-18px); }
 [dir="rtl"] input[type="range"]::-webkit-slider-runnable-track {
     background: linear-gradient(to left, var(--accent) var(--fill), var(--faint) var(--fill));
@@ -853,3 +934,8 @@ a.primary-btn { display: block; text-align: center; text-decoration: none; box-s
 [dir="rtl"] .pattern-nums,
 [dir="rtl"] .preset-nums,
 [dir="rtl"] .time-row input { direction: ltr; unicode-bidi: isolate; }
+
+/* About text inside the menu */
+.fold[data-fold="about"] .fold-body { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+.fold[data-fold="about"] ul { padding-inline-start: 18px; margin: 6px 0; }
+.fold[data-fold="about"] a { color: var(--accent); }

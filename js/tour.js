@@ -8,7 +8,7 @@ const Tour = (() => {
         { key: 'pattern', target: '#btn-pattern' },
         { key: 'play', target: '#btn-play' },
         { key: 'length', target: '#btn-length' },
-        { key: 'sounds', target: '#btn-sounds' },
+        { key: 'sounds', target: '#btn-mute' },
         { key: 'settings', target: '#btn-settings' },
         { key: 'calm', target: null }
     ];

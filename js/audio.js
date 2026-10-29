@@ -17,6 +17,7 @@ const Sound = (() => {
     let cueStyle = 'bowl';
     let cueLevel = 0.8;
     let ambientGateOpen = false;
+    let muted = false;
     const ambient = {};      // id -> { on, level, voice: {src, gain} | null, loading }
     const bufferCache = {};  // id -> Promise<AudioBuffer>
     let tone = null;         // continuous breath-tone voice
@@ -38,7 +39,7 @@ const Sound = (() => {
             comp.attack.value = 0.004;
             comp.release.value = 0.3;
             master = ctx.createGain();
-            master.gain.value = 0.9;
+            master.gain.value = muted ? 0 : 0.9;
             master.connect(comp);
             comp.connect(ctx.destination);
 
@@ -411,7 +412,14 @@ const Sound = (() => {
         ambientBus.gain.setTargetAtTime(open ? 1 : 0, ctx.currentTime, fadeSeconds / 3);
     }
 
+    // One switch for every sound the app makes.
+    function setMuted(on) {
+        muted = on;
+        if (ctx) master.gain.setTargetAtTime(on ? 0 : 0.9, ctx.currentTime, 0.08);
+    }
+
     return {
+        setMuted,
         ensure, cue, resume, pause, finish, preview,
         setCueStyle, setCueLevel, setAmbient, setAmbientGate,
         get ready() { return !!ctx; }

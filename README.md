@@ -13,12 +13,12 @@ Everything runs in the web browser, on a computer or a phone. There's no account
 
 ## Languages
 
-English and **Hebrew (עברית)**. The app starts in Hebrew on phones set to Hebrew; switch any time in ⚙ Settings → Language. In Hebrew the whole layout reads right-to-left, and everything is translated, including technique explanations, reminders and calendar events.
+English and **Hebrew (עברית)**. The app starts in Hebrew on phones set to Hebrew; switch any time in ☰ Menu → Language. In Hebrew the whole layout reads right-to-left, and everything is translated, including technique explanations, reminders and calendar events.
 
 ## What you see
 
 The main screen is kept minimal:
-- **At the top:** ⚙ **Settings** on the left (on the right in Hebrew), the app name in the middle, 🔊 **Sounds** on the other side. Below them: what to do now ("Breathe in", "Hold", "Breathe out"…) and the seconds left.
+- **At the top:** the ☰ **Menu** button on the left (on the right in Hebrew), the app name in the middle, and a 🔊 **mute** button on the other side that turns all sounds off or on with one tap. Below them: what to do now ("Breathe in", "Hold", "Breathe out"…) and the seconds left.
 - **In the middle:** the shape and the moving dot. The side you're on now lights up. Breathing sides are blue, holding sides are lilac.
 - **At the bottom:**
   - the technique's name (tap it to choose another)
@@ -27,11 +27,12 @@ The main screen is kept minimal:
   - a **stop** button that appears once a session has started
   - the time left and how many breaths you've taken
 - **Calm mode:** while you breathe, the buttons fade away after 4 seconds. Touch the screen to bring them back.
+- **First visit:** the guided tour opens by itself once. Skip is always there, and the tour can be reopened from the menu.
 - **Finished screen:** when time is up, the app waits for your last breath out, rings a soft closing bell, and shows your time and number of breaths.
 
 ## Techniques
 
-Tap the technique name at the bottom → **Techniques**. Each one has a short explanation, a fold-out "How to do it", and a few controls. Press **Start** to begin.
+Tap the technique name at the bottom → **Techniques**. **Cyclic sighing** is the default and is marked **Recommended**. Each one has a short explanation, a fold-out "How to do it", and a few controls. Press **Start** to begin.
 
 | Technique | What it is | You can set |
 |---|---|---|
@@ -59,25 +60,30 @@ How the shape follows the timings:
 
 All cues are created live by the app, with a soft "room" echo added.
 
-**Ambience**: real nature recordings. You can mix as many as you like, each with its own volume: Rain, Ocean, Stream, Forest (birds), Fire (crackling fireplace), Night (crickets), Wind, and Noise (soft brown noise). The recordings loop without a gap, and each one starts from a random point, so it doesn't sound the same every time. Ambience plays during your session, and while the Sounds panel is open so you can hear your mix.
+**Ambience**: real nature recordings. You can mix as many as you like, each with its own volume: Rain, Ocean, Stream, Forest (birds), Fire (crackling fireplace), Night (crickets), Wind, and Noise (soft brown noise). The recordings loop without a gap, and each one starts from a random point, so it doesn't sound the same every time. Ambience plays during your session, and while the Sounds section of the menu is open, so you can hear your mix.
+
+Choose sounds in ☰ Menu → **Sounds**. The 🔊 button at the top only mutes or unmutes everything.
 
 In Wim Hof's quick breathing, the cue is only a soft tick, because a full bell every 2 seconds would be too much. A deep bowl marks the start of the breath hold.
 
-## Settings
+## The menu
 
-- **Session length**: 1, 3, 5, 10, 15, 20 or 30 minutes, or no limit. (Wim Hof uses rounds instead.)
-- **Visual**: **Shape** (the default) or **Wave**.
-- **Theme**: five light ones: **Day** (the default), **Sunrise** (warm peach), **Meadow** (fresh green), **Lavender**, **Lagoon** (sea-glass aqua). Three dark ones for evenings: **Night**, **Dusk**, **Forest**.
-- **Get-ready countdown**: a 3-second countdown before the first breath.
-- **Vibrate on each phase**: Android phones only. iPhones don't let websites vibrate.
-- **Keep screen on**: stops the phone screen from dimming during a session.
-- **How to use the app**: a short guided tour (9 steps) that lights up each part of the screen and explains it. Next / Back / Skip at any time.
+At the top of the menu, a large button opens the **guided tour** (9 steps that light up each part of the screen and explain it; Next / Back / Skip at any time).
+
+Below it, a short list of sections. Tap a heading to open it; opening one closes the others. Each heading shows your current choice (for example "Look · Day · Shape"), so you can see your settings without opening anything.
+- **Sounds**: breathing cue, cue volume, and the ambience mix (see above).
+- **Session length**: 1, 3, 5, 10, 15, 20 or 30 minutes, or no limit. (Wim Hof uses rounds instead.) Tapping the length button on the main screen opens this section directly.
 - **Reminders**: see below.
-- **About & sound credits**.
+- **Look**:
+  - **Theme**: five light ones: **Day** (the default), **Sunrise** (warm peach), **Meadow** (fresh green), **Lavender** and **Lagoon** (sea-glass aqua). Three dark ones for evenings: **Night**, **Dusk** and **Forest**.
+  - **Visual**: **Shape** (the default) or **Wave**.
+- **Language**: English or עברית.
+- **Options**: the 3-second get-ready countdown, vibration (Android only; iPhones don't let websites vibrate), and keeping the screen on during a session.
+- **About**: what the app is, and the sound credits.
 
 ## Reminders
 
-Settings → **Reminders**. Pick one to four times of day and choose **Every day**, **Sun–Thu** (the Israeli work week) or **Mon–Fri**. Then add them to your calendar:
+☰ Menu → **Reminders**. Pick one to four times of day and choose **Every day**, **Sun–Thu** (the Israeli work week) or **Mon–Fri**. Then add them to your calendar:
 - **Google Calendar** (most Android phones): one button per time. Each opens Google Calendar with a repeating "Time to breathe" event already filled in. Just tap **Save**. Google may set its usual alert time (for example 10 minutes before). If you'd rather be reminded exactly on time, change the notification to "At time of event".
 - **Apple, Samsung & other calendars** (iPhone and others): downloads one small calendar file with all your times. Open it and choose **Add All**. These reminders alert you right on time.
 
@@ -128,7 +134,7 @@ The ambient recordings come from the open-source [Blanket](https://github.com/ra
 | [Night](https://soundbible.com/2083-Crickets-Chirping-At-Night.html) | Lisa Redfern | Public domain |
 | [Wind](https://freesound.org/people/felix.blume/sounds/217506/) | felix.blume | CC0 |
 
-"CC BY" means the sound is free to use as long as the recordist is credited. The app does this in Settings → About.
+"CC BY" means the sound is free to use as long as the recordist is credited. The app does this in ☰ Menu → About.
 
 ## Ideas for later
 
