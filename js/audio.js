@@ -2,13 +2,13 @@
 // and looping ambient recordings. Everything runs through the Web Audio API.
 const Sound = (() => {
     const AMBIENT_FILES = {
-        rain: 'sounds/rain.m4a',
-        ocean: 'sounds/ocean.m4a',
-        stream: 'sounds/stream.m4a',
-        forest: 'sounds/forest.m4a',
-        fireplace: 'sounds/fireplace.m4a',
-        night: 'sounds/night.m4a',
-        wind: 'sounds/wind.m4a'
+        rain: 'sounds/rain.mp3',
+        ocean: 'sounds/ocean.mp3',
+        stream: 'sounds/stream.mp3',
+        forest: 'sounds/forest.mp3',
+        fireplace: 'sounds/fireplace.mp3',
+        night: 'sounds/night.mp3',
+        wind: 'sounds/wind.mp3'
         // 'brown' (brown noise) is generated, not loaded
     };
 

@@ -9,7 +9,7 @@ js/audio.js           the sound engine                       (global: Sound)
 js/programs.js        techniques, step timeline, shapes      (global: Programs)
 js/visual.js          draws the shape and wave views          (global: Visual)
 js/app.js             session clock, panels, settings        (runs once on load)
-sounds/*.m4a          ambient recordings (AAC, ~80 kbps, loudness-matched)
+sounds/*.mp3          ambient recordings (MP3, 96 kbps, loudness-matched)
 service-worker.js     offline cache
 manifest.webmanifest  home-screen install info
 ```
@@ -75,14 +75,14 @@ manifest.webmanifest  home-screen install info
   2. Add a branch to `build()` that turns its settings into steps.
   3. Add its default settings to `DEFAULTS` in `js/app.js`.
 - **Add an ambient sound:**
-  1. Put a looping `.m4a` file in `sounds/`.
+  1. Put a looping `.mp3` file in `sounds/`.
   2. Add it to `AMBIENT_FILES` in `js/audio.js`.
   3. Add it to `AMBIENTS` in `js/app.js`, with an icon (`<symbol id="i-…">` in `index.html`).
   4. Add it to the list in `service-worker.js`.
 
   To convert and loudness-match a recording:
   ```bash
-  ffmpeg -i input.wav -t 90 -af "loudnorm=I=-24:TP=-3:LRA=11" -c:a aac -b:a 80k sounds/name.m4a
+  ffmpeg -i input.wav -t 90 -af "loudnorm=I=-24:TP=-3:LRA=11" -c:a libmp3lame -b:a 96k sounds/name.mp3
   ```
 - **Change cue notes:** `BOWL_NOTES` / `CHIME_NOTES` in `js/audio.js`.
 - **Change calm-mode delay:** `ZEN_DELAY` in `js/app.js`.
