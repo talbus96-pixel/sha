@@ -5,6 +5,7 @@ The app is plain HTML, CSS and JavaScript, with no build step and no libraries. 
 ```
 index.html            page structure, icons, the three panels ("sheets")
 css/style.css         themes and layout
+js/i18n.js            all text, English + Hebrew             (global: I18n)
 js/audio.js           the sound engine                       (global: Sound)
 js/programs.js        techniques, step timeline, shapes      (global: Programs)
 js/visual.js          draws the shape and wave views          (global: Visual)
@@ -20,13 +21,19 @@ manifest.webmanifest  home-screen install info
 - The layout is built for phones first. `@media (min-width: 700px)` turns the bottom sheets into centred dialogs on larger screens, and `@media (max-height: 520px)` puts the visual and the controls side by side when a phone is held sideways.
 - `body.zen` hides everything marked `.fade-ui` (calm mode). `body.running` is set while a session runs.
 
+## js/i18n.js (`I18n`)
+- Every piece of text lives in `STRINGS.en` and `STRINGS.he`. If a key is missing in Hebrew, the English text is shown.
+- In the page, `data-i18n="key"` sets an element's text, `data-i18n-html` is for text containing a link, and `data-i18n-aria` sets a button's spoken label. In code, `I18n.t('timeLeft', { t: '4:53' })` fills in `{t}`. Some entries are small functions, for plurals (`breathCount`).
+- `setLanguage(code)` switches the text and sets `dir="rtl"` for Hebrew. The CSS uses start/end spacing (`padding-inline`, `margin-inline-start`), so most of the layout mirrors by itself. The `[dir="rtl"]` rules at the end of `style.css` handle the rest: arrows, switches and slider fill.
+- **To add a language:** copy the `en` block under a new code (e.g. `fr`), translate it, and add it to `LANGUAGES`.
+
 ## js/programs.js (`Programs`)
 - A breathing program is a list of **steps**. Each step has:
   - a `kind`: `in`, `top` (the extra sip of air in cyclic sighing), `holdIn` (hold with full lungs), `out` or `holdOut` (hold with empty lungs)
   - `secs`: how long it lasts
   - `from` / `to`: the lung level it moves between (0 = empty, 1 = full)
   - a `label`, the text shown on screen
-- `TECHNIQUES` holds the texts and controls for Cyclic sighing, Box and Wim Hof. Cyclic sighing uses fixed paces (`SIGH_PACES`), which keep the breath out twice as long as the breaths in. Their settings are stored as `settings.sigh`, `settings.box` and `settings.wimhof`. `QUICK_PATTERNS` are the quick picks on the Custom tab.
+- `TECHNIQUES` holds the controls for Cyclic sighing, Box and Wim Hof. Their texts are in `i18n.js` (`sigh.intro`, `box.steps`…) and are read with `Programs.text(id, field)`. A step's `label` is a translation key, looked up when it's shown. Cyclic sighing uses fixed paces (`SIGH_PACES`), which keep the breath out twice as long as the breaths in. Their settings are stored as `settings.sigh`, `settings.box` and `settings.wimhof`. `QUICK_PATTERNS` are the quick picks on the Custom tab.
 - `build(settings)` turns the chosen technique into a program:
   - `{ cycle }`: steps that repeat until the session time runs out
   - `{ list }`: a fixed list with an end (Wim Hof). Wim Hof's breath hold has `secs: Infinity` and `open: true`. It lasts until the person taps "Breathe in", which calls `timeline.close()`.

@@ -45,10 +45,10 @@
 
     <div class="app" id="app">
         <header class="topbar fade-ui">
-            <div class="brand">Breathe</div>
+            <div class="brand" data-i18n="brand">Breathe</div>
             <div class="top-actions">
-                <button class="icon-btn" id="btn-sounds" aria-label="Sounds"><svg><use href="#i-sound"/></svg></button>
-                <button class="icon-btn" id="btn-settings" aria-label="Settings"><svg><use href="#i-settings"/></svg></button>
+                <button class="icon-btn" id="btn-sounds" data-i18n-aria="aria.sounds" aria-label="Sounds"><svg><use href="#i-sound"/></svg></button>
+                <button class="icon-btn" id="btn-settings" data-i18n-aria="aria.settings" aria-label="Settings"><svg><use href="#i-settings"/></svg></button>
             </div>
         </header>
 
@@ -58,24 +58,24 @@
                 <div class="phase-count" id="phase-count">&nbsp;</div>
             </div>
             <canvas id="visual" aria-hidden="true"></canvas>
-            <button class="next-btn" id="btn-next" hidden>Breathe in</button>
+            <button class="next-btn" id="btn-next" data-i18n="next" hidden>Breathe in</button>
         </main>
 
         <footer class="dock fade-ui">
-            <button class="pattern-chip" id="btn-pattern" aria-label="Change breathing pattern">
+            <button class="pattern-chip" id="btn-pattern" data-i18n-aria="aria.pattern" aria-label="Change breathing technique">
                 <span id="pattern-name">Box breathing</span>
                 <span class="pattern-nums" id="pattern-nums">4 s</span>
             </button>
 
             <div class="controls">
-                <button class="side-btn" id="btn-length" aria-label="Session length">
+                <button class="side-btn" id="btn-length" data-i18n-aria="aria.length" aria-label="Session length">
                     <span class="side-value" id="length-value">5</span>
                     <span class="side-label" id="length-label">min</span>
                 </button>
                 <button class="play-btn" id="btn-play" aria-label="Start">
                     <svg><use href="#i-play" id="play-icon"/></svg>
                 </button>
-                <button class="side-btn" id="btn-stop" aria-label="End session" disabled>
+                <button class="side-btn" id="btn-stop" data-i18n-aria="aria.stop" aria-label="End session" disabled>
                     <svg><use href="#i-stop"/></svg>
                 </button>
             </div>
@@ -87,13 +87,13 @@
     <!-- Session complete -->
     <div class="complete" id="complete" hidden>
         <div class="complete-card">
-            <div class="complete-title">Well done</div>
+            <div class="complete-title" data-i18n="done.title">Well done</div>
             <div class="complete-stats">
-                <div><span id="done-time">5:00</span><small>time</small></div>
-                <div><span id="done-breaths">0</span><small>breaths</small></div>
+                <div><span id="done-time">5:00</span><small data-i18n="done.time">time</small></div>
+                <div><span id="done-breaths">0</span><small data-i18n="done.breaths">breaths</small></div>
             </div>
             <div class="complete-extra" id="done-extra" hidden></div>
-            <button class="primary-btn" id="btn-done">Done</button>
+            <button class="primary-btn" id="btn-done" data-i18n="done.button">Done</button>
         </div>
     </div>
 
@@ -103,15 +103,15 @@
     <section class="sheet" id="sheet-pattern" role="dialog" aria-modal="true" aria-labelledby="pattern-title" hidden>
         <div class="sheet-handle"></div>
         <header class="sheet-head">
-            <button class="icon-btn back-btn" id="btn-tech-back" aria-label="Back" hidden><svg><use href="#i-back"/></svg></button>
-            <h2 id="pattern-title">Breathing</h2>
-            <button class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+            <button class="icon-btn back-btn" id="btn-tech-back" data-i18n-aria="aria.back" aria-label="Back" hidden><svg><use href="#i-back"/></svg></button>
+            <h2 id="pattern-title" data-i18n="breathing.title">Breathing</h2>
+            <button class="icon-btn" data-close data-i18n-aria="aria.close" aria-label="Close"><svg><use href="#i-close"/></svg></button>
         </header>
         <div class="sheet-body">
             <div id="breathing-home">
                 <div class="segmented" id="breathing-tabs">
-                    <button data-value="techniques">Techniques</button>
-                    <button data-value="custom">Custom</button>
+                    <button data-value="techniques" data-i18n="tab.techniques">Techniques</button>
+                    <button data-value="custom" data-i18n="tab.custom">Custom</button>
                 </div>
 
                 <div id="tab-techniques">
@@ -130,12 +130,12 @@
                 <p class="tech-intro" id="tech-intro"></p>
                 <div class="caution" id="tech-caution" hidden></div>
                 <details class="how">
-                    <summary>How to do it</summary>
+                    <summary data-i18n="howTo">How to do it</summary>
                     <ol id="tech-steps"></ol>
                     <p class="hint" id="tech-note"></p>
                 </details>
                 <div class="tech-controls" id="tech-controls"></div>
-                <button class="primary-btn" id="btn-tech-start">Start</button>
+                <button class="primary-btn" id="btn-tech-start" data-i18n="start">Start</button>
             </div>
         </div>
     </section>
@@ -143,23 +143,23 @@
     <section class="sheet" id="sheet-sounds" role="dialog" aria-modal="true" aria-labelledby="sounds-title" hidden>
         <div class="sheet-handle"></div>
         <header class="sheet-head">
-            <h2 id="sounds-title">Sounds</h2>
-            <button class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+            <h2 id="sounds-title" data-i18n="sounds.title">Sounds</h2>
+            <button class="icon-btn" data-close data-i18n-aria="aria.close" aria-label="Close"><svg><use href="#i-close"/></svg></button>
         </header>
         <div class="sheet-body">
-            <h3 class="section-title">Breathing cue</h3>
+            <h3 class="section-title" data-i18n="sounds.cue">Breathing cue</h3>
             <div class="segmented" id="cue-style">
-                <button data-value="bowl">Bowl</button>
-                <button data-value="chime">Chime</button>
-                <button data-value="tone">Tone</button>
-                <button data-value="off">Off</button>
+                <button data-value="bowl" data-i18n="cue.bowl">Bowl</button>
+                <button data-value="chime" data-i18n="cue.chime">Chime</button>
+                <button data-value="tone" data-i18n="cue.tone">Tone</button>
+                <button data-value="off" data-i18n="cue.off">Off</button>
             </div>
             <label class="slider-row">
-                <span>Cue volume</span>
+                <span data-i18n="sounds.cueVolume">Cue volume</span>
                 <input type="range" id="cue-volume" min="0" max="1" step="0.01">
             </label>
 
-            <h3 class="section-title">Ambience <small>mix as many as you like</small></h3>
+            <h3 class="section-title"><span data-i18n="sounds.ambience">Ambience</span> <small data-i18n="sounds.mixHint">mix as many as you like</small></h3>
             <div class="ambient-grid" id="ambient-grid"></div>
             <div class="ambient-mix" id="ambient-mix"></div>
         </div>
@@ -168,56 +168,59 @@
     <section class="sheet" id="sheet-settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
         <div class="sheet-handle"></div>
         <header class="sheet-head">
-            <h2 id="settings-title">Settings</h2>
-            <button class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+            <h2 id="settings-title" data-i18n="settings.title">Settings</h2>
+            <button class="icon-btn" data-close data-i18n-aria="aria.close" aria-label="Close"><svg><use href="#i-close"/></svg></button>
         </header>
         <div class="sheet-body">
-            <h3 class="section-title">Session length</h3>
+            <h3 class="section-title" data-i18n="settings.language">Language</h3>
+            <div class="segmented" id="language-options"></div>
+
+            <h3 class="section-title" data-i18n="settings.length">Session length</h3>
             <div class="segmented wrap" id="length-options"></div>
 
-            <h3 class="section-title">Visual</h3>
+            <h3 class="section-title" data-i18n="settings.visual">Visual</h3>
             <div class="segmented" id="visual-options">
-                <button data-value="shape">Shape</button>
-                <button data-value="wave">Wave</button>
+                <button data-value="shape" data-i18n="visual.shape">Shape</button>
+                <button data-value="wave" data-i18n="visual.wave">Wave</button>
             </div>
 
-            <h3 class="section-title">Theme</h3>
+            <h3 class="section-title" data-i18n="settings.theme">Theme</h3>
             <div class="theme-list" id="theme-list"></div>
 
-            <h3 class="section-title">Options</h3>
+            <h3 class="section-title" data-i18n="settings.options">Options</h3>
             <label class="toggle-row">
-                <span>3-second “get ready” countdown</span>
+                <span data-i18n="opt.prepare">3-second “get ready” countdown</span>
                 <input type="checkbox" id="opt-prepare"><span class="switch"></span>
             </label>
             <label class="toggle-row" id="row-vibrate">
-                <span>Vibrate on each phase</span>
+                <span data-i18n="opt.vibrate">Vibrate on each phase</span>
                 <input type="checkbox" id="opt-vibrate"><span class="switch"></span>
             </label>
             <label class="toggle-row" id="row-wake">
-                <span>Keep screen on during session</span>
+                <span data-i18n="opt.wake">Keep screen on during session</span>
                 <input type="checkbox" id="opt-wake"><span class="switch"></span>
             </label>
 
             <button class="link-row" id="btn-open-reminders">
-                <span>Reminders</span>
+                <span data-i18n="reminders.title">Reminders</span>
                 <span class="link-row-value" id="reminder-summary"></span>
-                <svg width="20" height="20"><use href="#i-chevron"/></svg>
+                <svg class="chev" width="20" height="20"><use href="#i-chevron"/></svg>
             </button>
 
             <details class="about">
-                <summary>About &amp; sound credits</summary>
-                <p>Breathe is a calm paced-breathing guide. Follow the moving dot: it rises as you breathe in, falls as you breathe out, and travels sideways while you hold. Everything runs on your device. This app is not medical advice.</p>
-                <p>Ambient recordings (via the open-source <a href="https://github.com/rafaelmardojai/blanket" target="_blank" rel="noopener">Blanket</a> project):</p>
+                <summary data-i18n="about.title">About &amp; sound credits</summary>
+                <p data-i18n="about.text">Breathe is a calm paced-breathing guide. Follow the moving dot: it rises as you breathe in, falls as you breathe out, and travels sideways while you hold. Everything runs on your device. This app is not medical advice.</p>
+                <p data-i18n-html="about.recordings">Ambient recordings (via the open-source <a href="https://github.com/rafaelmardojai/blanket" target="_blank" rel="noopener">Blanket</a> project):</p>
                 <ul>
-                    <li><a href="https://freesound.org/people/alex36917/sounds/524605/" target="_blank" rel="noopener">Rain</a> — alex36917 (CC BY)</li>
-                    <li><a href="https://freesound.org/people/Luftrum/sounds/48412/" target="_blank" rel="noopener">Ocean</a> — Luftrum (CC BY)</li>
-                    <li><a href="https://freesound.org/people/gluckose/sounds/333987/" target="_blank" rel="noopener">Stream</a> — gluckose (CC0)</li>
-                    <li><a href="https://freesound.org/people/kvgarlic/sounds/156826/" target="_blank" rel="noopener">Forest</a> — kvgarlic (CC0)</li>
-                    <li><a href="https://soundbible.com/1543-Fireplace.html" target="_blank" rel="noopener">Fireplace</a> — ezwa (public domain)</li>
-                    <li><a href="https://soundbible.com/2083-Crickets-Chirping-At-Night.html" target="_blank" rel="noopener">Night</a> — Lisa Redfern (public domain)</li>
-                    <li><a href="https://freesound.org/people/felix.blume/sounds/217506/" target="_blank" rel="noopener">Wind</a> — felix.blume (CC0)</li>
+                    <li><a href="https://freesound.org/people/alex36917/sounds/524605/" target="_blank" rel="noopener" data-i18n="amb.rain">Rain</a> — alex36917 (CC BY)</li>
+                    <li><a href="https://freesound.org/people/Luftrum/sounds/48412/" target="_blank" rel="noopener" data-i18n="amb.ocean">Ocean</a> — Luftrum (CC BY)</li>
+                    <li><a href="https://freesound.org/people/gluckose/sounds/333987/" target="_blank" rel="noopener" data-i18n="amb.stream">Stream</a> — gluckose (CC0)</li>
+                    <li><a href="https://freesound.org/people/kvgarlic/sounds/156826/" target="_blank" rel="noopener" data-i18n="amb.forest">Forest</a> — kvgarlic (CC0)</li>
+                    <li><a href="https://soundbible.com/1543-Fireplace.html" target="_blank" rel="noopener" data-i18n="amb.fireplace">Fireplace</a> — ezwa (<span data-i18n="about.publicDomain">public domain</span>)</li>
+                    <li><a href="https://soundbible.com/2083-Crickets-Chirping-At-Night.html" target="_blank" rel="noopener" data-i18n="amb.night">Night</a> — Lisa Redfern (<span data-i18n="about.publicDomain">public domain</span>)</li>
+                    <li><a href="https://freesound.org/people/felix.blume/sounds/217506/" target="_blank" rel="noopener" data-i18n="amb.wind">Wind</a> — felix.blume (CC0)</li>
                 </ul>
-                <p>Recordings were edited by the Blanket project and re-encoded and volume-matched for this app. Bowl, chime and tone cues are synthesised live.</p>
+                <p data-i18n="about.footer">Recordings were edited by the Blanket project and re-encoded and volume-matched for this app. Bowl, chime and tone cues are synthesised live.</p>
             </details>
         </div>
     </section>
@@ -225,30 +228,32 @@
     <section class="sheet" id="sheet-reminders" role="dialog" aria-modal="true" aria-labelledby="reminders-title" hidden>
         <div class="sheet-handle"></div>
         <header class="sheet-head">
-            <button class="icon-btn back-btn" id="btn-reminders-back" aria-label="Back to settings"><svg><use href="#i-back"/></svg></button>
-            <h2 id="reminders-title">Reminders</h2>
-            <button class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+            <button class="icon-btn back-btn" id="btn-reminders-back" data-i18n-aria="aria.backSettings" aria-label="Back to settings"><svg><use href="#i-back"/></svg></button>
+            <h2 id="reminders-title" data-i18n="reminders.title">Reminders</h2>
+            <button class="icon-btn" data-close data-i18n-aria="aria.close" aria-label="Close"><svg><use href="#i-close"/></svg></button>
         </header>
         <div class="sheet-body">
-            <p class="tech-intro">Reminders are added to your phone’s calendar, so they reach you even when the app is closed. Tap one to come straight back here.</p>
+            <p class="tech-intro" data-i18n="reminders.intro">Reminders are added to your phone’s calendar, so they reach you even when the app is closed. Tap one to come straight back here.</p>
 
-            <h3 class="section-title">Times</h3>
+            <h3 class="section-title" data-i18n="reminders.times">Times</h3>
             <div class="reminder-times" id="reminder-times"></div>
-            <button class="chip" id="btn-add-time">+ Add a time</button>
+            <button class="chip" id="btn-add-time" data-i18n="reminders.add">+ Add a time</button>
 
-            <h3 class="section-title">Repeat</h3>
+            <h3 class="section-title" data-i18n="reminders.repeat">Days</h3>
             <div class="segmented" id="reminder-days">
-                <button data-value="daily">Every day</button>
-                <button data-value="weekdays">Weekdays</button>
+                <button data-value="daily" data-i18n="days.daily">Every day</button>
+                <button data-value="sunthu" data-i18n="days.sunthu">Sun–Thu</button>
+                <button data-value="weekdays" data-i18n="days.weekdays">Mon–Fri</button>
             </div>
 
-            <h3 class="section-title">Add to your calendar</h3>
+            <h3 class="section-title" data-i18n="reminders.calendar">Add to your calendar</h3>
             <div class="calendar-actions" id="google-links"></div>
-            <button class="secondary-btn" id="btn-ics">Apple, Samsung &amp; other calendars</button>
-            <p class="hint">Google Calendar opens once per time. If the reminder alert comes early, change it to “At time of event”.</p>
+            <button class="secondary-btn" id="btn-ics" data-i18n="reminders.ics">Apple, Samsung &amp; other calendars</button>
+            <p class="hint" data-i18n="reminders.hint">Google Calendar opens once per time. If the reminder alert comes early, change it to “At time of event”.</p>
         </div>
     </section>
 
+    <script src="js/i18n.js"></script>
     <script src="js/audio.js"></script>
     <script src="js/programs.js"></script>
     <script src="js/visual.js"></script>

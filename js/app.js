@@ -1,30 +1,24 @@
 // Breathe: settings, the session clock, the panels, and wiring everything together.
 (() => {
     const T = Programs.TECHNIQUES;
+    const t = I18n.t;
 
-    const AMBIENTS = [
-        { id: 'rain', name: 'Rain', icon: 'i-rain' },
-        { id: 'ocean', name: 'Ocean', icon: 'i-ocean' },
-        { id: 'stream', name: 'Stream', icon: 'i-stream' },
-        { id: 'forest', name: 'Forest', icon: 'i-forest' },
-        { id: 'fireplace', name: 'Fire', icon: 'i-fire' },
-        { id: 'night', name: 'Night', icon: 'i-night' },
-        { id: 'wind', name: 'Wind', icon: 'i-wind' },
-        { id: 'brown', name: 'Noise', icon: 'i-noise' }
-    ];
+    // names come from i18n.js ('amb.<id>', 'theme.<id>')
+    const AMBIENTS = ['rain', 'ocean', 'stream', 'forest', 'fireplace', 'night', 'wind', 'brown']
+        .map(id => ({ id, icon: { fireplace: 'i-fire', brown: 'i-noise' }[id] || 'i-' + id }));
 
     const THEMES = [
-        { id: 'day', name: 'Day', swatch: 'linear-gradient(135deg, #4b7fd6 0 40%, #f7f3ec 40%)' },
-        { id: 'sunrise', name: 'Sunrise', swatch: 'linear-gradient(135deg, #e8735a 0 40%, #fff1e4 40%)' },
-        { id: 'meadow', name: 'Meadow', swatch: 'linear-gradient(135deg, #3f9a6b 0 40%, #eef7e6 40%)' },
-        { id: 'lavender', name: 'Lavender', swatch: 'linear-gradient(135deg, #7d63c8 0 40%, #f3eefb 40%)' },
-        { id: 'lagoon', name: 'Lagoon', swatch: 'linear-gradient(135deg, #1f9aa8 0 40%, #e8f7f6 40%)' },
-        { id: 'night', name: 'Night', swatch: 'linear-gradient(135deg, #8fbaff 0 40%, #16203a 40%)' },
-        { id: 'dusk', name: 'Dusk', swatch: 'linear-gradient(135deg, #ffb59a 0 40%, #33223f 40%)' },
-        { id: 'forest', name: 'Forest', swatch: 'linear-gradient(135deg, #8fd9b6 0 40%, #1b3530 40%)' }
+        { id: 'day', swatch: 'linear-gradient(135deg, #4b7fd6 0 40%, #f7f3ec 40%)' },
+        { id: 'sunrise', swatch: 'linear-gradient(135deg, #e8735a 0 40%, #fff1e4 40%)' },
+        { id: 'meadow', swatch: 'linear-gradient(135deg, #3f9a6b 0 40%, #eef7e6 40%)' },
+        { id: 'lavender', swatch: 'linear-gradient(135deg, #7d63c8 0 40%, #f3eefb 40%)' },
+        { id: 'lagoon', swatch: 'linear-gradient(135deg, #1f9aa8 0 40%, #e8f7f6 40%)' },
+        { id: 'night', swatch: 'linear-gradient(135deg, #8fbaff 0 40%, #16203a 40%)' },
+        { id: 'dusk', swatch: 'linear-gradient(135deg, #ffb59a 0 40%, #33223f 40%)' },
+        { id: 'forest', swatch: 'linear-gradient(135deg, #8fd9b6 0 40%, #1b3530 40%)' }
     ];
 
-    const PHASE_NAMES = ['Breathe in', 'Hold', 'Breathe out', 'Hold'];
+    const PHASE_KEYS = ['custom.in', 'custom.holdIn', 'custom.out', 'custom.holdOut'];
     const LENGTHS = [1, 3, 5, 10, 15, 20, 30, 0]; // minutes; 0 = no limit
     const PREPARE_SECONDS = 3;
     const ZEN_DELAY = 4000;
@@ -46,7 +40,8 @@
         prepare: true,
         vibrate: true,
         wakeLock: true,
-        reminders: { times: ['09:00'], days: 'daily' },
+        reminders: { times: ['09:00'], days: 'daily' },  // days: daily | sunthu | weekdays (Mon–Fri)
+        lang: I18n.detect(),
         version: 3
     };
 
@@ -73,6 +68,7 @@
     }
 
     const settings = loadSettings();
+    I18n.setLanguage(settings.lang);
 
     // ---------- helpers ----------
 
@@ -148,9 +144,9 @@
         const box = visualBox(w, h);
         const step = session.step || line.stepAt(0);
         if (!step) return;
-        const t = session.state === 'prepare' || !session.step ? 0 : session.clock;
+        const at = session.state === 'prepare' || !session.step ? 0 : session.clock;
         if (settings.visual === 'wave') {
-            Visual.drawWave(ctx, box, line.levelAt, t, waveWindow());
+            Visual.drawWave(ctx, box, line.levelAt, at, waveWindow());
         } else {
             const prog = session.step ? line.progress(step, session.clock) : 0;
             const dot = Visual.shapePoint(step, openHoldProgress(step) ?? prog, box);
@@ -176,8 +172,10 @@
 
     function drawIdle() {
         session.trail = [];
-        phaseLabel.textContent = 'Ready';
-        phaseCount.textContent = hasFixedEnd() ? `${settings.wimhof.rounds} × ${settings.wimhof.breaths} breaths` : patternSummary();
+        phaseLabel.textContent = t('ready');
+        phaseCount.textContent = hasFixedEnd()
+            ? t('wimhofIdle', { rounds: settings.wimhof.rounds, breaths: settings.wimhof.breaths })
+            : patternSummary();
         sessionMeta.innerHTML = '&nbsp;';
         nextBtn.hidden = true;
         render();
@@ -186,27 +184,27 @@
     function patternSummary() {
         if (!program.cycle) return '';
         const per = 60 / Programs.cycleSeconds(program);
-        return `${fmtNum(per)} breaths per minute`;
+        return t('breathsPerMinute', { n: fmtNum(per) });
     }
 
     function updateMeta() {
         if (hasFixedEnd()) {
             const r = session.step ? session.step.round : 1;
-            sessionMeta.textContent = `Round ${r} of ${program.rounds}`;
+            sessionMeta.textContent = t('roundOf', { r, total: program.rounds });
             return;
         }
         let text;
         if (settings.minutes > 0) {
-            text = timeUp() ? 'Last breath' : `${fmtTime(totalSeconds() - session.time)} left`;
+            text = timeUp() ? t('lastBreath') : t('timeLeft', { t: fmtTime(totalSeconds() - session.time) });
         } else {
             text = fmtTime(session.time);
         }
         const b = session.breaths;
-        sessionMeta.textContent = `${text}  ·  ${b} ${b === 1 ? 'breath' : 'breaths'}`;
+        sessionMeta.textContent = `${text}  ·  ${t('breathCount', { n: b })}`;
     }
 
     function updateReadout(step) {
-        phaseLabel.textContent = step.label;
+        phaseLabel.textContent = t(step.label);
         if (step.open) phaseCount.textContent = fmtTime(session.clock - step.start);
         else if (step.count) phaseCount.textContent = step.count;
         else phaseCount.textContent = Math.max(1, Math.ceil(step.start + step.secs - session.clock));
@@ -216,7 +214,7 @@
 
     function setPlayIcon(playing) {
         playIcon.setAttribute('href', playing ? '#i-pause' : '#i-play');
-        playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Start');
+        playBtn.setAttribute('aria-label', t(playing ? 'aria.pause' : 'aria.start'));
     }
 
     function start() {
@@ -240,8 +238,8 @@
         setPlayIcon(false);
         document.body.classList.remove('running');
         showUI();
-        phaseLabel.textContent = 'Paused';
-        phaseCount.textContent = 'Press play to continue';
+        phaseLabel.textContent = t('paused');
+        phaseCount.textContent = t('pressPlayContinue');
         nextBtn.hidden = true;
     }
 
@@ -287,7 +285,7 @@
             $('done-breaths').textContent = breaths;
             const extra = $('done-extra');
             extra.hidden = !holds.length;
-            extra.textContent = holds.length ? `Breath holds: ${holds.map(fmtTime).join('  ·  ')}` : '';
+            extra.textContent = holds.length ? t('done.holds', { list: holds.map(fmtTime).join('  ·  ') }) : '';
             $('complete').hidden = false;
         }
     }
@@ -305,9 +303,9 @@
 
         if (session.state === 'prepare') {
             session.prep -= dt;
-            phaseLabel.textContent = 'Get ready';
+            phaseLabel.textContent = t('getReady');
             phaseCount.textContent = Math.max(1, Math.ceil(session.prep));
-            sessionMeta.textContent = hasFixedEnd() ? 'Sit or lie down' : ' ';
+            sessionMeta.textContent = hasFixedEnd() ? t('sitOrLie') : '\u00a0';
             render();
             if (session.prep <= 0) session.state = 'running';
         }
@@ -469,19 +467,19 @@
     let breathingTab = settings.technique === 'custom' ? 'custom' : 'techniques';
 
     function updateChip() {
-        const t = settings.technique;
-        if (t === 'custom') {
+        const tech = settings.technique;
+        if (tech === 'custom') {
             const p = settings.custom.pattern;
             const quick = Programs.QUICK_PATTERNS.find(q => q.pattern.every((v, i) => v === p[i]));
-            $('pattern-name').textContent = quick ? quick.name : 'Custom';
+            $('pattern-name').textContent = t(quick ? 'quick.' + quick.id : 'custom');
             $('pattern-nums').textContent = p.filter(n => n > 0).map(fmtNum).join(' · ');
         } else {
-            $('pattern-name').textContent = T[t].name;
-            $('pattern-nums').textContent = T[t].summary(settings[t]);
+            $('pattern-name').textContent = Programs.text(tech, 'name');
+            $('pattern-nums').textContent = T[tech].summary(settings[tech]);
         }
-        const wim = t === 'wimhof';
+        const wim = tech === 'wimhof';
         $('length-value').textContent = wim ? settings.wimhof.rounds : (settings.minutes > 0 ? settings.minutes : '∞');
-        $('length-label').textContent = wim ? (settings.wimhof.rounds === 1 ? 'round' : 'rounds') : (settings.minutes > 0 ? 'min' : 'open');
+        $('length-label').textContent = wim ? t('rounds', { n: settings.wimhof.rounds }) : t(settings.minutes > 0 ? 'unit.min' : 'unit.open');
     }
 
     function openBreathing(detailId) {
@@ -494,7 +492,7 @@
         $('breathing-home').hidden = false;
         $('tech-detail').hidden = true;
         $('btn-tech-back').hidden = true;
-        $('pattern-title').textContent = 'Breathing';
+        $('pattern-title').textContent = t('breathing.title');
         document.querySelectorAll('#breathing-tabs button').forEach(b => {
             b.classList.toggle('selected', b.dataset.value === breathingTab);
         });
@@ -510,12 +508,12 @@
     function renderTechList() {
         const list = $('tech-list');
         list.innerHTML = '';
-        Object.entries(T).forEach(([id, tech]) => {
+        Object.keys(T).forEach(id => {
             const row = document.createElement('button');
             row.className = 'preset' + (settings.technique === id ? ' selected' : '');
             row.innerHTML = `<div><div class="preset-name"></div><div class="preset-desc"></div></div><svg class="chev" width="20" height="20"><use href="#i-chevron"/></svg>`;
-            row.querySelector('.preset-name').textContent = tech.name;
-            row.querySelector('.preset-desc').textContent = tech.tagline;
+            row.querySelector('.preset-name').textContent = Programs.text(id, 'name');
+            row.querySelector('.preset-desc').textContent = Programs.text(id, 'tagline');
             row.addEventListener('click', () => showTechnique(id));
             list.appendChild(row);
         });
@@ -524,22 +522,22 @@
     let detailId = null;
     function showTechnique(id) {
         detailId = id;
-        const tech = T[id];
+        const tx = field => Programs.text(id, field);
         $('breathing-home').hidden = true;
         $('tech-detail').hidden = false;
         $('btn-tech-back').hidden = false;
-        $('pattern-title').textContent = tech.name;
-        $('tech-intro').textContent = tech.intro;
-        $('tech-caution').hidden = !tech.caution;
-        $('tech-caution').textContent = tech.caution || '';
+        $('pattern-title').textContent = tx('name');
+        $('tech-intro').textContent = tx('intro');
+        $('tech-caution').hidden = !tx('caution');
+        $('tech-caution').textContent = tx('caution') || '';
         const steps = $('tech-steps');
         steps.innerHTML = '';
-        tech.steps.forEach(text => {
+        tx('steps').forEach(text => {
             const li = document.createElement('li');
             li.textContent = text;
             steps.appendChild(li);
         });
-        $('tech-note').textContent = tech.note || '';
+        $('tech-note').textContent = tx('note') || '';
         renderTechControls();
         currentSheet.querySelector('.sheet-body').scrollTop = 0;
     }
@@ -553,14 +551,14 @@
             const row = document.createElement('div');
             row.className = 'control-row';
             const label = document.createElement('span');
-            label.textContent = c.label;
+            label.textContent = t(c.label);
             row.appendChild(label);
             if (c.options) {
                 const seg = document.createElement('div');
                 seg.className = 'segmented';
-                c.options.forEach(([value, text]) => {
+                c.options.forEach(([value, key]) => {
                     const b = document.createElement('button');
-                    b.textContent = text;
+                    b.textContent = t(key);
                     b.classList.toggle('selected', params[c.key] === value);
                     b.addEventListener('click', () => { params[c.key] = value; saveSettings(); renderTechControls(); });
                     seg.appendChild(b);
@@ -568,7 +566,7 @@
                 row.appendChild(seg);
             } else {
                 row.appendChild(stepperInline(
-                    `${fmtNum(params[c.key])}${c.unit ? '<small> ' + c.unit + '</small>' : ''}`,
+                    `${fmtNum(params[c.key])}${c.unit ? '<small> ' + t(c.unit) + '</small>' : ''}`,
                     delta => {
                         params[c.key] = Math.min(c.max, Math.max(c.min, Math.round((params[c.key] + delta * c.step) * 10) / 10));
                         saveSettings();
@@ -589,9 +587,9 @@
     function stepperInline(valueHtml, onChange) {
         const wrap = document.createElement('div');
         wrap.className = 'stepper-inline';
-        wrap.innerHTML = `<button aria-label="Less"><svg><use href="#i-minus"/></svg></button>
+        wrap.innerHTML = `<button aria-label="${t('aria.less')}"><svg><use href="#i-minus"/></svg></button>
             <div class="stepper-value">${valueHtml}</div>
-            <button aria-label="More"><svg><use href="#i-plus"/></svg></button>`;
+            <button aria-label="${t('aria.more')}"><svg><use href="#i-plus"/></svg></button>`;
         const [less, more] = wrap.querySelectorAll('button');
         less.addEventListener('click', () => onChange(-1));
         more.addEventListener('click', () => onChange(1));
@@ -615,12 +613,12 @@
         const p = settings.custom.pattern;
         const grid = $('stepper-grid');
         grid.innerHTML = '';
-        PHASE_NAMES.forEach((name, i) => {
+        PHASE_KEYS.forEach((key, i) => {
             const min = i % 2 === 0 ? 1 : 0;   // breathing in/out need at least 1s; holds can be off
             const box = document.createElement('div');
             box.className = 'stepper';
-            box.innerHTML = `<div class="stepper-label">${name}</div>`;
-            const row = stepperInline(p[i] > 0 ? `${fmtNum(p[i])}<small>s</small>` : 'Off', delta => {
+            box.innerHTML = `<div class="stepper-label">${t(key)}</div>`;
+            const row = stepperInline(p[i] > 0 ? `${fmtNum(p[i])}<small>${t('unit.s')}</small>` : t('off'), delta => {
                 const next = p.slice();
                 next[i] = Math.min(20, Math.max(min, next[i] + delta * 0.5));
                 setCustom(next);
@@ -631,14 +629,14 @@
         });
 
         const cycle = p.reduce((a, b) => a + b, 0);
-        $('bpm-hint').textContent = `One breath takes ${fmtNum(cycle)} seconds, about ${fmtNum(60 / cycle)} breaths per minute.`;
+        $('bpm-hint').textContent = t('bpmHint', { c: fmtNum(cycle), n: fmtNum(60 / cycle) });
 
         const chips = $('quick-patterns');
         chips.innerHTML = '';
         Programs.QUICK_PATTERNS.forEach(q => {
             const b = document.createElement('button');
             b.className = 'chip' + (settings.technique === 'custom' && q.pattern.every((v, i) => v === p[i]) ? ' selected' : '');
-            b.textContent = q.name;
+            b.textContent = t('quick.' + q.id);
             b.addEventListener('click', () => setCustom(q.pattern.slice()));
             chips.appendChild(b);
         });
@@ -678,7 +676,7 @@
             tile.className = 'ambient-tile' + (settings.ambient[a.id].on ? ' on' : '');
             tile.setAttribute('aria-pressed', settings.ambient[a.id].on);
             tile.innerHTML = `<svg><use href="#${a.icon}"/></svg><span></span>`;
-            tile.querySelector('span').textContent = a.name;
+            tile.querySelector('span').textContent = t('amb.' + a.id);
             tile.addEventListener('click', () => {
                 const s = settings.ambient[a.id];
                 s.on = !s.on;
@@ -696,7 +694,7 @@
             const row = document.createElement('label');
             row.className = 'slider-row';
             row.innerHTML = `<span></span><input type="range" min="0" max="1" step="0.01">`;
-            row.querySelector('span').textContent = a.name;
+            row.querySelector('span').textContent = t('amb.' + a.id);
             const input = row.querySelector('input');
             input.value = settings.ambient[a.id].level;
             setSliderFill(input);
@@ -746,7 +744,7 @@
         lengths.innerHTML = '';
         LENGTHS.forEach(m => {
             const b = document.createElement('button');
-            b.textContent = m > 0 ? `${m} min` : 'No limit';
+            b.textContent = m > 0 ? t('length.min', { n: m }) : t('length.none');
             b.classList.toggle('selected', settings.minutes === m);
             b.addEventListener('click', () => {
                 settings.minutes = m;
@@ -761,16 +759,27 @@
             b.classList.toggle('selected', b.dataset.value === settings.visual);
         });
 
+        const langs = $('language-options');
+        langs.innerHTML = '';
+        I18n.LANGUAGES.forEach(([code, name]) => {
+            const b = document.createElement('button');
+            b.textContent = name;
+            b.lang = code;
+            b.classList.toggle('selected', settings.lang === code);
+            b.addEventListener('click', () => setLanguage(code));
+            langs.appendChild(b);
+        });
+
         const themes = $('theme-list');
         themes.innerHTML = '';
-        THEMES.forEach(t => {
+        THEMES.forEach(theme => {
             const b = document.createElement('button');
-            b.className = 'theme-option' + (settings.theme === t.id ? ' selected' : '');
+            b.className = 'theme-option' + (settings.theme === theme.id ? ' selected' : '');
             b.innerHTML = `<span class="theme-swatch"></span><span></span>`;
-            b.querySelector('.theme-swatch').style.background = t.swatch;
-            b.lastElementChild.textContent = t.name;
+            b.querySelector('.theme-swatch').style.background = theme.swatch;
+            b.lastElementChild.textContent = t('theme.' + theme.id);
             b.addEventListener('click', () => {
-                settings.theme = t.id;
+                settings.theme = theme.id;
                 applyTheme();
                 saveSettings();
                 renderSettingsSheet();
@@ -780,7 +789,7 @@
 
         const r = settings.reminders;
         $('reminder-summary').textContent = r.times.length
-            ? `${r.times.map(Reminders.label).join(', ')} · ${r.days === 'weekdays' ? 'weekdays' : 'daily'}`
+            ? `${r.times.map(Reminders.label).join(', ')} · ${t('days.' + r.days)}`
             : '';
 
         $('opt-prepare').checked = settings.prepare;
@@ -813,6 +822,21 @@
     if (!canVibrate) $('row-vibrate').hidden = true;
     if (!('wakeLock' in navigator)) $('row-wake').hidden = true;
 
+    // Switches every text on screen, and the direction (Hebrew reads right to left).
+    function setLanguage(code) {
+        settings.lang = code;
+        saveSettings();
+        I18n.setLanguage(code);
+        updateChip();
+        if (session.state === 'idle') drawIdle();
+        if (session.state === 'paused') {
+            phaseLabel.textContent = t('paused');
+            phaseCount.textContent = t('pressPlayContinue');
+        }
+        setPlayIcon(session.state === 'running' || session.state === 'prepare');
+        renderSettingsSheet();
+    }
+
     // ---------- reminders sheet ----------
 
     const MAX_REMINDERS = 4;
@@ -825,7 +849,7 @@
         r.times.forEach((time, i) => {
             const row = document.createElement('div');
             row.className = 'time-row';
-            row.innerHTML = `<input type="time" aria-label="Reminder time"><button class="icon-btn" aria-label="Remove this time"><svg><use href="#i-close"/></svg></button>`;
+            row.innerHTML = `<input type="time" aria-label="${t('aria.reminderTime')}"><button class="icon-btn" aria-label="${t('aria.removeTime')}"><svg><use href="#i-close"/></svg></button>`;
             const input = row.querySelector('input');
             input.value = time;
             input.addEventListener('change', () => {
@@ -857,7 +881,7 @@
             a.target = '_blank';
             a.rel = 'noopener';
             a.href = Reminders.googleLink(time, r.days, reminderMinutes());
-            a.textContent = r.times.length > 1 ? `Google Calendar · ${Reminders.label(time)}` : 'Google Calendar';
+            a.textContent = r.times.length > 1 ? t('reminders.googleAt', { time: Reminders.label(time) }) : t('reminders.google');
             links.appendChild(a);
         });
     }

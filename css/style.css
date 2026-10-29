@@ -420,7 +420,8 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 12px 4px 24px;
+    padding-block: 6px 4px;
+    padding-inline: 24px 12px;
 }
 .sheet-head h2 { margin: 0; font-size: 1.15rem; font-weight: 500; }
 
@@ -442,7 +443,7 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
     text-transform: none;
     letter-spacing: 0;
     font-weight: 400;
-    margin-left: 6px;
+    margin-inline-start: 6px;
     opacity: 0.8;
 }
 
@@ -451,7 +452,7 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
 /* Techniques */
 .tech-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
 
-.back-btn { margin-left: -12px; }
+.back-btn { margin-inline-start: -12px; }
 .sheet-head h2 { flex: 1; }
 
 .tech-intro { margin: 4px 0 0; line-height: 1.55; color: var(--text); opacity: 0.9; }
@@ -467,7 +468,7 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
 
 .how { margin-top: 14px; font-size: 0.9rem; line-height: 1.55; }
 .how summary { cursor: pointer; color: var(--accent); padding: 6px 0; }
-.how ol { margin: 6px 0 0; padding-left: 20px; color: var(--muted); }
+.how ol { margin: 6px 0 0; padding-inline-start: 20px; color: var(--muted); }
 .how li { margin-bottom: 4px; }
 
 .control-hint { margin: 2px 4px 0; }
@@ -478,7 +479,8 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 8px 12px 8px 16px;
+    padding-block: 8px;
+    padding-inline: 16px 12px;
     border-radius: 16px;
     background: var(--surface);
 }
@@ -519,7 +521,7 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
     border-radius: 16px;
     background: var(--surface);
     border: 1px solid transparent;
-    text-align: left;
+    text-align: start;
     transition: background 0.2s, border-color 0.2s;
 }
 .preset:hover { background: var(--surface-strong); }
@@ -543,7 +545,7 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
 .stepper-label { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
 .stepper-row { display: flex; align-items: center; justify-content: space-between; }
 .stepper-value { font-size: 1.3rem; font-weight: 300; font-variant-numeric: tabular-nums; }
-.stepper-value small { font-size: 0.8rem; color: var(--muted); margin-left: 2px; }
+.stepper-value small { font-size: 0.8rem; color: var(--muted); margin-inline-start: 2px; }
 .stepper button, .stepper-inline button {
     width: 36px;
     height: 36px;
@@ -697,7 +699,7 @@ input[type="range"]::-moz-range-thumb {
     content: "";
     position: absolute;
     top: 3px;
-    left: 3px;
+    inset-inline-start: 3px;
     width: 22px;
     height: 22px;
     border-radius: 50%;
@@ -716,7 +718,7 @@ input[type="range"]::-moz-range-thumb {
     width: 100%;
     padding: 14px 0;
     font-size: 0.95rem;
-    text-align: left;
+    text-align: start;
     border-bottom: 1px solid var(--faint);
 }
 .link-row > span:first-child { flex: 1; }
@@ -728,7 +730,8 @@ input[type="range"]::-moz-range-thumb {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 6px 6px 16px;
+    padding-block: 6px;
+    padding-inline: 16px 6px;
     border-radius: 16px;
     background: var(--surface);
 }
@@ -763,7 +766,7 @@ a.primary-btn { display: block; text-align: center; text-decoration: none; box-s
 /* About */
 .about { margin-top: 20px; font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
 .about summary { cursor: pointer; color: var(--text); padding: 8px 0; }
-.about ul { padding-left: 18px; margin: 6px 0; }
+.about ul { padding-inline-start: 18px; margin: 6px 0; }
 .about a { color: var(--accent); }
 
 /* ---------- Animations ---------- */
@@ -791,3 +794,16 @@ a.primary-btn { display: block; text-align: center; text-decoration: none; box-s
     .stage { flex: 1 1 55%; height: calc(100% - 40px); }
     .dock { flex: 1 1 40%; justify-content: center; }
 }
+
+/* ---------- Right-to-left (Hebrew) ---------- */
+[dir="rtl"] .brand { letter-spacing: 0.06em; }
+[dir="rtl"] .back-btn svg,
+[dir="rtl"] .chev { transform: scaleX(-1); }
+[dir="rtl"] .toggle-row input:checked + .switch::after { transform: translateX(-18px); }
+[dir="rtl"] input[type="range"]::-webkit-slider-runnable-track {
+    background: linear-gradient(to left, var(--accent) var(--fill), var(--faint) var(--fill));
+}
+/* numbers and times read left to right even inside Hebrew text */
+[dir="rtl"] .pattern-nums,
+[dir="rtl"] .preset-nums,
+[dir="rtl"] .time-row input { direction: ltr; unicode-bidi: isolate; }

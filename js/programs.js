@@ -5,26 +5,19 @@
 // plus its length in seconds and the lung level it goes from and to (0 = empty, 1 = full).
 // Repeating programs give a `cycle`; programs with a fixed end (Wim Hof) give a `list`.
 const Programs = (() => {
-    const LABELS = { in: 'Breathe in', top: 'Sip in more', holdIn: 'Hold', out: 'Breathe out', holdOut: 'Hold' };
+    const t = (key, vars) => I18n.t(key, vars);
+    const secs = n => `${fmt(n)} ${t('unit.s')}`;
 
+    // Texts come from i18n.js under '<id>.name', '<id>.tagline', '<id>.intro', '<id>.steps',
+    // '<id>.note' and '<id>.caution'; read them with text(id, 'intro').
     const TECHNIQUES = {
         sigh: {
-            name: 'Cyclic sighing',
-            tagline: 'The quickest way to calm down',
-            intro: 'Two breaths in through the nose, a long one then a short extra sip, followed by a long, slow breath out. In a 2023 Stanford study, five minutes a day lifted mood more than meditation.',
-            steps: [
-                'Breathe in through your nose until your lungs are nearly full.',
-                'Take a short second sip of air through your nose to fill them completely.',
-                'Breathe out slowly through your mouth until your lungs are empty.',
-                'Keep going for about five minutes.'
-            ],
-            note: 'Every pace keeps the breath out about twice as long as the two breaths in. That long, slow exhale is what calms you down.',
             controls: [
-                { key: 'pace', label: 'Pace', options: [['quick', 'Quick'], ['steady', 'Steady'], ['slow', 'Slow'], ['deep', 'Deep']] }
+                { key: 'pace', label: 'control.pace', options: [['quick', 'pace.quick'], ['steady', 'pace.steady'], ['slow', 'pace.slow'], ['deep', 'pace.deep']] }
             ],
             describe: p => {
                 const s = sighTimes(p);
-                return `Breathe in ${fmt(s.inhale)} s, sip ${fmt(s.top)} s, breathe out ${fmt(s.exhale)} s`;
+                return t('sigh.describe', { a: fmt(s.inhale), b: fmt(s.top), c: fmt(s.exhale) });
             },
             summary: p => {
                 const s = sighTimes(p);
@@ -32,47 +25,32 @@ const Programs = (() => {
             }
         },
         box: {
-            name: 'Box breathing',
-            tagline: 'Focus and steady nerves',
-            intro: 'Four equal sides: breathe in, hold, breathe out, hold. Used by athletes, first responders and the US Navy SEALs to stay calm and clear under pressure.',
-            steps: [
-                'Breathe in through your nose.',
-                'Hold with your lungs full.',
-                'Breathe out slowly.',
-                'Hold with your lungs empty, then begin again.'
-            ],
-            note: 'New to it? Start with 3 seconds per side. Comfortable? Try 5 or 6.',
             controls: [
-                { key: 'count', label: 'Each side', min: 2, max: 10, step: 0.5, unit: 's' }
+                { key: 'count', label: 'control.eachSide', min: 2, max: 10, step: 0.5, unit: 'unit.s' }
             ],
-            summary: p => `${fmt(p.count)} s`
+            summary: p => secs(p.count)
         },
         wimhof: {
-            name: 'Wim Hof',
-            tagline: 'Energise and reset',
-            intro: 'Rounds of deep, quick breaths, then a hold on empty lungs for as long as feels comfortable, then a deep recovery breath. Many people feel energised and clear-headed afterwards.',
-            caution: 'Always sit or lie down. Never practise in or near water, while driving, or anywhere fainting could be dangerous. Tingling and light-headedness are common; stop if you feel unwell. If you are pregnant or have epilepsy, heart problems or high blood pressure, ask a doctor first.',
-            steps: [
-                'Breathe in fully, then let the air go without forcing it out. Follow the rhythm.',
-                'After the last breath, breathe out and hold with empty lungs. Tap “Breathe in” when you need air.',
-                'Take a deep breath in and hold it for 15 seconds, then let go. That is one round.'
-            ],
-            note: 'Your hold times are shown at the end.',
             controls: [
-                { key: 'breaths', label: 'Breaths', min: 20, max: 50, step: 5, unit: '' },
-                { key: 'rounds', label: 'Rounds', min: 1, max: 5, step: 1, unit: '' },
-                { key: 'pace', label: 'Pace', options: [['slow', 'Slow'], ['medium', 'Medium'], ['fast', 'Fast']] }
+                { key: 'breaths', label: 'control.breaths', min: 20, max: 50, step: 5 },
+                { key: 'rounds', label: 'control.rounds', min: 1, max: 5, step: 1 },
+                { key: 'pace', label: 'control.pace', options: [['slow', 'pace.slow'], ['medium', 'pace.medium'], ['fast', 'pace.fast']] }
             ],
-            summary: p => `${p.rounds} ${p.rounds === 1 ? 'round' : 'rounds'}`
+            summary: p => t('roundsCount', { n: p.rounds })
         }
     };
 
+    function text(id, field) {
+        const key = `${id}.${field}`;
+        return I18n.has(key) ? t(key) : null;
+    }
+
     const QUICK_PATTERNS = [
-        { id: 'coherent', name: 'Coherent', pattern: [5.5, 0, 5.5, 0] },
-        { id: 'relax', name: 'Relax', pattern: [4, 0, 6, 0] },
-        { id: '478', name: '4-7-8', pattern: [4, 7, 8, 0] },
-        { id: 'tactical', name: 'Tactical', pattern: [4, 2, 4, 2] },
-        { id: 'triangle', name: 'Triangle', pattern: [4, 4, 4, 0] }
+        { id: 'coherent', pattern: [5.5, 0, 5.5, 0] },
+        { id: 'relax', pattern: [4, 0, 6, 0] },
+        { id: '478', pattern: [4, 7, 8, 0] },
+        { id: 'tactical', pattern: [4, 2, 4, 2] },
+        { id: 'triangle', pattern: [4, 4, 4, 0] }
     ];
 
     const PACE_SECONDS = { slow: 3.5, medium: 2.6, fast: 1.9 };
@@ -99,7 +77,7 @@ const Programs = (() => {
             else if (s.kind === 'out') s.to = 0;
             else s.to = level;
             level = s.to;
-            s.label = s.label || LABELS[s.kind];
+            s.label = s.label || 'step.' + s.kind; // a translation key, looked up when shown
             s.cueKind = s.cueKind || s.kind;
         });
         const shape = buildShape(steps);
@@ -121,7 +99,7 @@ const Programs = (() => {
                 cycle: finishCycle([
                     { kind: 'in', secs: p.inhale },
                     { kind: 'top', secs: p.top },
-                    { kind: 'out', secs: p.exhale, label: 'Breathe out slowly' }
+                    { kind: 'out', secs: p.exhale, label: 'step.outSlow' }
                 ])
             };
         }
@@ -140,17 +118,17 @@ const Programs = (() => {
             for (let b = 1; b <= p.breaths; b++) {
                 const pair = finishCycle([
                     { kind: 'in', secs: pace * 0.55, cueKind: 'powerIn' },
-                    { kind: 'out', secs: pace * 0.45, cueKind: 'powerOut', label: 'Let go' }
+                    { kind: 'out', secs: pace * 0.45, cueKind: 'powerOut', label: 'step.letGo' }
                 ]);
                 pair.forEach(s => { s.count = `${b} / ${p.breaths}`; s.round = r; });
                 list.push(...pair);
             }
             const recovery = finishCycle([
                 // the hold on empty lungs lasts until the person taps "Breathe in"
-                { kind: 'holdOut', secs: Infinity, vis: RECOVERY_HOLD, open: true, cueKind: 'retain', label: 'Hold, lungs empty' },
-                { kind: 'in', secs: 2, label: 'Deep breath in' },
+                { kind: 'holdOut', secs: Infinity, vis: RECOVERY_HOLD, open: true, cueKind: 'retain', label: 'step.retain' },
+                { kind: 'in', secs: 2, label: 'step.deepIn' },
                 { kind: 'holdIn', secs: RECOVERY_HOLD },
-                { kind: 'out', secs: 2.5, label: 'Let go' }
+                { kind: 'out', secs: 2.5, label: 'step.letGo' }
             ]);
             recovery.forEach(s => { s.round = r; });
             list.push(...recovery);
@@ -261,5 +239,5 @@ const Programs = (() => {
         return { type: 'poly', edges, kinds: steps.map(s => s.kind), minX: Math.min(...xs), maxX: Math.max(...xs) };
     }
 
-    return { TECHNIQUES, QUICK_PATTERNS, build, timeline, cycleSeconds, fmt };
+    return { TECHNIQUES, QUICK_PATTERNS, text, build, timeline, cycleSeconds, fmt };
 })();

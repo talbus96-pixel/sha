@@ -11,6 +11,10 @@ Everything runs in the web browser, on a computer or a phone. There's no account
 
 ---
 
+## Languages
+
+English and **Hebrew (עברית)**. The app starts in Hebrew on phones set to Hebrew; switch any time in ⚙ Settings → Language. In Hebrew the whole layout reads right-to-left, and everything is translated, including technique explanations, reminders and calendar events.
+
 ## What you see
 
 The main screen is kept minimal:
@@ -72,7 +76,7 @@ In Wim Hof's quick breathing, the cue is only a soft tick, because a full bell e
 
 ## Reminders
 
-Settings → **Reminders**. Pick one to four times of day and choose **Every day** or **Weekdays**. Then add them to your calendar:
+Settings → **Reminders**. Pick one to four times of day and choose **Every day**, **Sun–Thu** (the Israeli work week) or **Mon–Fri**. Then add them to your calendar:
 - **Google Calendar** (most Android phones): one button per time. Each opens Google Calendar with a repeating "Time to breathe" event already filled in. Just tap **Save**. Google may set its usual alert time (for example 10 minutes before). If you'd rather be reminded exactly on time, change the notification to "At time of event".
 - **Apple, Samsung & other calendars** (iPhone and others): downloads one small calendar file with all your times. Open it and choose **Add All**. These reminders alert you right on time.
 
@@ -101,6 +105,7 @@ It can come back later if you miss it.
 | `css/style.css` | The look: colours, themes, sizes, layout. |
 | `js/programs.js` | The techniques (texts and settings), custom patterns, the timing of each step, and the shape each pattern makes. |
 | `js/visual.js` | Draws the shape view and the wave view. |
+| `js/i18n.js` | All the app's text in English and Hebrew. |
 | `js/reminders.js` | Builds the calendar reminders (Google Calendar links and the .ics calendar file). |
 | `js/app.js` | Ties it together: the session clock, the buttons and panels, saving your settings. |
 | `js/audio.js` | All the sound: the bowl, chime and tone cues, and playing the nature recordings. |
