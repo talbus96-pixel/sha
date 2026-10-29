@@ -13,7 +13,7 @@ Everything runs in the web browser, on a computer or a phone. There's no account
 
 ## Languages
 
-English and **Hebrew (עברית)**. The app starts in Hebrew on phones set to Hebrew; switch any time in ☰ Menu → Language. In Hebrew the whole layout reads right-to-left, and everything is translated, including technique explanations, reminders and calendar events.
+**English, Hebrew (עברית) and Russian (Русский).** The app starts in the phone's own language when it's one of these, and otherwise in English. To switch, open ☰ Menu and tap the 🌐 language button in its top corner. A short list drops down, with each language written in its own script (no flags, since flags stand for countries rather than languages). In Hebrew the whole layout reads right-to-left. Everything is translated, including technique explanations, the tour, reminders and calendar events.
 
 ## What you see
 
@@ -68,7 +68,7 @@ In Wim Hof's quick breathing, the cue is only a soft tick, because a full bell e
 
 ## The menu
 
-At the top of the menu, a large button opens the **guided tour** (9 steps that light up each part of the screen and explain it; Next / Back / Skip at any time).
+In the menu's top corner is the 🌐 **language** button. Below the title, a large button opens the **guided tour**: 21 short steps that light up each part of the app and explain it. On some steps the person taps the highlighted button themselves (the technique name, Cyclic sighing, and the Menu button), so the tour opens the real screens and explains what's inside. Next / Back / Skip at any time.
 
 Below it, a short list of sections. Tap a heading to open it; opening one closes the others. Each heading shows your current choice (for example "Look · Day · Shape"), so you can see your settings without opening anything.
 - **Sounds**: breathing cue, cue volume, and the ambience mix (see above).
@@ -77,7 +77,6 @@ Below it, a short list of sections. Tap a heading to open it; opening one closes
 - **Look**:
   - **Theme**: five light ones: **Day** (the default), **Sunrise** (warm peach), **Meadow** (fresh green), **Lavender** and **Lagoon** (sea-glass aqua). Three dark ones for evenings: **Night**, **Dusk** and **Forest**.
   - **Visual**: **Shape** (the default) or **Wave**.
-- **Language**: English or עברית.
 - **Options**: the 3-second get-ready countdown, vibration (Android only; iPhones don't let websites vibrate), and keeping the screen on during a session.
 - **About**: what the app is, and the sound credits.
 
@@ -112,7 +111,7 @@ It can come back later if you miss it.
 | `css/style.css` | The look: colours, themes, sizes, layout. |
 | `js/programs.js` | The techniques (texts and settings), custom patterns, the timing of each step, and the shape each pattern makes. |
 | `js/visual.js` | Draws the shape view and the wave view. |
-| `js/i18n.js` | All the app's text in English and Hebrew. |
+| `js/i18n.js` | All the app's text in English, Hebrew and Russian. |
 | `js/tour.js` | The guided tour (its texts are in `i18n.js` under `tour.*`). |
 | `js/reminders.js` | Builds the calendar reminders (Google Calendar links and the .ics calendar file). |
 | `js/app.js` | Ties it together: the session clock, the buttons and panels, saving your settings. |

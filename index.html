@@ -151,6 +151,12 @@
         <div class="sheet-handle"></div>
         <header class="sheet-head">
             <h2 id="settings-title" data-i18n="menu.title">Menu</h2>
+            <div class="lang-picker">
+                <button class="lang-btn" id="btn-lang" aria-haspopup="true" aria-expanded="false" data-i18n-aria="aria.language" aria-label="Language">
+                    <svg><use href="#i-globe"/></svg><span id="lang-current"></span>
+                </button>
+                <div class="lang-pop" id="lang-pop" hidden></div>
+            </div>
             <button class="icon-btn" data-close data-i18n-aria="aria.close" aria-label="Close"><svg><use href="#i-close"/></svg></button>
         </header>
         <div class="sheet-body">
@@ -238,17 +244,6 @@
                             <button data-value="shape" data-i18n="visual.shape">Shape</button>
                             <button data-value="wave" data-i18n="visual.wave">Wave</button>
                         </div>
-                    </div>
-                </section>
-                <section class="fold" data-fold="language">
-                    <button class="fold-head" aria-expanded="false">
-                        <svg class="fold-icon"><use href="#i-globe"/></svg>
-                        <span class="fold-title" data-i18n="settings.language"></span>
-                        <span class="fold-value" id="sum-language"></span>
-                        <svg class="fold-chev"><use href="#i-chevron"/></svg>
-                    </button>
-                    <div class="fold-body" hidden>
-                        <div class="segmented" id="language-options"></div>
                     </div>
                 </section>
                 <section class="fold" data-fold="options">

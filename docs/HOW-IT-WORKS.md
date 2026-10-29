@@ -5,7 +5,7 @@ The app is plain HTML, CSS and JavaScript, with no build step and no libraries. 
 ```
 index.html            page structure, icons, the three panels ("sheets")
 css/style.css         themes and layout
-js/i18n.js            all text, English + Hebrew             (global: I18n)
+js/i18n.js            all text: English, Hebrew, Russian     (global: I18n)
 js/audio.js           the sound engine                       (global: Sound)
 js/programs.js        techniques, step timeline, shapes      (global: Programs)
 js/visual.js          draws the shape and wave views          (global: Visual)
@@ -23,10 +23,10 @@ manifest.webmanifest  home-screen install info
 - `body.zen` hides everything marked `.fade-ui` (calm mode). `body.running` is set while a session runs.
 
 ## js/i18n.js (`I18n`)
-- Every piece of text lives in `STRINGS.en` and `STRINGS.he`. If a key is missing in Hebrew, the English text is shown.
+- Every piece of text lives in `STRINGS.en`, `STRINGS.he` and `STRINGS.ru`. If a key is missing in a language, the English text is shown. Russian plurals (1 вдох, 2 вдоха, 5 вдохов) use `ruPlural()`. `detect()` picks the first of the phone's preferred languages that the app knows.
 - In the page, `data-i18n="key"` sets an element's text, `data-i18n-html` is for text containing a link, and `data-i18n-aria` sets a button's spoken label. In code, `I18n.t('timeLeft', { t: '4:53' })` fills in `{t}`. Some entries are small functions, for plurals (`breathCount`).
 - `setLanguage(code)` switches the text and sets `dir="rtl"` for Hebrew. The CSS uses start/end spacing (`padding-inline`, `margin-inline-start`), so most of the layout mirrors by itself. The `[dir="rtl"]` rules at the end of `style.css` handle the rest: arrows, switches and slider fill.
-- **To add a language:** copy the `en` block under a new code (e.g. `fr`), translate it, and add it to `LANGUAGES`.
+- **To add a language:** copy the `en` block under a new code (e.g. `fr`), translate it, add it to `LANGUAGES` (with its name in its own script), and teach `detect()` its code. The picker in the menu's corner (`renderLanguagePicker()` in `app.js`) lists it automatically.
 
 ## js/programs.js (`Programs`)
 - A breathing program is a list of **steps**. Each step has:
@@ -70,6 +70,8 @@ manifest.webmanifest  home-screen install info
 
 ## js/tour.js (`Tour`)
 - `STEPS` lists what to light up (a CSS selector, or `null` for a message in the middle of the screen). Each step's title and text are `tour.<key>.title` / `tour.<key>.text` in `i18n.js`.
+- `screen` says which panel must be showing (`'breathing'`, `'technique'`, `'menu'`, or none for the main screen). The app's `tourHooks.show(screen)` switches panels, so Back and Next always land on the right one.
+- `tap: true` steps hide Next and pulse the highlight. A tap inside it presses the real button underneath (`tapTarget()`), and the tour moves on once the new panel has slid in.
 - The dimming is one element (`.tour-spot`) with a huge shadow around it. It slides over each target, and the card goes below it, above it, or (for big areas) along the bottom of the screen.
 - Started by the tour button at the top of the menu, and automatically once on a person's first visit. The app closes any open panel and pauses a running session first.
 - **To add a step:** add an entry to `STEPS`, then add its two texts in both languages.

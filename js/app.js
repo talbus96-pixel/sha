@@ -424,6 +424,7 @@
 
     function closeSheet() {
         if (!currentSheet) return;
+        closeLanguagePicker();
         const id = currentSheet.id;
         currentSheet.hidden = true;
         backdrop.hidden = true;
@@ -483,7 +484,6 @@
         const r = settings.reminders;
         $('sum-reminders').textContent = `${r.times.map(Reminders.label).join(', ')} · ${t('days.' + r.days)}`;
         $('sum-look').textContent = `${t('theme.' + settings.theme)} · ${t('visual.' + settings.visual)}`;
-        $('sum-language').textContent = (I18n.LANGUAGES.find(([c]) => c === settings.lang) || [, ''])[1];
     }
 
     // ---------- mute ----------
@@ -829,16 +829,7 @@
             b.classList.toggle('selected', b.dataset.value === settings.visual);
         });
 
-        const langs = $('language-options');
-        langs.innerHTML = '';
-        I18n.LANGUAGES.forEach(([code, name]) => {
-            const b = document.createElement('button');
-            b.textContent = name;
-            b.lang = code;
-            b.classList.toggle('selected', settings.lang === code);
-            b.addEventListener('click', () => setLanguage(code));
-            langs.appendChild(b);
-        });
+        renderLanguagePicker();
 
         const themes = $('theme-list');
         themes.innerHTML = '';
@@ -887,6 +878,42 @@
 
     if (!canVibrate) $('row-vibrate').hidden = true;
     if (!('wakeLock' in navigator)) $('row-wake').hidden = true;
+
+    // ---------- language picker (top corner of the menu) ----------
+
+    function renderLanguagePicker() {
+        const current = I18n.LANGUAGES.find(([c]) => c === settings.lang) || I18n.LANGUAGES[0];
+        $('lang-current').textContent = current[1];
+        const pop = $('lang-pop');
+        pop.innerHTML = '';
+        I18n.LANGUAGES.forEach(([code, name]) => {
+            const b = document.createElement('button');
+            b.className = 'lang-option' + (settings.lang === code ? ' selected' : '');
+            b.lang = code;
+            b.innerHTML = '<span></span><span class="check">✓</span>';
+            b.firstChild.textContent = name;
+            b.addEventListener('click', () => {
+                closeLanguagePicker();
+                setLanguage(code);
+            });
+            pop.appendChild(b);
+        });
+    }
+
+    function closeLanguagePicker() {
+        $('lang-pop').hidden = true;
+        $('btn-lang').setAttribute('aria-expanded', 'false');
+    }
+
+    $('btn-lang').addEventListener('click', e => {
+        e.stopPropagation();
+        const pop = $('lang-pop');
+        pop.hidden = !pop.hidden;
+        $('btn-lang').setAttribute('aria-expanded', String(!pop.hidden));
+    });
+    document.addEventListener('click', e => {
+        if (!$('lang-pop').hidden && !e.target.closest('.lang-picker')) closeLanguagePicker();
+    });
 
     // Switches every text on screen, and the direction (Hebrew reads right to left).
     function setLanguage(code) {
@@ -954,13 +981,45 @@
         updateSummaries();
     }
 
+    // Lets the tour put the app on the panel a step needs: null (main screen), 'breathing'
+    // (technique list), 'technique' (cyclic sighing's page) or 'menu'. Returns true if it changed.
+    const tourHooks = {
+        show(screen) {
+            const open = currentSheet && currentSheet.id;
+            if (screen === null) {
+                if (!open) return false;
+                closeSheet();
+                return true;
+            }
+            if (screen === 'menu') {
+                if (open === 'sheet-settings') return false;
+                openSheet('sheet-settings');
+                return true;
+            }
+            breathingTab = 'techniques';
+            const onList = open === 'sheet-pattern' && $('tech-detail').hidden && !$('tab-techniques').hidden;
+            const onSigh = open === 'sheet-pattern' && !$('tech-detail').hidden && detailId === 'sigh';
+            if (screen === 'breathing') {
+                if (onList) return false;
+                if (open === 'sheet-pattern') showBreathingHome(); else openBreathing();
+                return true;
+            }
+            if (screen === 'technique') {
+                if (onSigh) return false;
+                if (open === 'sheet-pattern') showTechnique('sigh'); else openBreathing('sigh');
+                return true;
+            }
+            return false;
+        }
+    };
+
     $('btn-tour').addEventListener('click', () => {
         closeSheet();
         pause();
         $('complete').hidden = true;
         showUI();
         clearTimeout(zenTimer);
-        Tour.start();
+        Tour.start(tourHooks);
     });
 
     $('btn-add-time').addEventListener('click', () => {
@@ -1001,7 +1060,7 @@
     // First time here: show the tour once (Skip is always there).
     if (firstVisit) {
         saveSettings();
-        setTimeout(() => Tour.start(), 700);
+        setTimeout(() => Tour.start(tourHooks), 700);
     }
 
     // Offline / installable app support (only works when served from a web address, not a file)
