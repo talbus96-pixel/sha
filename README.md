@@ -50,7 +50,7 @@ The main screen is kept minimal:
 
 ## Techniques
 
-Tap the technique name at the bottom → **Techniques**. **Cyclic sighing** is the default and is marked **Recommended**. Each one has a short explanation, a fold-out "How to do it", and a few controls. Press **Start** to begin.
+Tap the technique name at the bottom → **Techniques**. **Cyclic sighing** is marked **Recommended**, and the app always opens with it. Other techniques are one tap away, and each keeps your own settings. Each one has a short explanation, a fold-out "How to do it", and a few controls. Press **Start** to begin.
 
 | Technique | What it is | You can set |
 |---|---|---|

@@ -2,7 +2,7 @@
 // A website can't wake itself up while closed, but the phone's calendar can, so the
 // reminders are handed to Google Calendar (a link) or any other calendar (an .ics file).
 const Reminders = (() => {
-    const PUBLIC_URL = 'https://talbus96-pixel.github.io/breath-app/';
+    const PUBLIC_URL = 'https://talbus96-pixel.github.io/sha/';
     // days setting → calendar weekdays (null = every day)
     const DAYS = { daily: null, sunthu: 'SU,MO,TU,WE,TH', weekdays: 'MO,TU,WE,TH,FR' };
     const SKIP = { daily: [], sunthu: [5, 6], weekdays: [0, 6] }; // JavaScript day numbers: 0 = Sunday

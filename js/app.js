@@ -61,7 +61,8 @@
                 // Day became the default theme in version 3; move people off the old default
                 if ((saved.version || 0) < 3 && merged.theme === 'night') merged.theme = 'day';
                 // cyclic sighing became the default technique in version 4
-                if ((saved.version || 0) < 4 && merged.technique === 'box') merged.technique = 'sigh';
+                // every visit opens with the recommended technique; its settings (and the others') are kept
+                merged.technique = 'sigh';
                 merged.version = base.version;
                 return merged;
             }

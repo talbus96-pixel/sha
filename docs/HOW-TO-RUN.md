@@ -9,9 +9,9 @@ This guide assumes no technical background. Pick the option that fits you.
 
 ## Option A: open it on your computer (Chrome)
 
-1. Go to the project page on GitHub: `https://github.com/talbus96-pixel/breath-app`
+1. Go to the project page on GitHub: `https://github.com/talbus96-pixel/sha`
 2. Near the top of the page, click the green **Code** button.
-3. In the menu that opens, click **Download ZIP**. A file named something like `breath-app-main.zip` is saved to your **Downloads** folder.
+3. In the menu that opens, click **Download ZIP**. A file named something like `sha-main.zip` is saved to your **Downloads** folder.
 4. Open your **Downloads** folder:
    - **Windows:** open the yellow folder icon (File Explorer) at the bottom of the screen, then click **Downloads** on the left.
    - **Mac:** click the smiling-face icon (Finder) in the Dock at the bottom of the screen, then click **Downloads** on the left.
@@ -36,7 +36,7 @@ GitHub Pages is a free service that turns this project into a real website. You 
 
 Right now the files live on a branch (a separate working copy) named `claude/upbeat-clarke-xg2twz`. GitHub Pages needs to know which branch to publish.
 
-1. Go to `https://github.com/talbus96-pixel/breath-app`
+1. Go to `https://github.com/talbus96-pixel/sha`
 2. If you see a yellow box saying the branch "had recent pushes" with a green **Compare & pull request** button, click it. Then click **Create pull request**, and then **Merge pull request** → **Confirm merge**. Your files are now on the main branch.
 3. If there was no yellow box and the project page already shows the files (`index.html`, `README.md`…), you can skip this step.
 
@@ -48,7 +48,7 @@ Right now the files live on a branch (a separate working copy) named `claude/upb
 4. Under **Branch**, choose **main** (or the branch that holds the files), leave the folder as **/ (root)**, and click **Save**.
 5. Wait 1–2 minutes, then refresh the page. A box appears at the top: **"Your site is live at …"**. The address will be:
 
-   **`https://talbus96-pixel.github.io/breath-app/`**
+   **`https://talbus96-pixel.github.io/sha/`**
 
 6. Click that address to open the app. You can send this link to your phone (by email or WhatsApp to yourself, for example).
 
