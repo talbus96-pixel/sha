@@ -136,7 +136,7 @@ It can come back later if you miss it.
 | `js/audio.js` | All the sound: the bowl, chime and tone cues, and playing the nature recordings. |
 | `sounds/` | The nature recordings. |
 | `design/` | The saved logo options and an icon preview. |
-| `manifest.webmanifest`, `service-worker.js`, `icons/` | Let phones install the app on the home screen and use it without internet. |
+| `manifest-sha.webmanifest`, `service-worker.js`, `icons/` | Let phones install the app on the home screen and use it without internet. |
 
 ## Sound credits
 

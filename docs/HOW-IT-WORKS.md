@@ -14,7 +14,7 @@ js/tour.js            the guided tour                         (global: Tour)
 js/app.js             session clock, panels, settings        (runs once on load)
 sounds/*.mp3          ambient recordings (MP3, 96 kbps, loudness-matched)
 service-worker.js     offline cache
-manifest.webmanifest  home-screen install info
+manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed id)
 ```
 
 ## css/style.css

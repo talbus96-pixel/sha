@@ -1,9 +1,9 @@
 {
-  "id": "sha-breathing-app",
+  "id": "sha",
   "name": "Sha",
   "short_name": "Sha",
   "description": "A calm, minimalist paced-breathing guide with gentle sounds and nature ambience.",
-  "start_url": "./",
+  "start_url": "./?app=sha",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

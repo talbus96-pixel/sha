@@ -1,6 +1,6 @@
 // Lets the app open without internet once it has been visited, and makes it installable.
 // When you change any app file, bump CACHE_VERSION so phones pick up the new version.
-const CACHE_VERSION = 'breathe-v16';
+const CACHE_VERSION = 'breathe-v17';
 const APP_FILES = [
     './',
     './index.html',
@@ -12,7 +12,7 @@ const APP_FILES = [
     './js/reminders.js',
     './js/tour.js',
     './js/app.js',
-    './manifest.webmanifest',
+    './manifest-sha.webmanifest',
     './icons/sha.svg',
     './icons/sha-192.png',
     './icons/sha-512.png',
