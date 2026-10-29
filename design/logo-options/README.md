@@ -6,7 +6,7 @@ Every logo direction explored for Sha, saved so none are lost.
 
 ## Chosen icon
 **E1 · Golden hour, simplified**: a sun setting into a calm violet sea, its ring, and a lavender moon. A peach-to-coral sky, a wavy horizon, the sun's reflection and one wavy line in the water. (The second, lower wave line was removed so the icon stays clean at small sizes.)
-- Source drawing: `icons/icon.svg`. The PNG sizes in `icons/` are made from it.
+- Source drawing: `icons/sha.svg`. The PNG sizes in `icons/` are made from it.
 - Preview at real sizes, on light and dark backgrounds: `design/icon-preview.png`.
 
 ## What's on the canvas

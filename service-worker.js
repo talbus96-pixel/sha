@@ -1,6 +1,6 @@
 // Lets the app open without internet once it has been visited, and makes it installable.
 // When you change any app file, bump CACHE_VERSION so phones pick up the new version.
-const CACHE_VERSION = 'breathe-v14';
+const CACHE_VERSION = 'breathe-v15';
 const APP_FILES = [
     './',
     './index.html',
@@ -13,11 +13,11 @@ const APP_FILES = [
     './js/tour.js',
     './js/app.js',
     './manifest.webmanifest',
-    './icons/icon.svg',
-    './icons/icon-192.png',
-    './icons/icon-512.png',
-    './icons/icon-maskable-512.png',
-    './icons/apple-touch-icon.png',
+    './icons/sha.svg',
+    './icons/sha-192.png',
+    './icons/sha-512.png',
+    './icons/sha-maskable-512.png',
+    './icons/sha-apple-touch-180.png',
     './sounds/rain.mp3',
     './sounds/ocean.mp3',
     './sounds/stream.mp3',
