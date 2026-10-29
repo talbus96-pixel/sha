@@ -78,7 +78,10 @@ Once it's on your home screen, it opens full-screen like a normal app, with its 
 ## After you change the app
 
 - **Option A:** save the file, then go back to Chrome and press the refresh button (or **Ctrl+R** on Windows / **Cmd+R** on Mac).
-- **Option B:** the website updates by itself 1–2 minutes after the changes reach the main branch. On a phone where the app is installed, close it fully and open it again (sometimes twice) to get the new version.
+- **Option B:** the website updates by itself within a few minutes after the changes are published (GitHub can take up to about 10 minutes to show them everywhere). The app then updates itself; nothing to do:
+  - when you open it, or come back to it from the background, it checks for a new version
+  - while it's open, it checks every hour
+  - when it finds one, it reloads itself once, but never in the middle of a breathing session, or while a menu, the tour or the "Well done" card is open (it waits until you're done)
   - Developer note: when you change files, also bump `CACHE_VERSION` in `service-worker.js` (for example `breathe-v1` → `breathe-v2`). This makes sure phones drop the old copy they saved for offline use.
 
 ## For developers: running a local server

@@ -1065,17 +1065,39 @@
 
     // Offline / installable app support (only works when served from a web address, not a file)
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-        // When a new version takes over, reload once to show it, unless someone is mid-session.
+        // When a new version takes over, reload once to show it, but only while nothing is
+        // going on: not mid-session, with no panel, tour or "Well done" card open.
         const hadVersion = !!navigator.serviceWorker.controller;
-        let reloaded = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            if (hadVersion && !reloaded && !sessionActive()) {
+        let updateReady = false, reloaded = false;
+        const idle = () => !sessionActive() && !currentSheet && $('complete').hidden && !document.querySelector('.tour:not([hidden])');
+        const reloadIfIdle = () => {
+            if (updateReady && !reloaded && idle()) {
                 reloaded = true;
                 location.reload();
             }
+        };
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!hadVersion) return;
+            updateReady = true;
+            reloadIfIdle();
         });
+        setInterval(reloadIfIdle, 20000);
+
+        // A phone keeps the app waiting in the background for days, so look for a new
+        // version whenever it comes back to the screen, and every hour while it's open.
+        let registration = null;
+        const checkForUpdate = () => { if (registration) registration.update().catch(() => {}); };
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                checkForUpdate();
+                reloadIfIdle();
+            }
+        });
+        setInterval(checkForUpdate, 60 * 60 * 1000);
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => { registration = reg; })
+                .catch(() => {});
         });
     }
 })();

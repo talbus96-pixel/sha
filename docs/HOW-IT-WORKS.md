@@ -60,6 +60,7 @@ manifest.webmanifest  home-screen install info
 | Menu (`#sheet-settings`) | One sheet of folding sections (`.fold`, `data-fold="sounds"`…). `openFold(key)` opens one and closes the rest, and `updateSummaries()` writes the current choice on each heading. `openSheet('sheet-settings', 'length')` opens the menu with a section already open. |
 | Mute | `settings.muted`, toggled by the speaker button. `Sound.setMuted()` silences everything at the master volume. |
 | Breathing sheet | The Techniques tab is a list leading to a detail page (`showTechnique`, controls built by `renderTechControls`). The Custom tab is the steppers plus a live shape preview (`renderCustom`, `drawPreview`). |
+| Updates | The page looks for a new version when it comes back on screen and every hour (`registration.update()`), and reloads once when one takes over, only while idle (`reloadIfIdle`). |
 | Wake lock, vibration, calm mode | As the names say. Switching apps pauses the session, because a web page can't keep accurate time in the background. |
 
 ## js/reminders.js (`Reminders`)
