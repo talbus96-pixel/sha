@@ -31,7 +31,7 @@ Tap the technique name at the bottom → **Techniques**. Each one has a short ex
 
 | Technique | What it is | You can set |
 |---|---|---|
-| **Cyclic sighing** | Breathe in through the nose, take a short extra sip of air to fill the lungs, then a long, slow breath out. In a 2023 Stanford study, 5 minutes a day lifted mood more than meditation. | Breath in length, breath out length |
+| **Cyclic sighing** | Breathe in through the nose, take a short extra sip of air to fill the lungs, then a long, slow breath out. In a 2023 Stanford study, 5 minutes a day lifted mood more than meditation. | Pace: Quick (1.5 + 0.5 · 4 s), Steady (2 + 1 · 6 s) or Slow (3 + 1 · 8 s). The breath out is always twice the breaths in, so it can't be set up wrong. |
 | **Box breathing** | Breathe in, hold, breathe out, hold, all the same length. Used to stay calm and focused under pressure. | The length of each side |
 | **Wim Hof** | Rounds of quick, deep breaths, then a hold on empty lungs (you tap **Breathe in** when you need air), then a 15-second recovery hold. Includes a safety note. Your hold times are shown at the end. | Breaths per round, number of rounds, pace |
 
@@ -63,7 +63,7 @@ In Wim Hof's quick breathing, the cue is only a soft tick, because a full bell e
 
 - **Session length**: 1, 3, 5, 10, 15, 20 or 30 minutes, or no limit. (Wim Hof uses rounds instead.)
 - **Visual**: **Shape** (the default) or **Wave**.
-- **Theme**: **Night** (deep blue, the default), **Dusk** (plum and peach), **Forest** (deep green), **Day** (light).
+- **Theme**: five light ones: **Day** (the default), **Sunrise** (warm peach), **Meadow** (fresh green), **Lavender**, **Lagoon** (sea-glass aqua). Three dark ones for evenings: **Night**, **Dusk**, **Forest**.
 - **Get-ready countdown**: a 3-second countdown before the first breath.
 - **Vibrate on each phase**: Android phones only. iPhones don't let websites vibrate.
 - **Keep screen on**: stops the phone screen from dimming during a session.

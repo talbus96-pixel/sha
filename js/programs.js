@@ -18,12 +18,18 @@ const Programs = (() => {
                 'Breathe out slowly through your mouth until your lungs are empty.',
                 'Keep going for about five minutes.'
             ],
-            note: 'The breath out should be clearly longer than the two breaths in.',
+            note: 'Every pace keeps the breath out about twice as long as the two breaths in. That long, slow exhale is what calms you down.',
             controls: [
-                { key: 'inhale', label: 'Breathe in', min: 1, max: 6, step: 0.5, unit: 's' },
-                { key: 'exhale', label: 'Breathe out', min: 3, max: 12, step: 0.5, unit: 's' }
+                { key: 'pace', label: 'Pace', options: [['quick', 'Quick'], ['steady', 'Steady'], ['slow', 'Slow']] }
             ],
-            summary: p => `${fmt(p.inhale)} + 1 · ${fmt(p.exhale)}`
+            describe: p => {
+                const s = sighTimes(p);
+                return `Breathe in ${fmt(s.inhale)} s, sip ${fmt(s.top)} s, breathe out ${fmt(s.exhale)} s`;
+            },
+            summary: p => {
+                const s = sighTimes(p);
+                return `${fmt(s.inhale)} + ${fmt(s.top)} · ${fmt(s.exhale)}`;
+            }
         },
         box: {
             name: 'Box breathing',
@@ -70,6 +76,14 @@ const Programs = (() => {
     ];
 
     const PACE_SECONDS = { slow: 3.5, medium: 2.6, fast: 1.9 };
+
+    // Cyclic sighing paces: the breath out is always twice the two breaths in combined.
+    const SIGH_PACES = {
+        quick: { inhale: 1.5, top: 0.5, exhale: 4 },
+        steady: { inhale: 2, top: 1, exhale: 6 },
+        slow: { inhale: 3, top: 1, exhale: 8 }
+    };
+    function sighTimes(p) { return SIGH_PACES[p.pace] || SIGH_PACES.steady; }
     const RECOVERY_HOLD = 15;
 
     function fmt(n) { return String(Math.round(n * 10) / 10); }
@@ -101,11 +115,11 @@ const Programs = (() => {
     function build(settings) {
         const t = settings.technique;
         if (t === 'sigh') {
-            const p = settings.sigh;
+            const p = sighTimes(settings.sigh);
             return {
                 cycle: finishCycle([
                     { kind: 'in', secs: p.inhale },
-                    { kind: 'top', secs: 1 },
+                    { kind: 'top', secs: p.top },
                     { kind: 'out', secs: p.exhale, label: 'Breathe out slowly' }
                 ])
             };

@@ -14,10 +14,14 @@
     ];
 
     const THEMES = [
+        { id: 'day', name: 'Day', swatch: 'linear-gradient(135deg, #4b7fd6 0 40%, #f7f3ec 40%)' },
+        { id: 'sunrise', name: 'Sunrise', swatch: 'linear-gradient(135deg, #e8735a 0 40%, #fff1e4 40%)' },
+        { id: 'meadow', name: 'Meadow', swatch: 'linear-gradient(135deg, #3f9a6b 0 40%, #eef7e6 40%)' },
+        { id: 'lavender', name: 'Lavender', swatch: 'linear-gradient(135deg, #7d63c8 0 40%, #f3eefb 40%)' },
+        { id: 'lagoon', name: 'Lagoon', swatch: 'linear-gradient(135deg, #1f9aa8 0 40%, #e8f7f6 40%)' },
         { id: 'night', name: 'Night', swatch: 'linear-gradient(135deg, #8fbaff 0 40%, #16203a 40%)' },
         { id: 'dusk', name: 'Dusk', swatch: 'linear-gradient(135deg, #ffb59a 0 40%, #33223f 40%)' },
-        { id: 'forest', name: 'Forest', swatch: 'linear-gradient(135deg, #8fd9b6 0 40%, #1b3530 40%)' },
-        { id: 'day', name: 'Day', swatch: 'linear-gradient(135deg, #4b7fd6 0 40%, #f7f3ec 40%)' }
+        { id: 'forest', name: 'Forest', swatch: 'linear-gradient(135deg, #8fd9b6 0 40%, #1b3530 40%)' }
     ];
 
     const PHASE_NAMES = ['Breathe in', 'Hold', 'Breathe out', 'Hold'];
@@ -29,7 +33,7 @@
 
     const DEFAULTS = {
         technique: 'box',            // sigh | box | wimhof | custom
-        sigh: { inhale: 2, exhale: 6 },
+        sigh: { pace: 'steady' },
         box: { count: 4 },
         wimhof: { breaths: 30, rounds: 3, pace: 'medium' },
         custom: { pattern: [4, 7, 8, 0] },
@@ -38,10 +42,11 @@
         cue: 'bowl',
         cueVolume: 0.8,
         ambient: Object.fromEntries(AMBIENTS.map(a => [a.id, { on: false, level: 0.6 }])),
-        theme: 'night',
+        theme: 'day',
         prepare: true,
         vibrate: true,
-        wakeLock: true
+        wakeLock: true,
+        version: 3
     };
 
     // ---------- settings ----------
@@ -53,6 +58,9 @@
             if (saved) {
                 const merged = { ...base, ...saved };
                 ['sigh', 'box', 'wimhof', 'custom', 'ambient'].forEach(k => { merged[k] = { ...base[k], ...saved[k] }; });
+                // Day became the default theme in version 3; move people off the old default
+                if ((saved.version || 0) < 3 && merged.theme === 'night') merged.theme = 'day';
+                merged.version = base.version;
                 return merged;
             }
         } catch (e) {}
@@ -568,6 +576,12 @@
             }
             box.appendChild(row);
         });
+        if (tech.describe) {
+            const hint = document.createElement('p');
+            hint.className = 'hint control-hint';
+            hint.textContent = tech.describe(params);
+            box.appendChild(hint);
+        }
     }
 
     function stepperInline(valueHtml, onChange) {

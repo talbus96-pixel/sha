@@ -15,7 +15,7 @@ manifest.webmanifest  home-screen install info
 ```
 
 ## css/style.css
-- **Themes** are sets of colour variables at the top (`[data-theme="night"]`, `dusk`, `forest`, `day`). `app.js` sets `data-theme` on `<body>`. To add a theme, copy one of these blocks and add a matching entry to `THEMES` in `app.js`.
+- **Themes** are sets of colour variables at the top (`day` is the default, plus `sunrise`, `meadow`, `lavender`, `lagoon`, `night`, `dusk`, `forest`). Colours must be written as `#rrggbb`, because the drawing code adds see-through versions of them. `app.js` sets `data-theme` on `<body>`. To add a theme, copy one of these blocks and add a matching entry to `THEMES` in `app.js`.
 - The layout is built for phones first. `@media (min-width: 700px)` turns the bottom sheets into centred dialogs on larger screens, and `@media (max-height: 520px)` puts the visual and the controls side by side when a phone is held sideways.
 - `body.zen` hides everything marked `.fade-ui` (calm mode). `body.running` is set while a session runs.
 
@@ -25,7 +25,7 @@ manifest.webmanifest  home-screen install info
   - `secs`: how long it lasts
   - `from` / `to`: the lung level it moves between (0 = empty, 1 = full)
   - a `label`, the text shown on screen
-- `TECHNIQUES` holds the texts and controls for Cyclic sighing, Box and Wim Hof. Their settings are stored as `settings.sigh`, `settings.box` and `settings.wimhof`. `QUICK_PATTERNS` are the quick picks on the Custom tab.
+- `TECHNIQUES` holds the texts and controls for Cyclic sighing, Box and Wim Hof. Cyclic sighing uses fixed paces (`SIGH_PACES`), which keep the breath out twice as long as the breaths in. Their settings are stored as `settings.sigh`, `settings.box` and `settings.wimhof`. `QUICK_PATTERNS` are the quick picks on the Custom tab.
 - `build(settings)` turns the chosen technique into a program:
   - `{ cycle }`: steps that repeat until the session time runs out
   - `{ list }`: a fixed list with an end (Wim Hof). Wim Hof's breath hold has `secs: Infinity` and `open: true`. It lasts until the person taps "Breathe in", which calls `timeline.close()`.
