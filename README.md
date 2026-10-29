@@ -8,6 +8,7 @@ Everything runs in the web browser, on a computer or a phone. There's no account
 
 - **How to open it on a computer or phone:** [docs/HOW-TO-RUN.md](docs/HOW-TO-RUN.md)
 - **How the code works (for making changes):** [docs/HOW-IT-WORKS.md](docs/HOW-IT-WORKS.md)
+- **Future plans:** [docs/ROADMAP.md](docs/ROADMAP.md)
 
 ---
 
