@@ -13,8 +13,8 @@ const I18n = (() => {
 
     const STRINGS = {
         en: {
-            'app.title': 'Breathe',
-            'brand': 'Breathe',
+            'app.title': 'Sha',
+            'brand': 'Sha',
 
             // main screen
             'ready': 'Ready',
@@ -178,7 +178,7 @@ const I18n = (() => {
             'theme.dusk': 'Dusk',
             'theme.forest': 'Forest',
             'about.title': 'About & sound credits',
-            'about.text': 'Breathe is a calm paced-breathing guide. Follow the moving dot: it rises as you breathe in, falls as you breathe out, and travels sideways while you hold. Everything runs on your device. This app is not medical advice.',
+            'about.text': 'Sha is a calm paced-breathing guide. Follow the moving dot: it rises as you breathe in, falls as you breathe out, and travels sideways while you hold. Everything runs on your device. This app is not medical advice.',
             'about.recordings': 'Ambient recordings (via the open-source <a href="https://github.com/rafaelmardojai/blanket" target="_blank" rel="noopener">Blanket</a> project):',
             'about.publicDomain': 'public domain',
             'about.footer': 'Recordings were edited by the Blanket project and re-encoded and volume-matched for this app. Bowl, chime and tone cues are synthesised live.',
@@ -201,7 +201,7 @@ const I18n = (() => {
             'aria.removeTime': 'Remove this time',
             'aria.backSettings': 'Back to settings',
             'event.title': 'Time to breathe',
-            'event.details': 'A few calm minutes ({min} min). Open Breathe: {url}',
+            'event.details': 'A few calm minutes ({min} min). Open Sha: {url}',
 
             // guided tour
             'tour.open': 'How to use the app',
@@ -210,7 +210,7 @@ const I18n = (() => {
             'tour.back': 'Back',
             'tour.skip': 'Skip',
             'tour.done': 'Let’s breathe',
-            'tour.welcome.title': 'Welcome to Breathe',
+            'tour.welcome.title': 'Welcome to Sha',
             'tour.welcome.text': 'A quick tour of everything here. It takes about a minute.',
             'tour.visual.title': 'Follow the dot',
             'tour.visual.text': 'It rises as you breathe in, falls as you breathe out, and moves sideways while you hold. Your timings draw the shape: a square, a triangle, a loop…',
@@ -256,8 +256,8 @@ const I18n = (() => {
         },
 
         he: {
-            'app.title': 'נשימה',
-            'brand': 'נשימה',
+            'app.title': 'שָׁה',
+            'brand': 'שָׁה',
 
             'ready': 'מוכנים',
             'paused': 'בהשהיה',
@@ -414,7 +414,7 @@ const I18n = (() => {
             'theme.dusk': 'דמדומים',
             'theme.forest': 'יער',
             'about.title': 'אודות וקרדיטים לצלילים',
-            'about.text': '„נשימה” היא מדריך רגוע לנשימה בקצב. עקבו אחרי הנקודה: היא עולה כשאתם שואפים, יורדת כשאתם נושפים, וזזה הצידה בזמן עצירה. הכול פועל במכשיר שלכם. האפליקציה אינה מהווה ייעוץ רפואי.',
+            'about.text': '„שָׁה” הוא מדריך רגוע לנשימה בקצב. עקבו אחרי הנקודה: היא עולה כשאתם שואפים, יורדת כשאתם נושפים, וזזה הצידה בזמן עצירה. הכול פועל במכשיר שלכם. האפליקציה אינה מהווה ייעוץ רפואי.',
             'about.recordings': 'הקלטות הרקע (דרך פרויקט הקוד הפתוח <a href="https://github.com/rafaelmardojai/blanket" target="_blank" rel="noopener">Blanket</a>):',
             'about.publicDomain': 'נחלת הכלל',
             'about.footer': 'ההקלטות נערכו על ידי פרויקט Blanket, והומרו ואוזנו בעוצמה עבור האפליקציה. צלילי הקערה, הפעמון והצליל הרציף נוצרים בזמן אמת.',
@@ -444,7 +444,7 @@ const I18n = (() => {
             'tour.back': 'הקודם',
             'tour.skip': 'דילוג',
             'tour.done': 'בואו נתחיל',
-            'tour.welcome.title': 'ברוכים הבאים ל„נשימה”',
+            'tour.welcome.title': 'ברוכים הבאים ל„שָׁה”',
             'tour.welcome.text': 'סיור קצר בכל מה שיש כאן. זה לוקח כדקה.',
             'tour.visual.title': 'עקבו אחרי הנקודה',
             'tour.visual.text': 'היא עולה בשאיפה, יורדת בנשיפה וזזה הצידה בזמן עצירה. הזמנים שלכם יוצרים את הצורה: ריבוע, משולש, לולאה…',
@@ -489,8 +489,8 @@ const I18n = (() => {
             'tour.calm.text': 'בזמן הנשימה הכפתורים נעלמים. נגיעה במסך מחזירה אותם. נשימה נעימה!'
         },
         ru: {
-            'app.title': 'Дыхание',
-            'brand': 'Дыхание',
+            'app.title': 'Ша',
+            'brand': 'Ша',
 
             'ready': 'Готовы?',
             'paused': 'Пауза',
@@ -647,7 +647,7 @@ const I18n = (() => {
             'theme.dusk': 'Сумерки',
             'theme.forest': 'Лес',
             'about.title': 'О приложении и звуках',
-            'about.text': '«Дыхание» — спокойный помощник для дыхания в ритме. Следите за точкой: она поднимается на вдохе, опускается на выдохе и движется в сторону во время задержки. Всё работает на вашем устройстве. Приложение не является медицинской консультацией.',
+            'about.text': '«Ша» — спокойный помощник для дыхания в ритме. Следите за точкой: она поднимается на вдохе, опускается на выдохе и движется в сторону во время задержки. Всё работает на вашем устройстве. Приложение не является медицинской консультацией.',
             'about.recordings': 'Фоновые записи (из проекта с открытым кодом <a href="https://github.com/rafaelmardojai/blanket" target="_blank" rel="noopener">Blanket</a>):',
             'about.publicDomain': 'общественное достояние',
             'about.footer': 'Записи отредактированы проектом Blanket, а для этого приложения перекодированы и выровнены по громкости. Звуки чаши, колокольчика и тона создаются в реальном времени.',
@@ -677,7 +677,7 @@ const I18n = (() => {
             'tour.back': 'Назад',
             'tour.skip': 'Пропустить',
             'tour.done': 'Начнём',
-            'tour.welcome.title': 'Добро пожаловать в «Дыхание»',
+            'tour.welcome.title': 'Добро пожаловать в «Ша»',
             'tour.welcome.text': 'Короткий тур по приложению. Это займёт около минуты.',
             'tour.visual.title': 'Следите за точкой',
             'tour.visual.text': 'Она поднимается на вдохе, опускается на выдохе и движется в сторону во время задержки. Ваши тайминги рисуют фигуру: квадрат, треугольник, петлю…',

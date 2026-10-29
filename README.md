@@ -1,4 +1,4 @@
-# Breathe
+# Sha · שָׁה · Ша
 
 A calm, minimalist breathing guide.
 
@@ -10,6 +10,20 @@ Everything runs in the web browser, on a computer or a phone. There's no account
 - **How the code works (for making changes):** [docs/HOW-IT-WORKS.md](docs/HOW-IT-WORKS.md)
 
 ---
+
+## About the name
+
+**Sha** is "hush" in Hebrew, Yiddish and Russian. Short, quiet and a little mysterious, so it works in all three of the app's languages. Written without vowel marks, שה also reads as "lamb", a gentle, calm animal.
+
+- **Backup name:** **Lev** (לב · Лев), meaning "heart" in Hebrew and "lion" in Russian.
+- **Also considered:** Shalev (שָׁלֵו, "serene"; Sha + Lev joined together), Spira, Lama, Bambu.
+- **Name checks (October 2026):**
+  - Small apps in other categories use "Sha" (a friends-planning app, about 500 downloads) and "Lev" (a dog-meetup app, about 1,000 downloads).
+  - Different fields, so they shouldn't block a breathing app. But before publishing commercially, search the trademark databases first:
+    - TMview (tmdn.org/tmview)
+    - USPTO (tmsearch.uspto.gov)
+    - Israel Patent Office (trademarks.justice.gov.il)
+  - Consider registering "Sha" for health and wellness apps.
 
 ## Languages
 
