@@ -31,7 +31,7 @@ Tap the technique name at the bottom → **Techniques**. Each one has a short ex
 
 | Technique | What it is | You can set |
 |---|---|---|
-| **Cyclic sighing** | Breathe in through the nose, take a short extra sip of air to fill the lungs, then a long, slow breath out. In a 2023 Stanford study, 5 minutes a day lifted mood more than meditation. | Pace: Quick (1.5 + 0.5 · 4 s), Steady (2 + 1 · 6 s) or Slow (3 + 1 · 8 s). The breath out is always twice the breaths in, so it can't be set up wrong. |
+| **Cyclic sighing** | Breathe in through the nose, take a short extra sip of air to fill the lungs, then a long, slow breath out. In a 2023 Stanford study, 5 minutes a day lifted mood more than meditation. | Pace: Quick (1.5 + 0.5 · 4 s), Steady (2 + 1 · 6 s), Slow (3 + 1 · 8 s) or Deep (4 + 1 · 10 s). The breath out is always twice the breaths in, so it can't be set up wrong. |
 | **Box breathing** | Breathe in, hold, breathe out, hold, all the same length. Used to stay calm and focused under pressure. | The length of each side |
 | **Wim Hof** | Rounds of quick, deep breaths, then a hold on empty lungs (you tap **Breathe in** when you need air), then a 15-second recovery hold. Includes a safety note. Your hold times are shown at the end. | Breaths per round, number of rounds, pace |
 
@@ -67,7 +67,20 @@ In Wim Hof's quick breathing, the cue is only a soft tick, because a full bell e
 - **Get-ready countdown**: a 3-second countdown before the first breath.
 - **Vibrate on each phase**: Android phones only. iPhones don't let websites vibrate.
 - **Keep screen on**: stops the phone screen from dimming during a session.
+- **Reminders**: see below.
 - **About & sound credits**.
+
+## Reminders
+
+Settings → **Reminders**. Pick one to four times of day and choose **Every day** or **Weekdays**. Then add them to your calendar:
+- **Google Calendar** (most Android phones): one button per time. Each opens Google Calendar with a repeating "Time to breathe" event already filled in. Just tap **Save**. Google may set its usual alert time (for example 10 minutes before). If you'd rather be reminded exactly on time, change the notification to "At time of event".
+- **Apple, Samsung & other calendars** (iPhone and others): downloads one small calendar file with all your times. Open it and choose **Add All**. These reminders alert you right on time.
+
+Each reminder contains a link back to the app.
+
+Why the calendar? A website can't wake itself up while it's closed. Your phone's calendar can, reliably, on every phone. To stop the reminders, delete the "Time to breathe" event in your calendar (choose "all future events").
+
+Set reminders up from the public website (or the installed app), not from the private Claude preview link, which blocks file downloads.
 
 All your choices are remembered on your device.
 
@@ -88,6 +101,7 @@ It can come back later if you miss it.
 | `css/style.css` | The look: colours, themes, sizes, layout. |
 | `js/programs.js` | The techniques (texts and settings), custom patterns, the timing of each step, and the shape each pattern makes. |
 | `js/visual.js` | Draws the shape view and the wave view. |
+| `js/reminders.js` | Builds the calendar reminders (Google Calendar links and the .ics calendar file). |
 | `js/app.js` | Ties it together: the session clock, the buttons and panels, saving your settings. |
 | `js/audio.js` | All the sound: the bowl, chime and tone cues, and playing the nature recordings. |
 | `sounds/` | The nature recordings. |

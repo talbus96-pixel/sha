@@ -46,6 +46,7 @@
         prepare: true,
         vibrate: true,
         wakeLock: true,
+        reminders: { times: ['09:00'], days: 'daily' },
         version: 3
     };
 
@@ -57,7 +58,7 @@
             const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
             if (saved) {
                 const merged = { ...base, ...saved };
-                ['sigh', 'box', 'wimhof', 'custom', 'ambient'].forEach(k => { merged[k] = { ...base[k], ...saved[k] }; });
+                ['sigh', 'box', 'wimhof', 'custom', 'ambient', 'reminders'].forEach(k => { merged[k] = { ...base[k], ...saved[k] }; });
                 // Day became the default theme in version 3; move people off the old default
                 if ((saved.version || 0) < 3 && merged.theme === 'night') merged.theme = 'day';
                 merged.version = base.version;
@@ -417,6 +418,7 @@
         }
         if (id === 'sheet-sounds') renderSoundsSheet();
         if (id === 'sheet-settings') renderSettingsSheet();
+        if (id === 'sheet-reminders') renderReminders();
     }
 
     function closeSheet() {
@@ -776,6 +778,11 @@
             themes.appendChild(b);
         });
 
+        const r = settings.reminders;
+        $('reminder-summary').textContent = r.times.length
+            ? `${r.times.map(Reminders.label).join(', ')} · ${r.days === 'weekdays' ? 'weekdays' : 'daily'}`
+            : '';
+
         $('opt-prepare').checked = settings.prepare;
         $('opt-vibrate').checked = settings.vibrate;
         $('opt-wake').checked = settings.wakeLock;
@@ -805,6 +812,80 @@
 
     if (!canVibrate) $('row-vibrate').hidden = true;
     if (!('wakeLock' in navigator)) $('row-wake').hidden = true;
+
+    // ---------- reminders sheet ----------
+
+    const MAX_REMINDERS = 4;
+    const reminderMinutes = () => (settings.technique === 'wimhof' ? 10 : settings.minutes || 5);
+
+    function renderReminders() {
+        const r = settings.reminders;
+        const list = $('reminder-times');
+        list.innerHTML = '';
+        r.times.forEach((time, i) => {
+            const row = document.createElement('div');
+            row.className = 'time-row';
+            row.innerHTML = `<input type="time" aria-label="Reminder time"><button class="icon-btn" aria-label="Remove this time"><svg><use href="#i-close"/></svg></button>`;
+            const input = row.querySelector('input');
+            input.value = time;
+            input.addEventListener('change', () => {
+                if (!input.value) return;
+                r.times[i] = input.value;
+                saveSettings();
+                renderReminders();
+            });
+            const remove = row.querySelector('button');
+            remove.hidden = r.times.length === 1;
+            remove.addEventListener('click', () => {
+                r.times.splice(i, 1);
+                saveSettings();
+                renderReminders();
+            });
+            list.appendChild(row);
+        });
+        $('btn-add-time').hidden = r.times.length >= MAX_REMINDERS;
+
+        document.querySelectorAll('#reminder-days button').forEach(b => {
+            b.classList.toggle('selected', b.dataset.value === r.days);
+        });
+
+        const links = $('google-links');
+        links.innerHTML = '';
+        r.times.forEach(time => {
+            const a = document.createElement('a');
+            a.className = 'primary-btn';
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.href = Reminders.googleLink(time, r.days, reminderMinutes());
+            a.textContent = r.times.length > 1 ? `Google Calendar · ${Reminders.label(time)}` : 'Google Calendar';
+            links.appendChild(a);
+        });
+    }
+
+    $('btn-open-reminders').addEventListener('click', () => openSheet('sheet-reminders'));
+    $('btn-reminders-back').addEventListener('click', () => openSheet('sheet-settings'));
+
+    $('btn-add-time').addEventListener('click', () => {
+        const r = settings.reminders;
+        // suggest a time a few hours after the last one
+        const [h, m] = r.times[r.times.length - 1].split(':').map(Number);
+        r.times.push(`${String((h + 4) % 24).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+        saveSettings();
+        renderReminders();
+    });
+
+    document.querySelectorAll('#reminder-days button').forEach(b => {
+        b.addEventListener('click', () => {
+            settings.reminders.days = b.dataset.value;
+            saveSettings();
+            renderReminders();
+        });
+    });
+
+    $('btn-ics').addEventListener('click', () => {
+        const r = settings.reminders;
+        Reminders.downloadIcs(r.times, r.days, reminderMinutes());
+    });
 
     // ---------- start up ----------
 

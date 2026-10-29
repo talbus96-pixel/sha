@@ -708,6 +708,58 @@ input[type="range"]::-moz-range-thumb {
 .toggle-row input:checked + .switch { background: var(--accent); }
 .toggle-row input:checked + .switch::after { transform: translateX(18px); }
 
+/* Reminders */
+.link-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 0;
+    font-size: 0.95rem;
+    text-align: left;
+    border-bottom: 1px solid var(--faint);
+}
+.link-row > span:first-child { flex: 1; }
+.link-row-value { color: var(--muted); font-size: 0.88rem; }
+.link-row svg { color: var(--muted); }
+
+.reminder-times { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.time-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 6px 6px 16px;
+    border-radius: 16px;
+    background: var(--surface);
+}
+.time-row input[type="time"] {
+    font: inherit;
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    color-scheme: light dark;
+    font-variant-numeric: tabular-nums;
+}
+.time-row .icon-btn { width: 40px; height: 40px; }
+.time-row .icon-btn svg { width: 20px; height: 20px; }
+
+.calendar-actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.secondary-btn {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    border-radius: 16px;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    color: var(--text);
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+}
+a.primary-btn { display: block; text-align: center; text-decoration: none; box-sizing: border-box; }
+
 /* About */
 .about { margin-top: 20px; font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
 .about summary { cursor: pointer; color: var(--text); padding: 8px 0; }

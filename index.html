@@ -198,6 +198,12 @@
                 <input type="checkbox" id="opt-wake"><span class="switch"></span>
             </label>
 
+            <button class="link-row" id="btn-open-reminders">
+                <span>Reminders</span>
+                <span class="link-row-value" id="reminder-summary"></span>
+                <svg width="20" height="20"><use href="#i-chevron"/></svg>
+            </button>
+
             <details class="about">
                 <summary>About &amp; sound credits</summary>
                 <p>Breathe is a calm paced-breathing guide. Follow the moving dot: it rises as you breathe in, falls as you breathe out, and travels sideways while you hold. Everything runs on your device. This app is not medical advice.</p>
@@ -216,9 +222,37 @@
         </div>
     </section>
 
+    <section class="sheet" id="sheet-reminders" role="dialog" aria-modal="true" aria-labelledby="reminders-title" hidden>
+        <div class="sheet-handle"></div>
+        <header class="sheet-head">
+            <button class="icon-btn back-btn" id="btn-reminders-back" aria-label="Back to settings"><svg><use href="#i-back"/></svg></button>
+            <h2 id="reminders-title">Reminders</h2>
+            <button class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+        </header>
+        <div class="sheet-body">
+            <p class="tech-intro">Reminders are added to your phone’s calendar, so they reach you even when the app is closed. Tap one to come straight back here.</p>
+
+            <h3 class="section-title">Times</h3>
+            <div class="reminder-times" id="reminder-times"></div>
+            <button class="chip" id="btn-add-time">+ Add a time</button>
+
+            <h3 class="section-title">Repeat</h3>
+            <div class="segmented" id="reminder-days">
+                <button data-value="daily">Every day</button>
+                <button data-value="weekdays">Weekdays</button>
+            </div>
+
+            <h3 class="section-title">Add to your calendar</h3>
+            <div class="calendar-actions" id="google-links"></div>
+            <button class="secondary-btn" id="btn-ics">Apple, Samsung &amp; other calendars</button>
+            <p class="hint">Google Calendar opens once per time. If the reminder alert comes early, change it to “At time of event”.</p>
+        </div>
+    </section>
+
     <script src="js/audio.js"></script>
     <script src="js/programs.js"></script>
     <script src="js/visual.js"></script>
+    <script src="js/reminders.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

@@ -8,6 +8,7 @@ css/style.css         themes and layout
 js/audio.js           the sound engine                       (global: Sound)
 js/programs.js        techniques, step timeline, shapes      (global: Programs)
 js/visual.js          draws the shape and wave views          (global: Visual)
+js/reminders.js       calendar reminders (Google link, .ics)  (global: Reminders)
 js/app.js             session clock, panels, settings        (runs once on load)
 sounds/*.mp3          ambient recordings (MP3, 96 kbps, loudness-matched)
 service-worker.js     offline cache
@@ -50,6 +51,12 @@ manifest.webmanifest  home-screen install info
 | `render()` | Draws the shape or the wave for the current moment. |
 | Breathing sheet | The Techniques tab is a list leading to a detail page (`showTechnique`, controls built by `renderTechControls`). The Custom tab is the steppers plus a live shape preview (`renderCustom`, `drawPreview`). |
 | Wake lock, vibration, calm mode | As the names say. Switching apps pauses the session, because a web page can't keep accurate time in the background. |
+
+## js/reminders.js (`Reminders`)
+- Web pages can't schedule their own notifications while closed, so reminders become **repeating calendar events**.
+- `googleLink(time, days, minutes)` builds a Google Calendar "new event" link that repeats daily or on weekdays. `icsFile()` / `downloadIcs()` build one standard calendar file (.ics) holding every time, each with an alert at the start.
+- Times are written without a time zone ("floating"), so 9:00 means 9:00 wherever the phone is. The event links back to the app (the public site address when the page isn't hosted there).
+- Settings live in `settings.reminders` (`times`, `days`). The sheet is built in `renderReminders()` in `app.js`.
 
 ## js/audio.js (`Sound`)
 - `Sound.ensure()` creates the audio system. Browsers only allow this after a tap or click, so it's called from button handlers. On iPhone it also asks to play even when the silent switch is on (Safari 17+).

@@ -20,7 +20,7 @@ const Programs = (() => {
             ],
             note: 'Every pace keeps the breath out about twice as long as the two breaths in. That long, slow exhale is what calms you down.',
             controls: [
-                { key: 'pace', label: 'Pace', options: [['quick', 'Quick'], ['steady', 'Steady'], ['slow', 'Slow']] }
+                { key: 'pace', label: 'Pace', options: [['quick', 'Quick'], ['steady', 'Steady'], ['slow', 'Slow'], ['deep', 'Deep']] }
             ],
             describe: p => {
                 const s = sighTimes(p);
@@ -81,7 +81,8 @@ const Programs = (() => {
     const SIGH_PACES = {
         quick: { inhale: 1.5, top: 0.5, exhale: 4 },
         steady: { inhale: 2, top: 1, exhale: 6 },
-        slow: { inhale: 3, top: 1, exhale: 8 }
+        slow: { inhale: 3, top: 1, exhale: 8 },
+        deep: { inhale: 4, top: 1, exhale: 10 }
     };
     function sighTimes(p) { return SIGH_PACES[p.pace] || SIGH_PACES.steady; }
     const RECOVERY_HOLD = 15;
