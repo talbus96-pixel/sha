@@ -18,7 +18,7 @@ English and **Hebrew (עברית)**. The app starts in Hebrew on phones set to H
 ## What you see
 
 The main screen is kept minimal:
-- **At the top:** what to do now ("Breathe in", "Hold", "Breathe out"…) and the seconds left, plus two small icons: 🔊 **Sounds** and ⚙ **Settings**.
+- **At the top:** ⚙ **Settings** on the left (on the right in Hebrew), the app name in the middle, 🔊 **Sounds** on the other side. Below them: what to do now ("Breathe in", "Hold", "Breathe out"…) and the seconds left.
 - **In the middle:** the shape and the moving dot. The side you're on now lights up. Breathing sides are blue, holding sides are lilac.
 - **At the bottom:**
   - the technique's name (tap it to choose another)

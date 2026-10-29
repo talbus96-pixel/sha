@@ -189,10 +189,11 @@ svg { display: block; }
 .fade-ui { transition: opacity 0.9s ease; }
 body.zen .fade-ui { opacity: 0; pointer-events: none; }
 
+/* settings at the start (left in English, right in Hebrew), name in the middle, sounds at the end */
 .topbar {
-    display: flex;
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
     align-items: center;
-    justify-content: space-between;
     height: 48px;
 }
 
@@ -202,9 +203,8 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--muted);
+    text-align: center;
 }
-
-.top-actions { display: flex; gap: 4px; }
 
 .icon-btn {
     width: 44px;
