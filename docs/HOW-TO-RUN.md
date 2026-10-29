@@ -24,7 +24,7 @@ This guide assumes no technical background. Pick the option that fits you.
 
 > Tip: the first time you press **Start**, or switch on a sound, Chrome may need that click before it will play any sound. That's normal.
 
-In this option the "install on phone" and "works offline" features don't work, because those need a real web address. Everything else does.
+In this option, the **nature sounds (Ambience)**, "install on phone" and "works offline" don't work. Chrome blocks a page opened from a file from loading other files. The breathing guide and the bowl/chime/tone cues still work. For everything, use Option B.
 
 ---
 
@@ -68,11 +68,10 @@ Once it's on your home screen, it opens full-screen like a normal app, with its 
 3. Scroll down and tap **Add to Home Screen**, then **Add** at the top-right.
 4. The "Breathe" icon is now on your home screen.
 
-### Using Music Sync on a phone
+### Sound on a phone
 
-- Tap **🎵 Music Sync** → **Select Audio File**. Your phone opens its file picker. Choose a song saved on the phone (for example in **Files** on iPhone, or **Downloads** on Android).
-- Songs from streaming apps (Spotify, Apple Music, YouTube Music) **can't** be used. Only real audio files saved on the device work.
-- **iPhone:** if you hear nothing, check the small switch on the side of the phone. It must **not** be set to silent (orange showing).
+- **iPhone:** if you hear nothing, check the small switch on the side of the phone. Newer iPhones play the app's sound even on silent; older ones need the switch set to ring (no orange showing).
+- Turn the volume up with the phone's side buttons. The app's own sliders (in 🔊 Sounds) only balance the sounds against each other.
 
 ---
 

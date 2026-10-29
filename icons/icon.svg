@@ -1,5 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#F4F1EA"/>
-  <rect x="146" y="146" width="220" height="220" rx="14" fill="none" stroke="#4A90E2" stroke-width="26" stroke-linejoin="round"/>
-  <circle cx="146" cy="226" r="34" fill="#E76F51"/>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="0%" r="110%"><stop offset="0" stop-color="#1f2c4f"/><stop offset="0.7" stop-color="#0b1020"/></radialGradient>
+    <radialGradient id="orb" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#a9cbff"/><stop offset="1" stop-color="#4a6fc9"/></radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="168" fill="none" stroke="#8fbaff" stroke-opacity="0.45" stroke-width="10"/>
+  <circle cx="256" cy="256" r="118" fill="url(#orb)"/>
+  <circle cx="256" cy="88" r="16" fill="#e8edf7"/>
 </svg>

@@ -3,1857 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Minimalist Breathing Visualizer & Music Sync</title>
-    <meta name="description" content="A minimalist breathing visualizer with ambient soundscapes and a music-synced breathing mode.">
+    <title>Breathe</title>
+    <meta name="description" content="A calm, minimalist paced-breathing guide with gentle sounds and nature ambience.">
 
     <!-- Phone / "Add to Home Screen" support -->
-    <meta name="theme-color" content="#F4F1EA">
+    <meta name="theme-color" content="#0d1321">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Breathe">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 
-    <style>
-        :root {
-            --bg-color: #F4F1EA;
-            --shape-color: #4A90E2;
-            --ball-color: #E76F51;
-            --trail-color: 231, 111, 81;
-            --text-color: #3D3D3D;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --control-bg: rgba(255, 255, 255, 0.7);
-            --control-border: rgba(0, 0, 0, 0.08);
-        }
-
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-family);
-            overflow: hidden;
-            display: flex;
-            position: relative;
-            touch-action: manipulation;
-        }
-
-        .view-section {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-        }
-
-        .view-section.active {
-            display: flex;
-        }
-
-        /* Standard View Styles */
-        .ui-panel {
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        body.zen-mode .ui-panel {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(10px);
-        }
-
-        .top-right-bar {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            background: var(--control-bg);
-            backdrop-filter: blur(10px);
-            padding: 0.55rem 1rem;
-            border-radius: 20px;
-            border: 1px solid var(--control-border);
-            z-index: 20;
-            font-size: 0.82rem;
-            letter-spacing: 0.02em;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-        }
-
-        .mode-switch-btn {
-            background: var(--shape-color);
-            color: white;
-            border: none;
-            padding: 0.4rem 0.85rem;
-            border-radius: 14px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: transform 0.15s ease, opacity 0.2s;
-        }
-
-        .mode-switch-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .control-divider {
-            width: 1px;
-            height: 16px;
-            background: rgba(0, 0, 0, 0.12);
-        }
-
-        .top-right-bar input[type="range"] {
-            cursor: pointer;
-            accent-color: var(--shape-color);
-            width: 75px;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 2px 4px;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-color);
-            opacity: 0.8;
-            transition: opacity 0.2s, transform 0.1s;
-        }
-
-        .icon-btn:hover { opacity: 1; }
-        .icon-btn.off { opacity: 0.35; }
-
-        .left-panel {
-            position: absolute;
-            top: 1.5rem;
-            left: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            z-index: 20;
-            max-width: 320px;
-            width: calc(100% - 3rem);
-        }
-
-        .accordion-item {
-            background: var(--control-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            border: 1px solid var(--control-border);
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-            transition: all 0.3s ease;
-        }
-
-        .accordion-btn {
-            width: 100%;
-            text-align: left;
-            padding: 0.75rem 1rem;
-            background: none;
-            border: none;
-            font-size: 0.84rem;
-            font-weight: 500;
-            color: var(--text-color);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .accordion-btn .chevron {
-            font-size: 0.75rem;
-            transition: transform 0.3s ease;
-            opacity: 0.5;
-        }
-
-        .accordion-item.active .chevron {
-            transform: rotate(90deg);
-            opacity: 1;
-        }
-
-        .accordion-content {
-            display: none;
-            padding: 0.4rem 1rem 0.9rem 1rem;
-            flex-direction: column;
-            gap: 0.5rem;
-            border-top: 1px solid rgba(0, 0, 0, 0.04);
-        }
-
-        .accordion-item.active .accordion-content { display: flex; }
-
-        .preset-btn {
-            background: transparent;
-            border: 1px solid rgba(74, 144, 226, 0.3);
-            color: var(--text-color);
-            padding: 0.45rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-        }
-
-        .preset-btn:hover, .preset-btn.active {
-            background: var(--shape-color);
-            color: white;
-            border-color: var(--shape-color);
-        }
-
-        .custom-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-            margin-top: 0.2rem;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
-            font-size: 0.72rem;
-        }
-
-        .input-group input {
-            padding: 0.35rem;
-            border: 1px solid #d2cebe;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.8);
-            font-size: 0.8rem;
-            outline: none;
-        }
-
-        .input-group input:focus { border-color: var(--shape-color); }
-
-        .ambient-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.45rem;
-        }
-
-        .ambient-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            padding: 0.15rem 0;
-        }
-
-        .ambient-name {
-            display: flex;
-            align-items: center;
-            gap: 0.45rem;
-        }
-
-        .ambient-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .ambient-controls input[type="range"] {
-            width: 60px;
-            accent-color: var(--shape-color);
-            cursor: pointer;
-        }
-
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 30px;
-            height: 16px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider-switch {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc;
-            transition: .25s;
-            border-radius: 16px;
-        }
-
-        .slider-switch:before {
-            position: absolute;
-            content: "";
-            height: 12px;
-            width: 12px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: .25s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider-switch { background-color: var(--shape-color); }
-        input:checked + .slider-switch:before { transform: translateX(14px); }
-
-        .canvas-container {
-            flex: 1;
-            height: 100%;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        canvas {
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .phase-display {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .phase-label {
-            font-size: 1.8rem;
-            font-weight: 300;
-            letter-spacing: 0.05em;
-            color: rgba(61, 61, 61, 0.6);
-            transition: opacity 0.3s;
-        }
-
-        .phase-countdown {
-            font-size: 1.2rem;
-            font-weight: 400;
-            margin-top: 0.2rem;
-            color: rgba(61, 61, 61, 0.4);
-            font-variant-numeric: tabular-nums;
-        }
-
-        .bottom-center-bar {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-            background: var(--control-bg);
-            backdrop-filter: blur(10px);
-            padding: 0.65rem 1.6rem;
-            border-radius: 30px;
-            border: 1px solid var(--control-border);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-            z-index: 20;
-        }
-
-        .playback-actions {
-            display: flex;
-            gap: 0.4rem;
-        }
-
-        .action-btn {
-            background: none;
-            border: 1px solid #d2cebe;
-            padding: 0.4rem 0.9rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.82rem;
-            transition: all 0.2s;
-            color: var(--text-color);
-        }
-
-        .action-btn:hover { background: rgba(0, 0, 0, 0.05); }
-
-        .action-btn.primary {
-            background: var(--shape-color);
-            color: white;
-            border-color: var(--shape-color);
-        }
-
-        .session-config {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.8rem;
-            border-left: 1px solid rgba(0, 0, 0, 0.1);
-            padding-left: 1rem;
-        }
-
-        .session-config input {
-            width: 44px;
-            padding: 0.25rem 0.35rem;
-            border: 1px solid #d2cebe;
-            border-radius: 4px;
-            background: #fff;
-            text-align: center;
-        }
-
-        .timer-badge {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-color);
-            min-width: 48px;
-            text-align: center;
-            font-variant-numeric: tabular-nums;
-        }
-
-        /* Music Sync View Styles */
-        .music-top-bar {
-            position: absolute;
-            top: 1.5rem;
-            left: 1.5rem;
-            right: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 30;
-        }
-
-        .music-back-btn {
-            background: var(--control-bg);
-            border: 1px solid var(--control-border);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            color: var(--text-color);
-            transition: all 0.2s;
-        }
-
-        .music-back-btn:hover {
-            background: rgba(0,0,0,0.05);
-        }
-
-        .music-dropzone {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1.2rem;
-            z-index: 20;
-            background: rgba(244, 241, 234, 0.94);
-            backdrop-filter: blur(14px);
-            padding: 3rem;
-            border-radius: 24px;
-            border: 2px dashed rgba(0,0,0,0.14);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
-            transition: opacity 0.4s, transform 0.4s;
-            cursor: pointer;
-        }
-
-        .music-dropzone.dragover {
-            border-color: var(--shape-color);
-            background: rgba(74, 144, 226, 0.06);
-        }
-
-        .music-dropzone.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.96);
-        }
-
-        .music-dropzone h2 {
-            margin: 0;
-            font-size: 1.4rem;
-            font-weight: 500;
-        }
-
-        .music-dropzone p {
-            margin: 0;
-            opacity: 0.7;
-            font-size: 0.85rem;
-            text-align: center;
-            max-width: 320px;
-            line-height: 1.45;
-        }
-
-        .music-file-btn {
-            background: var(--shape-color);
-            color: white;
-            padding: 0.65rem 1.8rem;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            border: none;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .music-status-text {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--shape-color);
-            height: 1.2rem;
-        }
-
-        .music-session-info {
-            position: absolute;
-            top: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            z-index: 10;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s;
-        }
-
-        .music-session-info.visible { opacity: 1; }
-
-        .music-track-name {
-            font-size: 0.95rem;
-            font-weight: 500;
-            margin-bottom: 0.35rem;
-            max-width: 360px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .music-bpm-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.7rem;
-            border: 1px solid var(--control-border);
-            background: var(--control-bg);
-            border-radius: 12px;
-            opacity: 0.85;
-            display: inline-block;
-        }
-
-        .music-bottom-transport {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-            background: var(--control-bg);
-            backdrop-filter: blur(12px);
-            padding: 0.8rem 1.4rem;
-            border-radius: 20px;
-            border: 1px solid var(--control-border);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-            z-index: 20;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s;
-        }
-
-        .music-bottom-transport.visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .music-timeline-row {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            width: 100%;
-        }
-
-        .music-timeline-row input[type="range"] {
-            flex: 1;
-            accent-color: var(--shape-color);
-            cursor: pointer;
-            height: 4px;
-        }
-
-        .music-time-label {
-            font-size: 0.75rem;
-            font-variant-numeric: tabular-nums;
-            opacity: 0.7;
-        }
-
-        .music-controls-row {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
-        .music-transport-btn {
-            background: none;
-            border: 1px solid var(--control-border);
-            padding: 0.4rem 0.8rem;
-            border-radius: 16px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            color: var(--text-color);
-            transition: all 0.2s;
-        }
-
-        .music-transport-btn:hover { background: rgba(0,0,0,0.05); }
-
-        .music-transport-btn.primary {
-            background: var(--shape-color);
-            color: #fff;
-            border-color: var(--shape-color);
-        }
-
-        .music-multiplier-group {
-            display: flex;
-            border-left: 1px solid rgba(0,0,0,0.1);
-            padding-left: 0.6rem;
-            gap: 0.3rem;
-        }
-
-        @media (max-width: 600px) {
-            .left-panel {
-                top: auto;
-                bottom: 5.5rem;
-                left: 1rem;
-                width: calc(100% - 2rem);
-                max-width: none;
-            }
-            .top-right-bar { top: 1rem; right: 1rem; }
-            .bottom-center-bar {
-                bottom: 1rem;
-                width: calc(100% - 2rem);
-                justify-content: space-between;
-                padding: 0.5rem 1rem;
-            }
-            .music-bottom-transport {
-                width: calc(100% - 2rem);
-                bottom: 1rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body data-theme="night">
 
-    <!-- ============================================== -->
-    <!-- VIEW 1: Standard Visualizer & Soundscape View -->
-    <!-- ============================================== -->
-    <div class="view-section active" id="view-standard">
+    <!-- Reusable icons -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="i-play" viewBox="0 0 24 24"><path d="M8.5 5.8v12.4a.8.8 0 0 0 1.2.7l10-6.2a.8.8 0 0 0 0-1.4l-10-6.2a.8.8 0 0 0-1.2.7z" fill="currentColor"/></symbol>
+        <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6.5" y="5" width="3.8" height="14" rx="1.2" fill="currentColor"/><rect x="13.7" y="5" width="3.8" height="14" rx="1.2" fill="currentColor"/></symbol>
+        <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="2" fill="currentColor"/></symbol>
+        <symbol id="i-sound" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3l4.5-4v13l-4.5-4H4z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18.2 6.5a8 8 0 0 1 0 11"/></g></symbol>
+        <symbol id="i-settings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h9M18 7h2M4 17h3M11 17h9"/><circle cx="15.5" cy="7" r="2.3"/><circle cx="8.8" cy="17" r="2.3"/></g></symbol>
+        <symbol id="i-close" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+        <symbol id="i-back" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-minus" viewBox="0 0 24 24"><path d="M6 12h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M6 12h12M12 6v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+        <symbol id="i-rain" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14.5a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 7.5a3.5 3.5 0 0 1 .5 7"/><path d="M8.5 17.5l-1 2M12.5 16.5l-1 2.5M16.5 17.5l-1 2"/></g></symbol>
+        <symbol id="i-ocean" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 10.5c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0"/><path d="M3 15.5c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0"/></g></symbol>
+        <symbol id="i-stream" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19c3.5 0 4-3 8-3s4.5-3 8-3"/><path d="M4 13c3.5 0 4-3 8-3s4.5-3 8-3"/><circle cx="7" cy="7" r="1.6"/></g></symbol>
+        <symbol id="i-forest" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l5 7h-3l4 6H6l4-6H7z"/><path d="M12 16.5V21"/></g></symbol>
+        <symbol id="i-fire" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c.5 3.5 5 5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-3.5 2-5.5 1.2.9 1.8 2 1.8 3 1-1.8 1.6-4.5 1.2-7.5z"/></g></symbol>
+        <symbol id="i-night" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 14.5A7.5 7.5 0 1 1 9.5 4.5a6 6 0 0 0 10 10z"/><path d="M17 4v2.5M15.75 5.25h2.5"/></g></symbol>
+        <symbol id="i-wind" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9h11a2.75 2.75 0 1 0-2.75-2.75"/><path d="M3 13.5h15a2.75 2.75 0 1 1-2.75 2.75"/><path d="M3 18h6"/></g></symbol>
+        <symbol id="i-noise" viewBox="0 0 24 24"><path d="M3 12h2.5l1.5-4 2.5 9 2.5-12 2.5 13 2-8 1.5 4H21" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    </svg>
 
-        <div class="top-right-bar ui-panel">
-            <button class="mode-switch-btn" id="btn-switch-to-music">🎵 Music Sync</button>
-            <div class="control-divider"></div>
-            <div class="control-group">
-                <button class="icon-btn" id="btn-sound-toggle" title="Toggle Sound">🔊</button>
-                <input type="range" id="sound-volume" min="0" max="1" step="0.05" value="0.9" title="Master Volume">
+    <div class="app" id="app">
+        <header class="topbar fade-ui">
+            <div class="brand">Breathe</div>
+            <div class="top-actions">
+                <button class="icon-btn" id="btn-sounds" aria-label="Sounds"><svg><use href="#i-sound"/></svg></button>
+                <button class="icon-btn" id="btn-settings" aria-label="Settings"><svg><use href="#i-settings"/></svg></button>
             </div>
-            <div class="control-divider"></div>
-            <button class="icon-btn" id="btn-haptic-toggle" title="Toggle Haptic Feedback (Phone)">📳</button>
-            <div class="control-divider"></div>
-            <div class="control-group">
-                <span style="font-size:0.75rem;">Line</span>
-                <input type="range" id="line-width" min="2" max="22" value="6" title="Line Thickness">
-            </div>
-        </div>
+        </header>
 
-        <div class="left-panel ui-panel">
-            <div class="accordion-item active" id="item-preset">
-                <button class="accordion-btn" id="btn-toggle-preset">
-                    <span>Routines</span>
-                    <span class="chevron">▶</span>
+        <main class="stage" id="stage">
+            <div class="readout" aria-live="polite">
+                <div class="phase-label" id="phase-label">Ready</div>
+                <div class="phase-count" id="phase-count">&nbsp;</div>
+            </div>
+            <canvas id="visual" aria-hidden="true"></canvas>
+            <button class="next-btn" id="btn-next" hidden>Breathe in</button>
+        </main>
+
+        <footer class="dock fade-ui">
+            <button class="pattern-chip" id="btn-pattern" aria-label="Change breathing pattern">
+                <span id="pattern-name">Box breathing</span>
+                <span class="pattern-nums" id="pattern-nums">4 s</span>
+            </button>
+
+            <div class="controls">
+                <button class="side-btn" id="btn-length" aria-label="Session length">
+                    <span class="side-value" id="length-value">5</span>
+                    <span class="side-label" id="length-label">min</span>
                 </button>
-                <div class="accordion-content">
-                    <button class="preset-btn active" data-preset="4,4,4,4">Box Breathing (4-4-4-4)</button>
-                    <button class="preset-btn" data-preset="4,7,8,0">Relaxing Breath (4-7-8)</button>
-                    <button class="preset-btn" data-preset="4,2,4,2">Tactical Breath (4-2-4-2)</button>
-                    <button class="preset-btn" data-preset="4,0,4,0">Deep Calm (4-0-4-0)</button>
-                </div>
-            </div>
-
-            <div class="accordion-item" id="item-custom">
-                <button class="accordion-btn" id="btn-toggle-custom">
-                    <span>Custom Intervals</span>
-                    <span class="chevron">▶</span>
+                <button class="play-btn" id="btn-play" aria-label="Start">
+                    <svg><use href="#i-play" id="play-icon"/></svg>
                 </button>
-                <div class="accordion-content">
-                    <div class="custom-grid">
-                        <div class="input-group">
-                            <label>Inhale (s)</label>
-                            <input type="number" id="t-in" value="4" min="0" step="0.5">
-                        </div>
-                        <div class="input-group">
-                            <label>Hold 1 (s)</label>
-                            <input type="number" id="t-h1" value="4" min="0" step="0.5">
-                        </div>
-                        <div class="input-group">
-                            <label>Exhale (s)</label>
-                            <input type="number" id="t-ex" value="4" min="0" step="0.5">
-                        </div>
-                        <div class="input-group">
-                            <label>Hold 2 (s)</label>
-                            <input type="number" id="t-h2" value="4" min="0" step="0.5">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item" id="item-soundscapes">
-                <button class="accordion-btn" id="btn-toggle-soundscapes">
-                    <span>Ambient Soundscapes</span>
-                    <span class="chevron">▶</span>
+                <button class="side-btn" id="btn-stop" aria-label="End session" disabled>
+                    <svg><use href="#i-stop"/></svg>
                 </button>
-                <div class="accordion-content">
-                    <div class="ambient-list">
-                        <div class="ambient-item">
-                            <span class="ambient-name">🔥 Desert Campfire</span>
-                            <div class="ambient-controls">
-                                <input type="range" class="ambient-vol" data-sound="campfire" min="0" max="1" step="0.05" value="0.7">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" class="ambient-toggle" data-sound="campfire">
-                                    <span class="slider-switch"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="ambient-item">
-                            <span class="ambient-name">🏞️ Distant Waterfall</span>
-                            <div class="ambient-controls">
-                                <input type="range" class="ambient-vol" data-sound="waterfall" min="0" max="1" step="0.05" value="0.7">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" class="ambient-toggle" data-sound="waterfall">
-                                    <span class="slider-switch"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="ambient-item">
-                            <span class="ambient-name">🌫️ Pink Noise Bed</span>
-                            <div class="ambient-controls">
-                                <input type="range" class="ambient-vol" data-sound="pink" min="0" max="1" step="0.05" value="0.7">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" class="ambient-toggle" data-sound="pink">
-                                    <span class="slider-switch"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
-        </div>
 
-        <div class="canvas-container">
-            <canvas id="canvas-standard"></canvas>
-            <div class="phase-display">
-                <div class="phase-label" id="phase-label-std">Ready</div>
-                <div class="phase-countdown" id="phase-countdown-std"></div>
-            </div>
-        </div>
+            <div class="session-meta" id="session-meta">&nbsp;</div>
+        </footer>
+    </div>
 
-        <div class="bottom-center-bar ui-panel">
-            <div class="timer-badge" id="timer-display">05:00</div>
-            <div class="playback-actions">
-                <button class="action-btn primary" id="btn-start">Start</button>
-                <button class="action-btn" id="btn-pause">Pause</button>
-                <button class="action-btn" id="btn-reset">Reset</button>
+    <!-- Session complete -->
+    <div class="complete" id="complete" hidden>
+        <div class="complete-card">
+            <div class="complete-title">Well done</div>
+            <div class="complete-stats">
+                <div><span id="done-time">5:00</span><small>time</small></div>
+                <div><span id="done-breaths">0</span><small>breaths</small></div>
             </div>
-            <div class="session-config">
-                <label for="session-mins">Session:</label>
-                <input type="number" id="session-mins" value="5" min="1" max="60">
-                <span>min</span>
-            </div>
+            <div class="complete-extra" id="done-extra" hidden></div>
+            <button class="primary-btn" id="btn-done">Done</button>
         </div>
     </div>
 
-    <!-- ============================================== -->
-    <!-- VIEW 2: Dedicated Music Sync Interface          -->
-    <!-- ============================================== -->
-    <div class="view-section" id="view-music">
-        <div class="music-top-bar">
-            <button class="music-back-btn" id="btn-back-to-std">← Back to Generator</button>
-        </div>
+    <!-- Bottom sheets -->
+    <div class="backdrop" id="backdrop" hidden></div>
 
-        <div class="music-dropzone" id="music-drop-zone">
-            <h2>Musical Breath Sync</h2>
-            <p>Upload or drag & drop any MP3 song. The DSP engine analyzes the tempo, anchors beat 1, and maps a deep, paced breath pattern.</p>
-            <label class="music-file-btn">
-                Select Audio File
-                <input type="file" id="music-file-input" accept="audio/*" style="display: none;">
+    <section class="sheet" id="sheet-pattern" role="dialog" aria-modal="true" aria-labelledby="pattern-title" hidden>
+        <div class="sheet-handle"></div>
+        <header class="sheet-head">
+            <button class="icon-btn back-btn" id="btn-tech-back" aria-label="Back" hidden><svg><use href="#i-back"/></svg></button>
+            <h2 id="pattern-title">Breathing</h2>
+            <button class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+        </header>
+        <div class="sheet-body">
+            <div id="breathing-home">
+                <div class="segmented" id="breathing-tabs">
+                    <button data-value="techniques">Techniques</button>
+                    <button data-value="custom">Custom</button>
+                </div>
+
+                <div id="tab-techniques">
+                    <div class="tech-list" id="tech-list"></div>
+                </div>
+
+                <div id="tab-custom" hidden>
+                    <canvas class="shape-preview" id="shape-preview" aria-hidden="true"></canvas>
+                    <div class="stepper-grid" id="stepper-grid"></div>
+                    <p class="hint" id="bpm-hint"></p>
+                    <div class="chip-row" id="quick-patterns"></div>
+                </div>
+            </div>
+
+            <div id="tech-detail" hidden>
+                <p class="tech-intro" id="tech-intro"></p>
+                <div class="caution" id="tech-caution" hidden></div>
+                <details class="how">
+                    <summary>How to do it</summary>
+                    <ol id="tech-steps"></ol>
+                    <p class="hint" id="tech-note"></p>
+                </details>
+                <div class="tech-controls" id="tech-controls"></div>
+                <button class="primary-btn" id="btn-tech-start">Start</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="sheet" id="sheet-sounds" role="dialog" aria-modal="true" aria-labelledby="sounds-title" hidden>
+        <div class="sheet-handle"></div>
+        <header class="sheet-head">
+            <h2 id="sounds-title">Sounds</h2>
+            <button class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+        </header>
+        <div class="sheet-body">
+            <h3 class="section-title">Breathing cue</h3>
+            <div class="segmented" id="cue-style">
+                <button data-value="bowl">Bowl</button>
+                <button data-value="chime">Chime</button>
+                <button data-value="tone">Tone</button>
+                <button data-value="off">Off</button>
+            </div>
+            <label class="slider-row">
+                <span>Cue volume</span>
+                <input type="range" id="cue-volume" min="0" max="1" step="0.01">
             </label>
-            <div class="music-status-text" id="music-status"></div>
-        </div>
 
-        <div class="music-session-info" id="music-session-info">
-            <div class="music-track-name" id="music-track-name">Track Name</div>
-            <div class="music-bpm-badge" id="music-bpm-badge">120 BPM • Locked</div>
+            <h3 class="section-title">Ambience <small>mix as many as you like</small></h3>
+            <div class="ambient-grid" id="ambient-grid"></div>
+            <div class="ambient-mix" id="ambient-mix"></div>
         </div>
+    </section>
 
-        <div class="canvas-container">
-            <canvas id="canvas-music"></canvas>
-            <div class="phase-display">
-                <div class="phase-label" id="music-phase-label"></div>
-                <div class="phase-countdown" id="music-phase-countdown"></div>
+    <section class="sheet" id="sheet-settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+        <div class="sheet-handle"></div>
+        <header class="sheet-head">
+            <h2 id="settings-title">Settings</h2>
+            <button class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+        </header>
+        <div class="sheet-body">
+            <h3 class="section-title">Session length</h3>
+            <div class="segmented wrap" id="length-options"></div>
+
+            <h3 class="section-title">Visual</h3>
+            <div class="segmented" id="visual-options">
+                <button data-value="shape">Shape</button>
+                <button data-value="wave">Wave</button>
             </div>
+
+            <h3 class="section-title">Theme</h3>
+            <div class="theme-list" id="theme-list"></div>
+
+            <h3 class="section-title">Options</h3>
+            <label class="toggle-row">
+                <span>3-second “get ready” countdown</span>
+                <input type="checkbox" id="opt-prepare"><span class="switch"></span>
+            </label>
+            <label class="toggle-row" id="row-vibrate">
+                <span>Vibrate on each phase</span>
+                <input type="checkbox" id="opt-vibrate"><span class="switch"></span>
+            </label>
+            <label class="toggle-row" id="row-wake">
+                <span>Keep screen on during session</span>
+                <input type="checkbox" id="opt-wake"><span class="switch"></span>
+            </label>
+
+            <details class="about">
+                <summary>About &amp; sound credits</summary>
+                <p>Breathe is a calm paced-breathing guide. Follow the moving dot: it rises as you breathe in, falls as you breathe out, and travels sideways while you hold. Everything runs on your device. This app is not medical advice.</p>
+                <p>Ambient recordings (via the open-source <a href="https://github.com/rafaelmardojai/blanket" target="_blank" rel="noopener">Blanket</a> project):</p>
+                <ul>
+                    <li><a href="https://freesound.org/people/alex36917/sounds/524605/" target="_blank" rel="noopener">Rain</a> — alex36917 (CC BY)</li>
+                    <li><a href="https://freesound.org/people/Luftrum/sounds/48412/" target="_blank" rel="noopener">Ocean</a> — Luftrum (CC BY)</li>
+                    <li><a href="https://freesound.org/people/gluckose/sounds/333987/" target="_blank" rel="noopener">Stream</a> — gluckose (CC0)</li>
+                    <li><a href="https://freesound.org/people/kvgarlic/sounds/156826/" target="_blank" rel="noopener">Forest</a> — kvgarlic (CC0)</li>
+                    <li><a href="https://soundbible.com/1543-Fireplace.html" target="_blank" rel="noopener">Fireplace</a> — ezwa (public domain)</li>
+                    <li><a href="https://soundbible.com/2083-Crickets-Chirping-At-Night.html" target="_blank" rel="noopener">Night</a> — Lisa Redfern (public domain)</li>
+                    <li><a href="https://freesound.org/people/felix.blume/sounds/217506/" target="_blank" rel="noopener">Wind</a> — felix.blume (CC0)</li>
+                </ul>
+                <p>Recordings were edited by the Blanket project and re-encoded and volume-matched for this app. Bowl, chime and tone cues are synthesised live.</p>
+            </details>
         </div>
-
-        <div class="music-bottom-transport" id="music-transport">
-            <div class="music-timeline-row">
-                <span class="music-time-label" id="music-time-cur">0:00</span>
-                <input type="range" id="music-seek" min="0" max="100" value="0" step="0.1">
-                <span class="music-time-label" id="music-time-tot">0:00</span>
-            </div>
-            <div class="music-controls-row">
-                <button class="music-transport-btn primary" id="btn-music-play">Pause</button>
-                <button class="music-transport-btn" id="btn-music-stop">Stop</button>
-                <button class="music-transport-btn" id="btn-music-sync" title="Align downbeat directly to right now (Spacebar)">Sync Beat (Space)</button>
-                <div class="music-multiplier-group">
-                    <button class="music-transport-btn" id="btn-music-slower">Slower (2x)</button>
-                    <button class="music-transport-btn" id="btn-music-faster">Faster (½x)</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // ==========================================
-        // SHARED AUDIO CONTEXT & ROUTING
-        // ==========================================
-        let audioCtx;
-        let masterGainNode;
-        let limiter;
-
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-                limiter = audioCtx.createDynamicsCompressor();
-                limiter.threshold.setValueAtTime(-1.0, audioCtx.currentTime);
-                limiter.knee.setValueAtTime(0, audioCtx.currentTime);
-                limiter.ratio.setValueAtTime(20, audioCtx.currentTime);
-                limiter.attack.setValueAtTime(0.001, audioCtx.currentTime);
-                limiter.release.setValueAtTime(0.05, audioCtx.currentTime);
-
-                masterGainNode = audioCtx.createGain();
-                const soundVol = parseFloat(document.getElementById('sound-volume').value) * 3.5;
-                masterGainNode.gain.setValueAtTime(soundVol, audioCtx.currentTime);
-
-                masterGainNode.connect(limiter);
-                limiter.connect(audioCtx.destination);
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
-
-        // ==========================================
-        // VIEW NAVIGATION
-        // ==========================================
-        const viewStandard = document.getElementById('view-standard');
-        const viewMusic = document.getElementById('view-music');
-        const btnSwitchToMusic = document.getElementById('btn-switch-to-music');
-        const btnBackToStd = document.getElementById('btn-back-to-std');
-
-        btnSwitchToMusic.addEventListener('click', () => {
-            initAudio();
-            // Pause standard mode if running
-            if (isStdRunning) pauseStdSession();
-            viewStandard.classList.remove('active');
-            viewMusic.classList.add('active');
-            resizeAllCanvases();
-        });
-
-        btnBackToStd.addEventListener('click', () => {
-            // Stop music if playing
-            stopMusicTrack();
-            viewMusic.classList.remove('active');
-            viewStandard.classList.add('active');
-            resizeAllCanvases();
-        });
-
-        // ==========================================
-        // SECTION 1: STANDARD VISUALIZER ENGINE
-        // ==========================================
-        const canvasStd = document.getElementById('canvas-standard');
-        const ctxStd = canvasStd.getContext('2d');
-        const phaseLabelStd = document.getElementById('phase-label-std');
-        const phaseCountdownStd = document.getElementById('phase-countdown-std');
-        const timerDisplay = document.getElementById('timer-display');
-        const lineWidthSlider = document.getElementById('line-width');
-        const soundVolumeSlider = document.getElementById('sound-volume');
-        const btnSoundToggle = document.getElementById('btn-sound-toggle');
-        const btnHapticToggle = document.getElementById('btn-haptic-toggle');
-        const sessionMinsInput = document.getElementById('session-mins');
-        const btnStart = document.getElementById('btn-start');
-
-        let phases = [4, 4, 4, 4];
-        let currentPhaseIndex = 0;
-        const phaseNames = ["Inhale", "Hold", "Exhale", "Hold"];
-        let stdAnimFrameId;
-        let lastTime = 0;
-        let elapsedInPhase = 0;
-        let isStdRunning = false;
-        let sessionTimeLeft = 5 * 60;
-        let lastTimerSecond = 0;
-        let trail = [];
-        let baseRadius = 160;
-        let inactivityTimer;
-
-        let isMuted = false;
-        let hapticsEnabled = true;
-
-        const activeSounds = { campfire: null, waterfall: null, pink: null };
-
-        function getNoiseBuffer() {
-            const bufferSize = audioCtx.sampleRate * 2;
-            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-            return buffer;
-        }
-
-        function createCampfireSound() {
-            const noise = audioCtx.createBufferSource();
-            noise.buffer = getNoiseBuffer();
-            noise.loop = true;
-            const rumbleFilter = audioCtx.createBiquadFilter();
-            rumbleFilter.type = 'lowpass';
-            rumbleFilter.frequency.value = 150;
-            const rumbleGain = audioCtx.createGain();
-            rumbleGain.gain.value = 0.35;
-            noise.connect(rumbleFilter);
-            rumbleFilter.connect(rumbleGain);
-            noise.start();
-
-            const crackleGain = audioCtx.createGain();
-            crackleGain.gain.value = 0;
-            const crackleFilter = audioCtx.createBiquadFilter();
-            crackleFilter.type = 'bandpass';
-            crackleFilter.frequency.value = 4500;
-            crackleFilter.Q.value = 6;
-            const crackleNoise = audioCtx.createBufferSource();
-            crackleNoise.buffer = getNoiseBuffer();
-            crackleNoise.loop = true;
-            crackleNoise.connect(crackleFilter);
-            crackleFilter.connect(crackleGain);
-            crackleNoise.start();
-
-            let active = true;
-            function triggerCrackle() {
-                if (!active || !audioCtx) return;
-                const now = audioCtx.currentTime;
-                crackleGain.gain.setValueAtTime(0, now);
-                crackleGain.gain.linearRampToValueAtTime(0.35 + Math.random() * 0.35, now + 0.005);
-                crackleGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05 + Math.random() * 0.05);
-                setTimeout(triggerCrackle, Math.random() * 700 + 200);
-            }
-            triggerCrackle();
-
-            const masterOutput = audioCtx.createGain();
-            masterOutput.gain.value = 0.9;
-            rumbleGain.connect(masterOutput);
-            crackleGain.connect(masterOutput);
-
-            return {
-                source: noise,
-                gainNode: masterOutput,
-                stop: () => { active = false; noise.stop(); crackleNoise.stop(); }
-            };
-        }
-
-        function createWaterfallSound() {
-            const noise = audioCtx.createBufferSource();
-            noise.buffer = getNoiseBuffer();
-            noise.loop = true;
-            const lowFilter = audioCtx.createBiquadFilter();
-            lowFilter.type = 'lowpass';
-            lowFilter.frequency.value = 450;
-            const lowGain = audioCtx.createGain();
-            lowGain.gain.value = 1.4;
-            const midFilter = audioCtx.createBiquadFilter();
-            midFilter.type = 'bandpass';
-            midFilter.frequency.value = 1100;
-            midFilter.Q.value = 0.8;
-            const midGain = audioCtx.createGain();
-            midGain.gain.value = 0.5;
-
-            noise.connect(lowFilter);
-            lowFilter.connect(lowGain);
-            noise.connect(midFilter);
-            midFilter.connect(midGain);
-
-            const masterOutput = audioCtx.createGain();
-            masterOutput.gain.value = 0.55;
-            lowGain.connect(masterOutput);
-            midGain.connect(masterOutput);
-            noise.start();
-            return { source: noise, gainNode: masterOutput };
-        }
-
-        function createPinkNoiseSound() {
-            const bufferSize = audioCtx.sampleRate * 2;
-            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const output = noiseBuffer.getChannelData(0);
-            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-            for (let i = 0; i < bufferSize; i++) {
-                const white = Math.random() * 2 - 1;
-                b0 = 0.99886 * b0 + white * 0.0555179;
-                b1 = 0.99332 * b1 + white * 0.0750759;
-                b2 = 0.96900 * b2 + white * 0.1538520;
-                b3 = 0.86650 * b3 + white * 0.3104856;
-                b4 = 0.55000 * b4 + white * 0.5329522;
-                b5 = -0.7616 * b5 - white * 0.0168980;
-                output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.04;
-                b6 = white * 0.115926;
-            }
-            const noise = audioCtx.createBufferSource();
-            noise.buffer = noiseBuffer;
-            noise.loop = true;
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.value = 500;
-            const gain = audioCtx.createGain();
-            gain.gain.value = 0.8;
-            noise.connect(filter);
-            filter.connect(gain);
-            noise.start();
-            return { source: noise, gainNode: gain };
-        }
-
-        document.querySelectorAll('.ambient-toggle').forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                initAudio();
-                const soundType = e.target.dataset.sound;
-                const volumeSlider = document.querySelector(`.ambient-vol[data-sound="${soundType}"]`);
-                const soundVol = parseFloat(volumeSlider.value);
-
-                if (e.target.checked) {
-                    let soundObj;
-                    if (soundType === 'campfire') soundObj = createCampfireSound();
-                    else if (soundType === 'waterfall') soundObj = createWaterfallSound();
-                    else if (soundType === 'pink') soundObj = createPinkNoiseSound();
-
-                    soundObj.gainNode.connect(masterGainNode);
-                    soundObj.baseGain = soundVol;
-                    soundObj.gainNode.gain.setValueAtTime(soundVol, audioCtx.currentTime);
-                    activeSounds[soundType] = soundObj;
-                } else {
-                    if (activeSounds[soundType]) {
-                        const s = activeSounds[soundType];
-                        s.gainNode.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-                        setTimeout(() => {
-                            if (s.stop) s.stop();
-                            else if (s.source) s.source.stop();
-                            s.gainNode.disconnect();
-                            activeSounds[soundType] = null;
-                        }, 400);
-                    }
-                }
-            });
-        });
-
-        document.querySelectorAll('.ambient-vol').forEach(slider => {
-            slider.addEventListener('input', (e) => {
-                const soundType = e.target.dataset.sound;
-                if (activeSounds[soundType]) {
-                    const val = parseFloat(e.target.value);
-                    activeSounds[soundType].gainNode.gain.setTargetAtTime(val, audioCtx.currentTime, 0.05);
-                }
-            });
-        });
-
-        function playPhaseTone(phaseName) {
-            if (!audioCtx || isMuted) return;
-            const now = audioCtx.currentTime;
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            const filter = audioCtx.createBiquadFilter();
-            const overtone = audioCtx.createOscillator();
-            const overtoneGain = audioCtx.createGain();
-
-            let freq = phaseName === 'Inhale' ? 261.63 : (phaseName === 'Exhale' ? 196.00 : 220.00);
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, now);
-            overtone.type = 'sine';
-            overtone.frequency.setValueAtTime(freq * 2, now);
-
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(1800, now);
-
-            gainNode.gain.setValueAtTime(0.0001, now);
-            gainNode.gain.linearRampToValueAtTime(1.90, now + 0.22);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 2.7);
-
-            overtoneGain.gain.setValueAtTime(0.0001, now);
-            overtoneGain.gain.linearRampToValueAtTime(0.65, now + 0.18);
-            overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
-
-            osc.connect(filter);
-            filter.connect(gainNode);
-            gainNode.connect(masterGainNode);
-            overtone.connect(overtoneGain);
-            overtoneGain.connect(masterGainNode);
-
-            osc.start(now);
-            overtone.start(now);
-            osc.stop(now + 2.8);
-            overtone.stop(now + 2.8);
-        }
-
-        function triggerHaptic(phaseName) {
-            if (!hapticsEnabled || !("vibrate" in navigator)) return;
-            try {
-                if (phaseName === "Inhale") navigator.vibrate([45, 60, 45]);
-                else if (phaseName === "Exhale") navigator.vibrate(90);
-                else navigator.vibrate(25);
-            } catch (e) {}
-        }
-
-        soundVolumeSlider.addEventListener('input', (e) => {
-            initAudio();
-            const val = parseFloat(e.target.value) * 3.5;
-            if (masterGainNode) masterGainNode.gain.setTargetAtTime(isMuted ? 0 : val, audioCtx.currentTime, 0.05);
-            if (val === 0) {
-                btnSoundToggle.innerText = '🔇';
-                btnSoundToggle.classList.add('off');
-            } else if (!isMuted) {
-                btnSoundToggle.innerText = '🔊';
-                btnSoundToggle.classList.remove('off');
-            }
-        });
-
-        btnSoundToggle.addEventListener('click', () => {
-            initAudio();
-            isMuted = !isMuted;
-            if (isMuted) {
-                btnSoundToggle.innerText = '🔇';
-                btnSoundToggle.classList.add('off');
-                masterGainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
-            } else {
-                btnSoundToggle.innerText = '🔊';
-                btnSoundToggle.classList.remove('off');
-                masterGainNode.gain.setTargetAtTime(parseFloat(soundVolumeSlider.value) * 3.5, audioCtx.currentTime, 0.05);
-            }
-        });
-
-        btnHapticToggle.addEventListener('click', () => {
-            hapticsEnabled = !hapticsEnabled;
-            btnHapticToggle.classList.toggle('off', !hapticsEnabled);
-            if (hapticsEnabled && ("vibrate" in navigator)) navigator.vibrate(30);
-        });
-
-        function resizeAllCanvases() {
-            const dpr = window.devicePixelRatio || 1;
-            [canvasStd, canvasMusic].forEach(c => {
-                c.width = window.innerWidth * dpr;
-                c.height = window.innerHeight * dpr;
-                c.style.width = window.innerWidth + 'px';
-                c.style.height = window.innerHeight + 'px';
-            });
-            ctxStd.setTransform(1, 0, 0, 1, 0, 0);
-            ctxStd.scale(dpr, dpr);
-            ctxMusic.setTransform(1, 0, 0, 1, 0, 0);
-            ctxMusic.scale(dpr, dpr);
-            baseRadius = Math.min(window.innerWidth, window.innerHeight) * 0.22;
-            renderCurrentStdFrame();
-        }
-        window.addEventListener('resize', resizeAllCanvases);
-
-        function easeInOutSine(x) {
-            return -(Math.cos(Math.PI * x) - 1) / 2;
-        }
-
-        function renderCurrentStdFrame() {
-            let linearProgress = phases[currentPhaseIndex] > 0 ? elapsedInPhase / phases[currentPhaseIndex] : 0;
-            let visualProgress = (currentPhaseIndex === 0 || currentPhaseIndex === 2)
-                ? easeInOutSine(linearProgress)
-                : linearProgress;
-            drawStd(currentPhaseIndex, linearProgress, visualProgress);
-        }
-
-        lineWidthSlider.addEventListener('input', renderCurrentStdFrame);
-
-        function resetInactivity() {
-            document.body.classList.remove('zen-mode');
-            clearTimeout(inactivityTimer);
-            if (isStdRunning) {
-                inactivityTimer = setTimeout(() => document.body.classList.add('zen-mode'), 3500);
-            }
-        }
-        document.addEventListener('mousemove', resetInactivity);
-        document.addEventListener('touchstart', resetInactivity);
-
-        function setupAccordion(btn, item) {
-            btn.addEventListener('click', () => {
-                const wasActive = item.classList.contains('active');
-                [document.getElementById('item-preset'), document.getElementById('item-custom'), document.getElementById('item-soundscapes')].forEach(el => el.classList.remove('active'));
-                if (!wasActive) item.classList.add('active');
-            });
-        }
-        setupAccordion(document.getElementById('btn-toggle-preset'), document.getElementById('item-preset'));
-        setupAccordion(document.getElementById('btn-toggle-custom'), document.getElementById('item-custom'));
-        setupAccordion(document.getElementById('btn-toggle-soundscapes'), document.getElementById('item-soundscapes'));
-
-        document.querySelectorAll('.preset-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                phases = e.target.dataset.preset.split(',').map(Number);
-                resetStdAnimation();
-            });
-        });
-
-        const customInputs = [
-            document.getElementById('t-in'),
-            document.getElementById('t-h1'),
-            document.getElementById('t-ex'),
-            document.getElementById('t-h2')
-        ];
-        customInputs.forEach(input => {
-            input.addEventListener('input', () => {
-                phases = customInputs.map(inp => Math.max(0, parseFloat(inp.value) || 0));
-                resetStdAnimation();
-            });
-        });
-
-        btnStart.addEventListener('click', () => {
-            initAudio();
-            if (!isStdRunning && sessionTimeLeft > 0) {
-                isStdRunning = true;
-                btnStart.innerText = "Resume";
-                lastTime = performance.now();
-                lastTimerSecond = lastTime;
-
-                if (elapsedInPhase === 0) {
-                    playPhaseTone(phaseNames[currentPhaseIndex]);
-                    triggerHaptic(phaseNames[currentPhaseIndex]);
-                }
-
-                animateStd(lastTime);
-                resetInactivity();
-            }
-        });
-
-        function pauseStdSession() {
-            isStdRunning = false;
-            cancelAnimationFrame(stdAnimFrameId);
-            document.body.classList.remove('zen-mode');
-            clearTimeout(inactivityTimer);
-        }
-
-        document.getElementById('btn-pause').addEventListener('click', pauseStdSession);
-
-        document.getElementById('btn-reset').addEventListener('click', () => {
-            resetStdAnimation();
-            btnStart.innerText = "Start";
-        });
-
-        sessionMinsInput.addEventListener('change', () => {
-            if (!isStdRunning) {
-                sessionTimeLeft = Math.max(1, parseInt(sessionMinsInput.value) || 5) * 60;
-                updateTimerDisplay();
-            }
-        });
-
-        function resetStdAnimation() {
-            pauseStdSession();
-            currentPhaseIndex = 0;
-            elapsedInPhase = 0;
-            trail = [];
-            sessionTimeLeft = Math.max(1, parseInt(sessionMinsInput.value) || 5) * 60;
-            updateTimerDisplay();
-            phaseLabelStd.innerText = "Ready";
-            phaseCountdownStd.innerText = "";
-            renderCurrentStdFrame();
-        }
-
-        function updateTimerDisplay() {
-            let m = Math.floor(sessionTimeLeft / 60).toString().padStart(2, '0');
-            let s = (sessionTimeLeft % 60).toString().padStart(2, '0');
-            timerDisplay.innerText = `${m}:${s}`;
-        }
-
-        function getGeometry() {
-            let activePhases = [];
-            let totalActiveTime = 0;
-            for (let i = 0; i < 4; i++) {
-                if (phases[i] > 0) {
-                    activePhases.push({ index: i, time: phases[i] });
-                    totalActiveTime += phases[i];
-                }
-            }
-            const cx = window.innerWidth / 2;
-            const cy = window.innerHeight / 2;
-
-            if (activePhases.length === 2) {
-                return { isLine: true, activePhases, cx, cy };
-            }
-
-            let vertices = [];
-            const isBox = phases.every((val, i, arr) => val === arr[0] && val > 0);
-            const isTactical = phases[0] > 0 && phases[1] > 0 && phases[0] === phases[2] && phases[1] === phases[3] && phases[0] !== phases[1];
-
-            if (isBox) {
-                const r = baseRadius;
-                vertices = [
-                    { x: cx - r, y: cy + r },
-                    { x: cx - r, y: cy - r },
-                    { x: cx + r, y: cy - r },
-                    { x: cx + r, y: cy + r }
-                ];
-            } else if (isTactical) {
-                const ratio = phases[1] / phases[0];
-                const rx = baseRadius * ratio;
-                const ry = baseRadius;
-                vertices = [
-                    { x: cx - rx, y: cy + ry },
-                    { x: cx - rx, y: cy - ry },
-                    { x: cx + rx, y: cy - ry },
-                    { x: cx + rx, y: cy + ry }
-                ];
-            } else {
-                let currentAngle = Math.PI / 2;
-                for (let i = 0; i < 4; i++) {
-                    if (phases[i] > 0) {
-                        vertices.push({
-                            x: cx + Math.cos(currentAngle) * (baseRadius * 1.15),
-                            y: cy + Math.sin(currentAngle) * (baseRadius * 1.15)
-                        });
-                        let angleShare = (phases[i] / totalActiveTime) * (Math.PI * 2);
-                        currentAngle += angleShare;
-                    } else {
-                        vertices.push(null);
-                    }
-                }
-            }
-            return { isLine: false, vertices, activePhases, cx, cy };
-        }
-
-        function animateStd(timestamp) {
-            if (!isStdRunning) return;
-
-            let dt = (timestamp - lastTime) / 1000;
-            lastTime = timestamp;
-
-            if (timestamp - lastTimerSecond >= 1000) {
-                sessionTimeLeft--;
-                updateTimerDisplay();
-                lastTimerSecond = timestamp;
-                if (sessionTimeLeft <= 0) {
-                    resetStdAnimation();
-                    btnStart.innerText = "Start";
-                    return;
-                }
-            }
-
-            elapsedInPhase += dt;
-
-            while (phases[currentPhaseIndex] === 0) {
-                currentPhaseIndex = (currentPhaseIndex + 1) % 4;
-                elapsedInPhase = 0;
-            }
-
-            if (elapsedInPhase >= phases[currentPhaseIndex]) {
-                elapsedInPhase = 0;
-                currentPhaseIndex = (currentPhaseIndex + 1) % 4;
-                while (phases[currentPhaseIndex] === 0) {
-                    currentPhaseIndex = (currentPhaseIndex + 1) % 4;
-                }
-                playPhaseTone(phaseNames[currentPhaseIndex]);
-                triggerHaptic(phaseNames[currentPhaseIndex]);
-            }
-
-            renderCurrentStdFrame();
-            stdAnimFrameId = requestAnimationFrame(animateStd);
-        }
-
-        function drawStd(phaseIdx, timeProgress, renderProgress) {
-            ctxStd.clearRect(0, 0, window.innerWidth, window.innerHeight);
-            phaseLabelStd.innerText = phaseNames[phaseIdx];
-
-            if (isStdRunning && phases[phaseIdx] > 0) {
-                const secsRemaining = Math.ceil(phases[phaseIdx] - (timeProgress * phases[phaseIdx]));
-                phaseCountdownStd.innerText = `${secsRemaining}s`;
-            } else {
-                phaseCountdownStd.innerText = "";
-            }
-
-            const geo = getGeometry();
-            const strokeWidth = parseInt(lineWidthSlider.value, 10);
-            ctxStd.lineWidth = strokeWidth;
-            ctxStd.lineJoin = 'round';
-            ctxStd.lineCap = 'round';
-
-            let ballX = 0, ballY = 0;
-
-            if (geo.isLine) {
-                const isInhale = phaseIdx === 0;
-                const minLen = baseRadius * 0.7;
-                const maxLen = baseRadius * 2.6;
-                let currentLen;
-
-                if (isInhale) {
-                    currentLen = minLen + (maxLen - minLen) * renderProgress;
-                    ballX = (geo.cx - currentLen / 2) + currentLen * renderProgress;
-                } else {
-                    currentLen = maxLen - (maxLen - minLen) * renderProgress;
-                    ballX = (geo.cx + currentLen / 2) - currentLen * renderProgress;
-                }
-                ballY = geo.cy;
-
-                ctxStd.beginPath();
-                ctxStd.moveTo(geo.cx - currentLen / 2, geo.cy);
-                ctxStd.lineTo(geo.cx + currentLen / 2, geo.cy);
-                ctxStd.strokeStyle = '#4A90E2';
-                ctxStd.stroke();
-
-            } else {
-                const validPoints = geo.vertices.filter(v => v !== null);
-
-                if (validPoints.length >= 2) {
-                    ctxStd.beginPath();
-                    ctxStd.moveTo(validPoints[0].x, validPoints[0].y);
-                    for (let i = 1; i < validPoints.length; i++) {
-                        ctxStd.lineTo(validPoints[i].x, validPoints[i].y);
-                    }
-                    ctxStd.closePath();
-                    ctxStd.strokeStyle = '#4A90E2';
-                    ctxStd.stroke();
-
-                    let startPt, endPt;
-                    if (geo.vertices.length === 4 && phases.every(p => p > 0)) {
-                        startPt = validPoints[phaseIdx];
-                        endPt = validPoints[(phaseIdx + 1) % 4];
-                    } else {
-                        let activeIdx = geo.activePhases.findIndex(p => p.index === phaseIdx);
-                        startPt = validPoints[activeIdx];
-                        endPt = validPoints[(activeIdx + 1) % validPoints.length];
-                    }
-
-                    if (startPt && endPt) {
-                        ballX = startPt.x + (endPt.x - startPt.x) * renderProgress;
-                        ballY = startPt.y + (endPt.y - startPt.y) * renderProgress;
-                    }
-                }
-            }
-
-            const ballRadius = Math.max(8, strokeWidth + 4);
-            const trailRadius = Math.max(5, strokeWidth + 1);
-
-            if (isStdRunning && ballX !== 0 && ballY !== 0) {
-                trail.push({ x: ballX, y: ballY, alpha: 1.0 });
-            }
-
-            for (let i = trail.length - 1; i >= 0; i--) {
-                let p = trail[i];
-                ctxStd.beginPath();
-                ctxStd.arc(p.x, p.y, trailRadius, 0, Math.PI * 2);
-                ctxStd.fillStyle = `rgba(231, 111, 81, ${p.alpha * 0.45})`;
-                ctxStd.fill();
-
-                p.alpha -= 0.025;
-                if (p.alpha <= 0) trail.splice(i, 1);
-            }
-
-            if (ballX !== 0 && ballY !== 0) {
-                ctxStd.beginPath();
-                ctxStd.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-                ctxStd.fillStyle = '#E76F51';
-                ctxStd.fill();
-            }
-        }
-
-        // ==========================================
-        // SECTION 2: MUSIC-SYNC ENGINE
-        // ==========================================
-        const canvasMusic = document.getElementById('canvas-music');
-        const ctxMusic = canvasMusic.getContext('2d');
-        const musicDropZone = document.getElementById('music-drop-zone');
-        const musicFileInput = document.getElementById('music-file-input');
-        const musicStatus = document.getElementById('music-status');
-        const musicSessionInfo = document.getElementById('music-session-info');
-        const musicTrackName = document.getElementById('music-track-name');
-        const musicBpmBadge = document.getElementById('music-bpm-badge');
-        const musicTransport = document.getElementById('music-transport');
-        const musicPhaseLabel = document.getElementById('music-phase-label');
-        const musicPhaseCountdown = document.getElementById('music-phase-countdown');
-
-        const btnMusicPlay = document.getElementById('btn-music-play');
-        const btnMusicStop = document.getElementById('btn-music-stop');
-        const btnMusicSync = document.getElementById('btn-music-sync');
-        const btnMusicSlower = document.getElementById('btn-music-slower');
-        const btnMusicFaster = document.getElementById('btn-music-faster');
-        const musicSeek = document.getElementById('music-seek');
-        const musicTimeCur = document.getElementById('music-time-cur');
-        const musicTimeTot = document.getElementById('music-time-tot');
-
-        let trackBuffer = null;
-        let trackSource = null;
-        let isMusicPlaying = false;
-        let musicPlaybackOffset = 0;
-        let musicPlayStartedAt = 0;
-        let rawBPM = 120;
-        let secondsPerBeat = 0.5;
-        let secondsPerBar = 2.0;
-        let barsMultiplier = 1;
-        let firstDownbeatTime = 0;
-        let manualPhaseOffset = 0;
-        let musicAnimFrameId;
-
-        // Current calculated phases: [tIn, tHold1, tEx, tHold2]
-        let currentMusicalPhases = [4, 0, 4, 0];
-        let totalCycleTime = 8.0;
-
-        function formatTimeSec(secs) {
-            const m = Math.floor(secs / 60);
-            const s = Math.floor(secs % 60).toString().padStart(2, '0');
-            return `${m}:${s}`;
-        }
-
-        // Drag & Drop
-        ['dragenter', 'dragover'].forEach(name => {
-            window.addEventListener(name, (e) => {
-                if (!viewMusic.classList.contains('active')) return;
-                e.preventDefault();
-                musicDropZone.classList.add('dragover');
-            });
-        });
-        ['dragleave', 'drop'].forEach(name => {
-            window.addEventListener(name, (e) => {
-                if (!viewMusic.classList.contains('active')) return;
-                e.preventDefault();
-                musicDropZone.classList.remove('dragover');
-            });
-        });
-        window.addEventListener('drop', (e) => {
-            if (!viewMusic.classList.contains('active')) return;
-            if (e.dataTransfer.files.length > 0) handleMusicUpload(e.dataTransfer.files[0]);
-        });
-        musicFileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) handleMusicUpload(e.target.files[0]);
-        });
-
-        async function handleMusicUpload(file) {
-            initAudio();
-            musicStatus.innerText = "Decoding audio...";
-            musicTrackName.innerText = file.name.replace(/\.[^/.]+$/, "");
-
-            try {
-                const arrayBuf = await file.arrayBuffer();
-                trackBuffer = await audioCtx.decodeAudioData(arrayBuf);
-                musicStatus.innerText = "Analyzing BPM via Autocorrelation...";
-                setTimeout(() => computeBPMAndInit(trackBuffer), 50);
-            } catch (err) {
-                musicStatus.innerText = "Error decoding audio file.";
-            }
-        }
-
-        async function computeBPMAndInit(buffer) {
-            const sampleRate = 22050;
-            const offline = new OfflineAudioContext(1, Math.min(buffer.duration, 90) * sampleRate, sampleRate);
-            const src = offline.createBufferSource();
-            src.buffer = buffer;
-
-            const filter = offline.createBiquadFilter();
-            filter.type = 'bandpass';
-            filter.frequency.value = 100;
-            filter.Q.value = 1.0;
-
-            src.connect(filter);
-            filter.connect(offline.destination);
-            src.start(0);
-
-            const filtered = await offline.startRendering();
-            const rawData = filtered.getChannelData(0);
-
-            const envStep = Math.floor(sampleRate / 100);
-            const envLength = Math.floor(rawData.length / envStep);
-            const envelope = new Float32Array(envLength);
-
-            for (let i = 0; i < envLength; i++) {
-                let sum = 0;
-                let start = i * envStep;
-                for (let j = 0; j < envStep; j++) sum += Math.abs(rawData[start + j]);
-                envelope[i] = sum / envStep;
-            }
-
-            const minLag = Math.floor(100 * (60 / 180));
-            const maxLag = Math.floor(100 * (60 / 60));
-            let bestLag = 0;
-            let maxCorr = -Infinity;
-
-            for (let lag = minLag; lag <= maxLag; lag++) {
-                let corr = 0;
-                for (let i = 0; i < envLength - lag; i++) corr += envelope[i] * envelope[i + lag];
-                if (corr > maxCorr) {
-                    maxCorr = corr;
-                    bestLag = lag;
-                }
-            }
-
-            secondsPerBeat = bestLag / 100;
-            rawBPM = Math.round(60 / secondsPerBeat);
-
-            const searchLimit = Math.min(envelope.length, 1500);
-            let peakVal = 0, peakIdx = 0;
-            for (let i = 0; i < searchLimit; i++) {
-                if (envelope[i] > peakVal) {
-                    peakVal = envelope[i];
-                    peakIdx = i;
-                }
-            }
-            let onsetIdx = peakIdx;
-            while (onsetIdx > 0 && envelope[onsetIdx] > peakVal * 0.35) onsetIdx--;
-            firstDownbeatTime = onsetIdx / 100;
-            manualPhaseOffset = 0;
-
-            secondsPerBar = secondsPerBeat * 4;
-            barsMultiplier = 1;
-
-            calculateAdaptiveFormula();
-
-            musicDropZone.classList.add('hidden');
-            musicSessionInfo.classList.add('visible');
-            musicTransport.classList.add('visible');
-            musicTimeTot.innerText = formatTimeSec(trackBuffer.duration);
-            musicSeek.max = trackBuffer.duration;
-
-            startMusicPlayback(0);
-        }
-
-        // The Adaptive Rule Formula (Minimum 4.0s; 6-2-6-2 pause injection if >= 7.5s)
-        function calculateAdaptiveFormula() {
-            const minPhase = 4.0;
-            let baseBars = Math.ceil(minPhase / secondsPerBar);
-            let activeBars = Math.max(1, baseBars * barsMultiplier);
-            let targetSpan = activeBars * secondsPerBar;
-
-            let tIn, tH1, tEx, tH2;
-            let badgeText = "";
-
-            if (targetSpan >= 7.5) {
-                // Snap pause to closest beat count or bar near 2 seconds
-                let holdBeats = Math.max(1, Math.round(2.0 / secondsPerBeat));
-                let holdSecs = holdBeats * secondsPerBeat;
-                tH1 = holdSecs;
-                tH2 = holdSecs;
-                tIn = targetSpan - holdSecs;
-                tEx = targetSpan - holdSecs;
-                badgeText = `${rawBPM} BPM • ${activeBars} Bars • Pattern: ${tIn.toFixed(1)}-${tH1.toFixed(1)}-${tEx.toFixed(1)}-${tH2.toFixed(1)}`;
-            } else {
-                tIn = targetSpan;
-                tH1 = 0;
-                tEx = targetSpan;
-                tH2 = 0;
-                badgeText = `${rawBPM} BPM • ${activeBars} Bars • ${tIn.toFixed(1)}s In / ${tEx.toFixed(1)}s Out`;
-            }
-
-            currentMusicalPhases = [tIn, tH1, tEx, tH2];
-            totalCycleTime = tIn + tH1 + tEx + tH2;
-            musicBpmBadge.innerText = badgeText;
-        }
-
-        function startMusicPlayback(offset) {
-            if (trackSource) {
-                try { trackSource.stop(); } catch(e) {}
-            }
-            trackSource = audioCtx.createBufferSource();
-            trackSource.buffer = trackBuffer;
-            trackSource.connect(audioCtx.destination);
-
-            musicPlayStartedAt = audioCtx.currentTime;
-            musicPlaybackOffset = offset;
-            trackSource.start(0, offset);
-
-            isMusicPlaying = true;
-            btnMusicPlay.innerText = "Pause";
-            requestAnimationFrame(animateMusic);
-        }
-
-        function pauseMusicPlayback() {
-            if (!isMusicPlaying) return;
-            musicPlaybackOffset += audioCtx.currentTime - musicPlayStartedAt;
-            try { trackSource.stop(); } catch(e) {}
-            isMusicPlaying = false;
-            btnMusicPlay.innerText = "Resume";
-        }
-
-        function stopMusicTrack() {
-            if (trackSource) {
-                try { trackSource.stop(); } catch(e) {}
-            }
-            isMusicPlaying = false;
-            musicPlaybackOffset = 0;
-            manualPhaseOffset = 0;
-            btnMusicPlay.innerText = "Start";
-            musicSeek.value = 0;
-            musicTimeCur.innerText = "0:00";
-            musicPhaseLabel.innerText = "Stopped";
-            musicPhaseCountdown.innerText = "";
-            ctxMusic.clearRect(0, 0, canvasMusic.width, canvasMusic.height);
-        }
-
-        btnMusicPlay.addEventListener('click', () => {
-            if (isMusicPlaying) pauseMusicPlayback();
-            else startMusicPlayback(musicPlaybackOffset);
-        });
-
-        btnMusicStop.addEventListener('click', stopMusicTrack);
-
-        musicSeek.addEventListener('input', (e) => {
-            const targetPos = parseFloat(e.target.value);
-            musicTimeCur.innerText = formatTimeSec(targetPos);
-            if (isMusicPlaying) startMusicPlayback(targetPos);
-            else musicPlaybackOffset = targetPos;
-        });
-
-        function syncMusicDownbeat() {
-            if (!isMusicPlaying) return;
-            const curTime = musicPlaybackOffset + (audioCtx.currentTime - musicPlayStartedAt);
-            manualPhaseOffset = curTime;
-            firstDownbeatTime = 0;
-        }
-
-        btnMusicSync.addEventListener('click', syncMusicDownbeat);
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && viewMusic.classList.contains('active') && musicTransport.classList.contains('visible')) {
-                e.preventDefault();
-                syncMusicDownbeat();
-            }
-        });
-
-        btnMusicSlower.addEventListener('click', () => {
-            barsMultiplier *= 2;
-            calculateAdaptiveFormula();
-        });
-
-        btnMusicFaster.addEventListener('click', () => {
-            if (barsMultiplier > 0.5) {
-                barsMultiplier /= 2;
-                calculateAdaptiveFormula();
-            }
-        });
-
-        function animateMusic() {
-            if (!isMusicPlaying) return;
-
-            const currentAudioTime = musicPlaybackOffset + (audioCtx.currentTime - musicPlayStartedAt);
-            musicSeek.value = currentAudioTime;
-            musicTimeCur.innerText = formatTimeSec(currentAudioTime);
-
-            if (currentAudioTime >= trackBuffer.duration) {
-                stopMusicTrack();
-                musicPhaseLabel.innerText = "Finished";
-                return;
-            }
-
-            const anchor = manualPhaseOffset > 0 ? manualPhaseOffset : firstDownbeatTime;
-            const elapsedFromAnchor = Math.max(0, currentAudioTime - anchor);
-            const cycleProgressTime = elapsedFromAnchor % totalCycleTime;
-
-            // Determine Phase: [tIn, tH1, tEx, tH2]
-            const [tIn, tH1, tEx, tH2] = currentMusicalPhases;
-            let currentPhaseName = "Inhale";
-            let visualProgress = 0;
-            let phaseRemainingSec = 0;
-
-            if (cycleProgressTime < tIn) {
-                currentPhaseName = "Inhale";
-                let prog = cycleProgressTime / tIn;
-                visualProgress = easeInOutSine(prog);
-                phaseRemainingSec = Math.ceil(tIn - cycleProgressTime);
-            } else if (cycleProgressTime < tIn + tH1) {
-                currentPhaseName = "Hold";
-                visualProgress = 1.0; // Stay expanded at apex
-                phaseRemainingSec = Math.ceil((tIn + tH1) - cycleProgressTime);
-            } else if (cycleProgressTime < tIn + tH1 + tEx) {
-                currentPhaseName = "Exhale";
-                let prog = (cycleProgressTime - (tIn + tH1)) / tEx;
-                visualProgress = 1.0 - easeInOutSine(prog);
-                phaseRemainingSec = Math.ceil((tIn + tH1 + tEx) - cycleProgressTime);
-            } else {
-                currentPhaseName = "Hold";
-                visualProgress = 0.0; // Stay contracted at base
-                phaseRemainingSec = Math.ceil(totalCycleTime - cycleProgressTime);
-            }
-
-            const beatProgress = (elapsedFromAnchor % secondsPerBeat) / secondsPerBeat;
-
-            drawMusic(currentPhaseName, visualProgress, phaseRemainingSec, beatProgress);
-
-            musicAnimFrameId = requestAnimationFrame(animateMusic);
-        }
-
-        function drawMusic(phaseName, progress, countdown, beatProgress) {
-            ctxMusic.clearRect(0, 0, window.innerWidth, window.innerHeight);
-            musicPhaseLabel.innerText = phaseName;
-            musicPhaseCountdown.innerText = `${countdown}s`;
-
-            const cx = window.innerWidth / 2;
-            const cy = window.innerHeight / 2;
-            const baseSpan = Math.min(window.innerWidth, window.innerHeight) * 0.48;
-
-            // Line thickness dynamically expands and contracts
-            const baseThickness = 6;
-            const currentThickness = baseThickness + (baseThickness * 4 * progress);
-
-            // Anchor Line
-            ctxMusic.beginPath();
-            ctxMusic.moveTo(cx - baseSpan / 2, cy);
-            ctxMusic.lineTo(cx + baseSpan / 2, cy);
-            ctxMusic.lineWidth = currentThickness;
-            ctxMusic.lineCap = 'round';
-            ctxMusic.strokeStyle = '#4A90E2';
-            ctxMusic.stroke();
-
-            // Pacing Ball horizontal movement
-            const ballX = (cx - baseSpan / 2) + baseSpan * progress;
-            const ballRadius = currentThickness * 0.8 + 4;
-
-            // Visual Downbeat Flash Ring
-            const ringRadius = ballRadius + (1.0 - beatProgress) * 18;
-            const ringAlpha = Math.max(0, 1.0 - beatProgress * 1.5);
-            ctxMusic.beginPath();
-            ctxMusic.arc(ballX, cy, ringRadius, 0, Math.PI * 2);
-            ctxMusic.strokeStyle = `rgba(231, 111, 81, ${ringAlpha})`;
-            ctxMusic.lineWidth = 2;
-            ctxMusic.stroke();
-
-            // Main Ball
-            ctxMusic.beginPath();
-            ctxMusic.arc(ballX, cy, ballRadius, 0, Math.PI * 2);
-            ctxMusic.fillStyle = '#E76F51';
-            ctxMusic.fill();
-        }
-
-        // Initial setup
-        resizeAllCanvases();
-        updateTimerDisplay();
-
-        // ==========================================
-        // OFFLINE / INSTALLABLE APP SUPPORT
-        // ==========================================
-        // Service workers only run over http(s), not when the file is opened directly (file://).
-        if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js').catch(() => {});
-            });
-        }
-    </script>
+    </section>
+
+    <script src="js/audio.js"></script>
+    <script src="js/programs.js"></script>
+    <script src="js/visual.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>

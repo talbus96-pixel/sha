@@ -1,15 +1,27 @@
 // Lets the app open without internet once it has been visited, and makes it installable.
 // When you change any app file, bump CACHE_VERSION so phones pick up the new version.
-const CACHE_VERSION = 'breathe-v1';
+const CACHE_VERSION = 'breathe-v3';
 const APP_FILES = [
     './',
     './index.html',
+    './css/style.css',
+    './js/audio.js',
+    './js/programs.js',
+    './js/visual.js',
+    './js/app.js',
     './manifest.webmanifest',
     './icons/icon.svg',
     './icons/icon-192.png',
     './icons/icon-512.png',
     './icons/icon-maskable-512.png',
-    './icons/apple-touch-icon.png'
+    './icons/apple-touch-icon.png',
+    './sounds/rain.m4a',
+    './sounds/ocean.m4a',
+    './sounds/stream.m4a',
+    './sounds/forest.m4a',
+    './sounds/fireplace.m4a',
+    './sounds/night.m4a',
+    './sounds/wind.m4a'
 ];
 
 self.addEventListener('install', (event) => {
