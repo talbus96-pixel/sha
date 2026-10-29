@@ -1,0 +1,47 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-10-30T09:20:00Z" },
+  "title": "Sha logo options",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 880, "h": 560, "title": "1 · Shin and dot" },
+    "Box.dc.html": { "x": 960, "y": 0, "w": 880, "h": 560, "title": "2 · Box and dot" },
+    "Three.dc.html": { "x": 1920, "y": 0, "w": 880, "h": 560, "title": "3 · Three breaths" },
+    "Enso.dc.html": { "x": 0, "y": 680, "w": 880, "h": 560, "title": "4 · Open circle" },
+    "Wave.dc.html": { "x": 960, "y": 680, "w": 880, "h": 560, "title": "5 · One breath wave" },
+    "Lamb.dc.html": { "x": 1920, "y": 680, "w": 880, "h": 560, "title": "6 · Lamb" },
+    "Flow.dc.html": { "x": 0, "y": 1360, "w": 880, "h": 560, "title": "7 · Flowing S" },
+    "Triangle.dc.html": { "x": 960, "y": 1360, "w": 880, "h": 560, "title": "8 · Triangle and dot" },
+    "Mark.dc.html": { "x": 1920, "y": 1360, "w": 220, "h": 220, "title": "Icon building block" },
+    "Current.dc.html": { "x": 0, "y": 2040, "w": 880, "h": 520, "title": "Current icon · theme colours" },
+    "Ideas.dc.html": { "x": 960, "y": 2040, "w": 880, "h": 1160, "title": "Ball, ring and dot · 17 creative ideas" },
+    "Planets.dc.html": { "x": 1920, "y": 2040, "w": 880, "h": 820, "title": "Planet, colourful moon and waves" },
+    "Sunrises.dc.html": { "x": 0, "y": 3320, "w": 880, "h": 880, "title": "Sunrise over waves · 12 options" },
+    "Rise.dc.html": { "x": 960, "y": 3320, "w": 220, "h": 220, "title": "Sunrise building block" },
+    "Shortlist.dc.html": { "x": 0, "y": 4320, "w": 1740, "h": 400, "title": "Your shortlist · side by side" },
+    "Evening.dc.html": { "x": 0, "y": 4840, "w": 880, "h": 760, "title": "Evening sea with reflection · 6 options" }
+  },
+  "order": [
+    "Main.dc.html",
+    "Box.dc.html",
+    "Three.dc.html",
+    "Enso.dc.html",
+    "Wave.dc.html",
+    "Lamb.dc.html",
+    "Flow.dc.html",
+    "Triangle.dc.html",
+    "Mark.dc.html",
+    "Current.dc.html",
+    "Ideas.dc.html",
+    "Planets.dc.html",
+    "Sunrises.dc.html",
+    "Rise.dc.html",
+    "Shortlist.dc.html",
+    "Evening.dc.html"
+  ],
+  "notes": {
+    "heading": { "x": 0, "y": -300, "text": "Sha · שָׁה · Ша — logo directions", "kind": "title1", "maxW": 2800 }
+  },
+  "designSystems": []
+}

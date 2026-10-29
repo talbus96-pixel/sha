@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sha icon · sunrise over water</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<svg width="{{px}}" height="{{px}}" viewBox="0 0 512 512" role="img" aria-label="Sha icon: a sun rising over water, with a moon on its orbit">
+<defs>
+<clipPath id="{{ids.tile}}"><rect x="1" y="1" width="510" height="510" rx="112"></rect></clipPath>
+<linearGradient id="{{ids.sky}}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{{sky}}"></stop><stop offset="0.66" stop-color="{{skyB}}"></stop></linearGradient>
+<radialGradient id="{{ids.sun}}" cx="40%" cy="30%" r="72%"><stop offset="0" stop-color="{{sunA}}"></stop><stop offset="1" stop-color="{{sunB}}"></stop></radialGradient>
+<radialGradient id="{{ids.moon}}" cx="34%" cy="30%" r="80%"><stop offset="0" stop-color="{{moonA}}"></stop><stop offset="1" stop-color="{{moonB}}"></stop></radialGradient>
+</defs>
+<g clip-path="url(#{{ids.tile}})">
+<rect x="0" y="0" width="512" height="512" fill="url(#{{ids.sky}})"></rect>
+<path d="{{starsPath}}" fill="#ffffff" fill-opacity="0.75"></path>
+<g transform="rotate(-18 256 300)">
+<path d="M56 300 A200 64 0 0 1 456 300" fill="none" stroke="{{ring}}" stroke-opacity="{{tiltOpacity}}" stroke-width="9"></path>
+</g>
+<circle cx="256" cy="300" r="160" fill="none" stroke="{{ring}}" stroke-opacity="{{ringOpacity}}" stroke-width="9"></circle>
+<circle cx="256" cy="300" r="112" fill="url(#{{ids.sun}})"></circle>
+<g transform="rotate(-18 256 300)">
+<path d="M456 300 A200 64 0 0 1 56 300" fill="none" stroke="{{ring}}" stroke-opacity="{{tiltFrontOpacity}}" stroke-width="9"></path>
+</g>
+<path d="{{coverPath}}" fill="{{skyB}}"></path>
+<path d="{{coverPath}}" fill="{{seaFill}}" fill-opacity="{{seaOpacity}}"></path>
+<ellipse cx="256" cy="368" rx="84" ry="16" fill="{{sunB}}" fill-opacity="{{reflectOpacity}}"></ellipse>
+<path d="{{horizonPath}}" fill="none" stroke="{{water}}" stroke-opacity="0.8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="{{line1}}" fill="none" stroke="{{water}}" stroke-opacity="0.5" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="{{line2}}" fill="none" stroke="{{water}}" stroke-opacity="0.3" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"></path>
+<circle cx="{{moonPos.x}}" cy="{{moonPos.y}}" r="26" fill="url(#{{ids.moon}})"></circle>
+</g>
+<rect x="1" y="1" width="510" height="510" rx="112" fill="none" stroke="{{edge}}" stroke-width="2"></rect>
+</svg>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"uid":{"editor":"text","default":"r0"},"size":{"editor":"int","default":220,"min":16,"max":512},"horizon":{"editor":"enum","default":"wavy","options":["straight","wavy"]},"lines":{"editor":"enum","default":"wavy","options":["straight","wavy","none"]},"sea":{"editor":"enum","default":"none","options":["none","filled"]},"orbit":{"editor":"enum","default":"ring","options":["ring","tilt"]},"reflect":{"editor":"boolean","default":false},"stars":{"editor":"boolean","default":false},"sky":{"editor":"color","default":"#fff1e4"},"skyB":{"editor":"color","default":"#fff1e4"},"seaColor":{"editor":"color","default":""},"sunA":{"editor":"color","default":"#ffd8c2"},"sunB":{"editor":"color","default":"#e8735a"},"ring":{"editor":"color","default":"#4b7fd6"},"water":{"editor":"color","default":"#4b7fd6"},"moonA":{"editor":"color","default":"#e4dcfb"},"moonB":{"editor":"color","default":"#7d63c8"},"$preview":{"width":220,"height":220}}'>
+class Component extends DCLogic {
+renderVals() {
+const p = this.props;
+const f = n => n.toFixed(1);
+const truthy = v => v === true || v === 'true';
+// a sine line from x0 to x1 around height y0 (amp 0 = straight)
+const sine = (x0, x1, y0, amp, waves, phase) => {
+let s = '';
+for (let x = x0, i = 0; x <= x1 + 0.01; x += 6, i++) {
+const y = y0 + amp * Math.sin(((x - x0) / (x1 - x0)) * waves * 2 * Math.PI + phase);
+s += (i === 0 ? 'M' : 'L') + f(x) + ' ' + f(y) + ' ';
+}
+return s;
+};
+const wavyHorizon = (p.horizon || 'wavy') === 'wavy';
+const lines = p.lines || 'wavy';
+const horizonPath = sine(-6, 518, 340, wavyHorizon ? 11 : 0, 2.5, 0);
+const tilt = (p.orbit || 'ring') === 'tilt';
+const sky = p.sky || '#fff1e4';
+const n = parseInt(sky.replace('#', ''), 16) || 0;
+const dark = ((n >> 16) * 0.299 + ((n >> 8) & 255) * 0.587 + (n & 255) * 0.114) < 128;
+let starsPath = 'M0 0';
+if (truthy(p.stars)) {
+starsPath = '';
+[[86, 96, 5], [150, 58, 3.5], [420, 84, 5], [462, 170, 3.5], [60, 200, 4], [372, 40, 3]].forEach(([x, y, r]) => {
+starsPath += 'M' + (x - r) + ' ' + y + ' a' + r + ' ' + r + ' 0 1 0 ' + 2 * r + ' 0 a' + r + ' ' + r + ' 0 1 0 ' + -2 * r + ' 0 ';
+});
+}
+// moon: on the ring, or on the far side of the tilted orbit
+let moonPos = { x: '347.8', y: '168.9' };
+if (tilt) {
+const t = -0.6, lx = 256 + 200 * Math.cos(t), ly = 300 + 64 * Math.sin(t);
+const a = -18 * Math.PI / 180;
+moonPos = { x: f(256 + (lx - 256) * Math.cos(a) - (ly - 300) * Math.sin(a)), y: f(300 + (lx - 256) * Math.sin(a) + (ly - 300) * Math.cos(a)) };
+}
+const uid = p.uid || 'r0';
+return {
+px: (Number(p.size) || 220) + 'px',
+ids: { tile: uid + '-tile', sun: uid + '-sun', moon: uid + '-moon', sky: uid + '-sky' },
+skyB: p.skyB || sky,
+seaFill: p.seaColor || p.water || '#4b7fd6',
+sky,
+sunA: p.sunA || '#ffd8c2',
+sunB: p.sunB || '#e8735a',
+ring: p.ring || '#4b7fd6',
+water: p.water || '#4b7fd6',
+moonA: p.moonA || '#e4dcfb',
+moonB: p.moonB || '#7d63c8',
+edge: dark ? 'transparent' : 'rgba(39, 48, 61, 0.12)',
+starsPath,
+ringOpacity: tilt ? 0 : 0.5,
+tiltOpacity: tilt ? 0.4 : 0,
+tiltFrontOpacity: tilt ? 0.75 : 0,
+horizonPath,
+coverPath: horizonPath + 'L518 520 L-6 520 Z',
+seaOpacity: (p.sea || 'none') !== 'filled' ? 0 : (p.seaColor ? 1 : 0.22),
+reflectOpacity: truthy(p.reflect) ? (p.seaColor ? 0.55 : 0.3) : 0,
+line1: lines === 'none' ? 'M0 0' : sine(130, 382, 392, lines === 'wavy' ? 8 : 0, 1.5, 0.6),
+line2: lines === 'none' ? 'M0 0' : sine(190, 322, 434, lines === 'wavy' ? 6 : 0, 1, 1.2),
+moonPos
+};
+}
+}
+</script>
+</body>
+</html>

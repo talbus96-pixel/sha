@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sha icon · creative variations on ball, ring and dot</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4b7fd6}a:hover{color:#2f5fb3}
+</style>
+</helmet>
+<div style="width: 880px; height: 1160px; box-sizing: border-box; padding: 48px; background: #f7f3ec; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 36px; column-gap: 32px; align-content: start; font-family: Rubik, sans-serif; color: #27303d">
+
+<svg width="0" height="0" aria-hidden="true" style="position: absolute">
+<defs>
+<radialGradient id="gDay" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#a8c8f5"></stop><stop offset="1" stop-color="#4b7fd6"></stop></radialGradient>
+<radialGradient id="gNight" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#a9cbff"></stop><stop offset="1" stop-color="#4a6fc9"></stop></radialGradient>
+<radialGradient id="gWarm" cx="40%" cy="30%" r="72%"><stop offset="0" stop-color="#ffd2b8"></stop><stop offset="1" stop-color="#e8735a"></stop></radialGradient>
+<radialGradient id="gLav" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#d6caf6"></stop><stop offset="1" stop-color="#7d63c8"></stop></radialGradient>
+<radialGradient id="gMarble" cx="34%" cy="28%" r="78%"><stop offset="0" stop-color="#e3eeff"></stop><stop offset="0.55" stop-color="#6f97e0"></stop><stop offset="1" stop-color="#2f5fb3"></stop></radialGradient>
+<clipPath id="clipBall"><circle cx="256" cy="256" r="118"></circle></clipPath>
+<clipPath id="clipTile"><rect x="1" y="1" width="510" height="510" rx="112"></rect></clipPath>
+</defs>
+</svg>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Comet trail: the dot leaves a fading trail along the ring">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#4b7fd6" stroke-opacity="0.45" stroke-width="10"></circle>
+<circle cx="256" cy="256" r="118" fill="url(#gDay)"></circle>
+<path d="M256 88 A168 168 0 0 1 299.5 93.7" fill="none" stroke="#e76f51" stroke-opacity="0.15" stroke-width="14" stroke-linecap="round"></path>
+<path d="M299.5 93.7 A168 168 0 0 1 334.9 107.7" fill="none" stroke="#e76f51" stroke-opacity="0.35" stroke-width="14" stroke-linecap="round"></path>
+<path d="M334.9 107.7 A168 168 0 0 1 364 127.3" fill="none" stroke="#e76f51" stroke-opacity="0.65" stroke-width="14" stroke-linecap="round"></path>
+<circle cx="364" cy="127.3" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">1 · Comet trail</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Breathing ring: the ring gently waves, like it is breathing">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<path d="{{wavy}}" fill="none" stroke="#4b7fd6" stroke-opacity="0.55" stroke-width="9" stroke-linejoin="round"></path>
+<circle cx="256" cy="256" r="118" fill="url(#gDay)"></circle>
+<circle cx="256" cy="88" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">2 · Breathing ring</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Ripples: calm ripples inside the ball, like a drop in still water">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#4b7fd6" stroke-opacity="0.45" stroke-width="10"></circle>
+<circle cx="256" cy="256" r="118" fill="url(#gDay)"></circle>
+<circle cx="256" cy="256" r="94" fill="none" stroke="#ffffff" stroke-opacity="0.3" stroke-width="5"></circle>
+<circle cx="256" cy="256" r="68" fill="none" stroke="#ffffff" stroke-opacity="0.4" stroke-width="5"></circle>
+<circle cx="256" cy="256" r="40" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="5"></circle>
+<circle cx="256" cy="88" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">3 · Ripples</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Eclipse: the ball becomes a crescent moon, for calm evenings">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#16203a"></rect>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#8fbaff" stroke-opacity="0.5" stroke-width="10"></circle>
+<circle cx="256" cy="256" r="118" fill="url(#gNight)"></circle>
+<circle cx="302" cy="218" r="104" fill="#16203a"></circle>
+<circle cx="256" cy="88" r="20" fill="#ffb38f"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">4 · Eclipse moon</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Orbit: the ring tilts like a planet's orbit, with the dot as a moon">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<g transform="rotate(-22 256 256)">
+<path d="M48 256 A208 74 0 0 1 464 256" fill="none" stroke="#4b7fd6" stroke-opacity="0.45" stroke-width="10"></path>
+</g>
+<circle cx="256" cy="256" r="118" fill="url(#gDay)"></circle>
+<g transform="rotate(-22 256 256)">
+<path d="M464 256 A208 74 0 0 1 48 256" fill="none" stroke="#4b7fd6" stroke-opacity="0.75" stroke-width="10"></path>
+<circle cx="389.7" cy="312.7" r="20" fill="#e76f51"></circle>
+</g>
+</svg>
+<span style="font-size: 14px; font-weight: 500">5 · Orbit</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Four phases: the ring split into breathe in, hold, breathe out, hold">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<path d="{{arcsA}}" fill="none" stroke="#4b7fd6" stroke-opacity="0.7" stroke-width="12" stroke-linecap="round"></path>
+<path d="{{arcsB}}" fill="none" stroke="#8d76d9" stroke-opacity="0.7" stroke-width="12" stroke-linecap="round"></path>
+<circle cx="256" cy="256" r="118" fill="url(#gDay)"></circle>
+<circle cx="256" cy="88" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">6 · Four phases</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Clock: gentle tick marks around the ring, like a calm clock">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#4b7fd6" stroke-opacity="0.35" stroke-width="6"></circle>
+<path d="{{ticks}}" fill="none" stroke="#4b7fd6" stroke-opacity="0.6" stroke-width="8" stroke-linecap="round"></path>
+<circle cx="256" cy="256" r="118" fill="url(#gDay)"></circle>
+<circle cx="256" cy="88" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">7 · Calm clock</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Hidden shin: the letter shin drawn inside the ball, the dot as its dot">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#4b7fd6" stroke-opacity="0.45" stroke-width="10"></circle>
+<circle cx="256" cy="256" r="118" fill="url(#gDay)"></circle>
+<path d="M206 222 V292 Q206 312 226 312 H286 Q306 312 306 292 V222 M256 234 V312" fill="none" stroke="#ffffff" stroke-opacity="0.92" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></path>
+<circle cx="340" cy="110.5" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">8 · Hidden ש / Ш</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Filling up: the ball half full, like lungs filling with air">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#4b7fd6" stroke-opacity="0.45" stroke-width="10"></circle>
+<circle cx="256" cy="256" r="118" fill="#dbe7fa"></circle>
+<path d="M120 266 C 170 246 210 286 256 266 S 340 246 392 266 V 380 H 120 Z" fill="url(#gDay)" clip-path="url(#clipBall)"></path>
+<circle cx="256" cy="88" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">9 · Filling up</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Double ring: two rings, breathing in and out, with the dot travelling between them">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="148" fill="none" stroke="#4b7fd6" stroke-opacity="0.35" stroke-width="6"></circle>
+<circle cx="256" cy="256" r="188" fill="none" stroke="#4b7fd6" stroke-opacity="0.35" stroke-width="6"></circle>
+<circle cx="256" cy="256" r="108" fill="url(#gDay)"></circle>
+<circle cx="256" cy="88" r="18" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">10 · Double ring</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Sunrise: the ball as a sun rising over calm water">
+<g clip-path="url(#clipTile)">
+<rect x="0" y="0" width="512" height="512" fill="#fff1e4"></rect>
+<circle cx="256" cy="282" r="168" fill="none" stroke="#e8735a" stroke-opacity="0.4" stroke-width="10"></circle>
+<circle cx="256" cy="282" r="118" fill="url(#gWarm)"></circle>
+<rect x="0" y="334" width="512" height="178" fill="#fff1e4"></rect>
+<path d="M60 334 H452" stroke="#e8735a" stroke-opacity="0.7" stroke-width="8" stroke-linecap="round"></path>
+<path d="M170 380 H342" stroke="#e8735a" stroke-opacity="0.4" stroke-width="8" stroke-linecap="round"></path>
+<path d="M220 420 H292" stroke="#e8735a" stroke-opacity="0.25" stroke-width="8" stroke-linecap="round"></path>
+<circle cx="256" cy="114" r="20" fill="#c9405c"></circle>
+</g>
+</svg>
+<span style="font-size: 14px; font-weight: 500">11 · Sunrise</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Hush waves: soft rings spreading out, like the sound shhh">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="210" fill="none" stroke="#4b7fd6" stroke-opacity="0.15" stroke-width="8"></circle>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#4b7fd6" stroke-opacity="0.35" stroke-width="8"></circle>
+<circle cx="256" cy="256" r="128" fill="none" stroke="#4b7fd6" stroke-opacity="0.55" stroke-width="8"></circle>
+<circle cx="256" cy="256" r="86" fill="url(#gDay)"></circle>
+<circle cx="256" cy="88" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">12 · Hush waves</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="In and out: the ball split into two halves, breathing in and breathing out">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#4b7fd6" stroke-opacity="0.45" stroke-width="10"></circle>
+<circle cx="256" cy="256" r="118" fill="url(#gDay)"></circle>
+<path d="M256 138 A118 118 0 0 1 256 374 A59 59 0 0 1 256 256 A59 59 0 0 0 256 138 Z" fill="#f3a48f"></path>
+<circle cx="256" cy="88" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">13 · In and out</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Glass marble: a shiny, three-dimensional ball with a soft shadow">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<ellipse cx="256" cy="396" rx="96" ry="14" fill="rgba(39,48,61,0.12)"></ellipse>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#4b7fd6" stroke-opacity="0.35" stroke-width="8"></circle>
+<circle cx="256" cy="256" r="118" fill="url(#gMarble)"></circle>
+<ellipse cx="214" cy="204" rx="44" ry="26" fill="#ffffff" fill-opacity="0.55" transform="rotate(-32 214 204)"></ellipse>
+<circle cx="300" cy="318" r="10" fill="#ffffff" fill-opacity="0.35"></circle>
+<circle cx="256" cy="88" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">14 · Glass marble</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Sleepy ball: a calm face with closed eyes">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#4b7fd6" stroke-opacity="0.45" stroke-width="10"></circle>
+<circle cx="256" cy="256" r="118" fill="url(#gDay)"></circle>
+<path d="M206 252 Q222 270 238 252 M274 252 Q290 270 306 252" fill="none" stroke="#16203a" stroke-width="10" stroke-linecap="round"></path>
+<circle cx="196" cy="290" r="14" fill="#e76f51" fill-opacity="0.35"></circle>
+<circle cx="316" cy="290" r="14" fill="#e76f51" fill-opacity="0.35"></circle>
+<circle cx="256" cy="88" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">15 · Sleepy ball</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Floating dot: the dot lifts out of a gap in the ring, like a breath rising">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<path d="{{floatRing}}" fill="none" stroke="#4b7fd6" stroke-opacity="0.45" stroke-width="10" stroke-linecap="round"></path>
+<circle cx="256" cy="256" r="118" fill="url(#gDay)"></circle>
+<circle cx="256" cy="60" r="20" fill="#e76f51"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">16 · Floating dot</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="Mala beads: the ring made of beads for counting breaths, one bead glowing">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#f3eefb"></rect>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#7d63c8" stroke-opacity="0.55" stroke-width="18" stroke-linecap="round" stroke-dasharray="0 44"></circle>
+<circle cx="256" cy="256" r="118" fill="url(#gLav)"></circle>
+<circle cx="256" cy="88" r="22" fill="#f0953f"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">17 · Mala beads</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="150" height="150" viewBox="0 0 512 512" role="img" aria-label="The icon as it is today, for comparison">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#121a30"></rect>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#8fbaff" stroke-opacity="0.45" stroke-width="10"></circle>
+<circle cx="256" cy="256" r="118" fill="url(#gNight)"></circle>
+<circle cx="256" cy="88" r="16" fill="#e8edf7"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">Today, for comparison</span>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":880,"height":1160}}'>
+class Component extends DCLogic {
+renderVals() {
+const cx = 256, cy = 256;
+// a point at angle deg (0 = top, clockwise) and radius r
+const at = (deg, r) => {
+const a = deg * Math.PI / 180;
+return [(cx + r * Math.sin(a)).toFixed(1), (cy - r * Math.cos(a)).toFixed(1)];
+};
+const arc = (a0, a1, r) => {
+const p0 = at(a0, r), p1 = at(a1, r);
+const large = a1 - a0 > 180 ? 1 : 0;
+return 'M' + p0[0] + ' ' + p0[1] + ' A' + r + ' ' + r + ' 0 ' + large + ' 1 ' + p1[0] + ' ' + p1[1] + ' ';
+};
+let wavy = '';
+for (let d = 0; d <= 360; d += 3) {
+const p = at(d, 168 + 9 * Math.sin(d * 8 * Math.PI / 180));
+wavy += (d === 0 ? 'M' : 'L') + p[0] + ' ' + p[1] + ' ';
+}
+let ticks = '';
+for (let i = 1; i < 12; i++) {
+const len = i % 3 === 0 ? 26 : 12;
+const p0 = at(i * 30, 184), p1 = at(i * 30, 184 + len);
+ticks += 'M' + p0[0] + ' ' + p0[1] + ' L' + p1[0] + ' ' + p1[1] + ' ';
+}
+return {
+wavy: wavy + 'Z',
+arcsA: arc(8, 82, 168) + arc(188, 262, 168),
+arcsB: arc(98, 172, 168) + arc(278, 352, 168),
+ticks: ticks,
+floatRing: arc(12, 348, 168)
+};
+}
+}
+</script>
+</body>
+</html>

@@ -25,6 +25,10 @@ Everything runs in the web browser, on a computer or a phone. There's no account
     - Israel Patent Office (trademarks.justice.gov.il)
   - Consider registering "Sha" for health and wellness apps.
 
+## Logo
+
+The icon is a sun setting into a calm violet sea, with its ring and a small lavender moon (design "E1 · Golden hour"). All the other logo options we explored are saved in `design/logo-options/`; see its README.
+
 ## Languages
 
 **English, Hebrew (עברית) and Russian (Русский).** The app starts in the phone's own language when it's one of these, and otherwise in English. To switch, open ☰ Menu and tap the 🌐 language button in its top corner. A short list drops down, with each language written in its own script (no flags, since flags stand for countries rather than languages). In Hebrew the whole layout reads right-to-left. Everything is translated, including technique explanations, the tour, reminders and calendar events.
@@ -131,6 +135,7 @@ It can come back later if you miss it.
 | `js/app.js` | Ties it together: the session clock, the buttons and panels, saving your settings. |
 | `js/audio.js` | All the sound: the bowl, chime and tone cues, and playing the nature recordings. |
 | `sounds/` | The nature recordings. |
+| `design/` | The saved logo options and an icon preview. |
 | `manifest.webmanifest`, `service-worker.js`, `icons/` | Let phones install the app on the home screen and use it without internet. |
 
 ## Sound credits

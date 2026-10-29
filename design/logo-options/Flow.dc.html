@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sha logo · Flowing S</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4b7fd6}a:hover{color:#2f5fb3}
+</style>
+</helmet>
+<div style="width: 880px; height: 560px; box-sizing: border-box; padding: 48px; background: #f7f3ec; display: flex; align-items: center; gap: 48px; font-family: Rubik, sans-serif; color: #27303d">
+<div style="display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; gap: 24px">
+<dc-import name="Mark" kind="flow" stroke="{{accent}}" dot="{{dot}}" bg="#ffffff" size="200" hint-size="200px,200px"></dc-import>
+<dc-import name="Mark" kind="flow" stroke="#e8edf7" dot="{{dot}}" bg="#16203a" size="200" hint-size="200px,200px"></dc-import>
+</div>
+<div style="display: flex; align-items: flex-end; gap: 20px">
+<dc-import name="Mark" kind="flow" stroke="{{accent}}" dot="{{dot}}" bg="#ffffff" size="64" hint-size="64px,64px"></dc-import>
+<dc-import name="Mark" kind="flow" stroke="{{accent}}" dot="{{dot}}" bg="#ffffff" size="40" hint-size="40px,40px"></dc-import>
+<dc-import name="Mark" kind="flow" stroke="{{accent}}" dot="{{dot}}" bg="#ffffff" size="24" hint-size="24px,24px"></dc-import>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 32px; flex-grow: 1">
+<div style="display: flex; align-items: center; gap: 16px">
+<dc-import name="Mark" kind="flow" stroke="{{accent}}" dot="{{dot}}" bg="#ffffff" size="56" hint-size="56px,56px"></dc-import>
+<span style="font-size: 48px; font-weight: 300; letter-spacing: 0.08em">Sha</span>
+</div>
+<div dir="rtl" style="display: flex; align-items: center; gap: 16px">
+<dc-import name="Mark" kind="flow" stroke="{{accent}}" dot="{{dot}}" bg="#ffffff" size="56" hint-size="56px,56px"></dc-import>
+<span lang="he" style="font-size: 48px; font-weight: 300">שָׁה</span>
+</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<dc-import name="Mark" kind="flow" stroke="{{accent}}" dot="{{dot}}" bg="#ffffff" size="56" hint-size="56px,56px"></dc-import>
+<span lang="ru" style="font-size: 48px; font-weight: 300; letter-spacing: 0.08em">Ша</span>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4b7fd6","options":["#4b7fd6","#1f9aa8","#3f9a6b","#7d63c8"]},"dot":{"editor":"color","default":"#e76f51","options":["#e76f51","#ee8240","#c9405c","#e6a032"]},"$preview":{"width":880,"height":560}}'>
+class Component extends DCLogic {
+renderVals() {
+return { accent: this.props.accent ?? '#4b7fd6', dot: this.props.dot ?? '#e76f51' };
+}
+}
+</script>
+</body>
+</html>

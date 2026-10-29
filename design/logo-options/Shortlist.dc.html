@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sha icon · shortlist side by side</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4b7fd6}a:hover{color:#2f5fb3}
+</style>
+</helmet>
+<div style="width: 1740px; height: 400px; box-sizing: border-box; padding: 48px; background: #f7f3ec; display: flex; align-items: flex-start; gap: 40px; font-family: Rubik, sans-serif; color: #27303d">
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="k2" size="200" horizon="straight" lines="wavy" sea="none" orbit="ring" sky="#fff1e4" sun-a="#ffd8c2" sun-b="#e8735a" ring="#4b7fd6" water="#4b7fd6" moon-a="#e4dcfb" moon-b="#7d63c8" hint-size="200px,200px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">2 · Wavy lines below</div><div style="font-size: 13px; color: #5d6573">Peach dawn</div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="k4" size="200" horizon="wavy" lines="wavy" sea="filled" orbit="ring" sky="#e8f7f6" sun-a="#ffd8c2" sun-b="#e8735a" ring="#1f9aa8" water="#1f9aa8" moon-a="#fff3c4" moon-b="#e0a02a" hint-size="200px,200px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">4 · Filled sea</div><div style="font-size: 13px; color: #5d6573">Sea morning</div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="k8" size="200" horizon="straight" lines="wavy" sea="none" orbit="tilt" sky="#efe9fb" sun-a="#fff3c4" sun-b="#f0953f" ring="#7d63c8" water="#7d63c8" moon-a="#ffd0c0" moon-b="#c9405c" hint-size="200px,200px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">8 · Tilted orbit</div><div style="font-size: 13px; color: #5d6573">Lavender dusk</div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="k9" size="200" horizon="straight" lines="wavy" sea="none" orbit="ring" reflect="{{yes}}" sky="#fdeef0" sun-a="#ffe3a3" sun-b="#f0953f" ring="#c96b7d" water="#4b7fd6" moon-a="#e2fbe9" moon-b="#2f8f78" hint-size="200px,200px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">9 · Sun reflection</div><div style="font-size: 13px; color: #5d6573">Rose</div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="k10" size="200" horizon="wavy" lines="wavy" sea="none" orbit="ring" stars="{{yes}}" sky="#16203a" sun-a="#fff3c4" sun-b="#f6a23a" ring="#8fbaff" water="#8fbaff" moon-a="#ffd0c0" moon-b="#ff7f5c" hint-size="200px,200px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">10 · All wavy</div><div style="font-size: 13px; color: #5d6573">Night sea</div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="k11" size="200" horizon="wavy" lines="wavy" sea="filled" orbit="ring" sky="#eef7e6" sun-a="#ffd8c2" sun-b="#e8735a" ring="#3f9a6b" water="#1f9aa8" moon-a="#fff3c4" moon-b="#e0a02a" hint-size="200px,200px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">11 · Filled sea</div><div style="font-size: 13px; color: #5d6573">Meadow</div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="k12" size="200" horizon="wavy" lines="wavy" sea="filled" orbit="tilt" stars="{{yes}}" sky="#16203a" sun-a="#fff3c4" sun-b="#f6a23a" ring="#8fbaff" water="#8fbaff" moon-a="#ffd0c0" moon-b="#ff7f5c" hint-size="200px,200px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">12 · Tilted, filled sea</div><div style="font-size: 13px; color: #5d6573">Night sea</div></div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1740,"height":400}}'>
+class Component extends DCLogic {
+renderVals() {
+return { yes: true };
+}
+}
+</script>
+</body>
+</html>

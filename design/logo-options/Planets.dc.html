@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sha icon · planet, colourful moon and waves</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4b7fd6}a:hover{color:#2f5fb3}
+</style>
+</helmet>
+<div style="width: 880px; height: 820px; box-sizing: border-box; padding: 48px; background: #f7f3ec; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 36px; column-gap: 28px; align-content: start; font-family: Rubik, sans-serif; color: #27303d">
+
+<svg width="0" height="0" aria-hidden="true" style="position: absolute">
+<defs>
+<radialGradient id="pDay" cx="36%" cy="30%" r="72%"><stop offset="0" stop-color="#b9d4fa"></stop><stop offset="1" stop-color="#4b7fd6"></stop></radialGradient>
+<radialGradient id="pNight" cx="36%" cy="30%" r="72%"><stop offset="0" stop-color="#a9cbff"></stop><stop offset="1" stop-color="#3d5fb8"></stop></radialGradient>
+<radialGradient id="pLav" cx="36%" cy="30%" r="72%"><stop offset="0" stop-color="#ddd2f8"></stop><stop offset="1" stop-color="#7d63c8"></stop></radialGradient>
+<radialGradient id="pTeal" cx="36%" cy="30%" r="72%"><stop offset="0" stop-color="#b4ecee"></stop><stop offset="1" stop-color="#1f9aa8"></stop></radialGradient>
+<radialGradient id="pWarm" cx="40%" cy="30%" r="72%"><stop offset="0" stop-color="#ffd8c2"></stop><stop offset="1" stop-color="#e8735a"></stop></radialGradient>
+<radialGradient id="pDeep" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#4b7fd6"></stop><stop offset="1" stop-color="#253f80"></stop></radialGradient>
+<radialGradient id="mSunset" cx="34%" cy="30%" r="80%"><stop offset="0" stop-color="#ffe3a3"></stop><stop offset="0.5" stop-color="#ff8a6b"></stop><stop offset="1" stop-color="#d9488f"></stop></radialGradient>
+<radialGradient id="mGold" cx="34%" cy="30%" r="80%"><stop offset="0" stop-color="#fff3c4"></stop><stop offset="0.55" stop-color="#f6b94a"></stop><stop offset="1" stop-color="#e0702a"></stop></radialGradient>
+<radialGradient id="mCoral" cx="34%" cy="30%" r="80%"><stop offset="0" stop-color="#ffd0c0"></stop><stop offset="0.55" stop-color="#ff7f5c"></stop><stop offset="1" stop-color="#c9405c"></stop></radialGradient>
+<radialGradient id="mMint" cx="34%" cy="30%" r="80%"><stop offset="0" stop-color="#e2fbe9"></stop><stop offset="0.55" stop-color="#7fd6a8"></stop><stop offset="1" stop-color="#2f8f78"></stop></radialGradient>
+<clipPath id="pClip"><circle cx="256" cy="256" r="118"></circle></clipPath>
+<clipPath id="pClipLow"><circle cx="256" cy="330" r="118"></circle></clipPath>
+<clipPath id="pTile"><rect x="1" y="1" width="510" height="510" rx="112"></rect></clipPath>
+</defs>
+</svg>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="A blue planet with a colourful sunset moon orbiting it">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="178" fill="none" stroke="#4b7fd6" stroke-opacity="0.4" stroke-width="8"></circle>
+<circle cx="256" cy="256" r="112" fill="url(#pDay)"></circle>
+<circle cx="370.4" cy="119.6" r="32" fill="url(#mSunset)"></circle>
+<circle cx="378" cy="112" r="6" fill="#000000" fill-opacity="0.12"></circle>
+<circle cx="361" cy="128" r="4" fill="#000000" fill-opacity="0.12"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">A · Colourful moon</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="A lavender planet with a tilted orbit and a golden moon">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<g transform="rotate(-22 256 256)">
+<path d="M48 256 A208 74 0 0 1 464 256" fill="none" stroke="#7d63c8" stroke-opacity="0.35" stroke-width="10"></path>
+</g>
+<circle cx="256" cy="256" r="118" fill="url(#pLav)"></circle>
+<g transform="rotate(-22 256 256)">
+<path d="M464 256 A208 74 0 0 1 48 256" fill="none" stroke="#7d63c8" stroke-opacity="0.7" stroke-width="10"></path>
+<circle cx="389.7" cy="312.7" r="30" fill="url(#mGold)"></circle>
+<circle cx="397" cy="305" r="5.5" fill="#000000" fill-opacity="0.12"></circle>
+</g>
+</svg>
+<span style="font-size: 14px; font-weight: 500">B · Tilted orbit</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="The moon rides an orbit shaped like a gentle wave">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<path d="{{wavyRing}}" fill="none" stroke="#4b7fd6" stroke-opacity="0.5" stroke-width="8" stroke-linejoin="round"></path>
+<circle cx="256" cy="256" r="112" fill="url(#pDay)"></circle>
+<circle cx="256" cy="78" r="30" fill="url(#mSunset)"></circle>
+<circle cx="264" cy="71" r="5.5" fill="#000000" fill-opacity="0.12"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">C · Wave orbit</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="A teal planet with a tilted wavy orbit and a coral moon">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<g transform="rotate(-22 256 256)">
+<path d="{{tiltBack}}" fill="none" stroke="#1f9aa8" stroke-opacity="0.35" stroke-width="9" stroke-linejoin="round"></path>
+</g>
+<circle cx="256" cy="256" r="118" fill="url(#pTeal)"></circle>
+<g transform="rotate(-22 256 256)">
+<path d="{{tiltFront}}" fill="none" stroke="#1f9aa8" stroke-opacity="0.75" stroke-width="9" stroke-linejoin="round"></path>
+<circle cx="{{tiltMoon.x}}" cy="{{tiltMoon.y}}" r="30" fill="url(#mCoral)"></circle>
+</g>
+</svg>
+<span style="font-size: 14px; font-weight: 500">D · Wavy tilted orbit</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="A planet with breathing waves across it, like a gas giant, and a moon">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="178" fill="none" stroke="#4b7fd6" stroke-opacity="0.4" stroke-width="8"></circle>
+<circle cx="256" cy="256" r="118" fill="url(#pDay)"></circle>
+<path d="{{bands}}" fill="none" stroke="#ffffff" stroke-opacity="0.4" stroke-width="11" stroke-linecap="round" clip-path="url(#pClip)"></path>
+<circle cx="370.4" cy="119.6" r="30" fill="url(#mGold)"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">E · Wave-striped planet</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="An ocean planet, half filled with a wave, and a moon above">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="178" fill="none" stroke="#4b7fd6" stroke-opacity="0.4" stroke-width="8"></circle>
+<circle cx="256" cy="256" r="118" fill="#d6e5fb"></circle>
+<path d="{{sea}}" fill="url(#pDeep)" clip-path="url(#pClip)"></path>
+<circle cx="256" cy="78" r="30" fill="url(#mSunset)"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">F · Ocean planet</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="The moon moving along its orbit, with faint copies showing its path">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="178" fill="none" stroke="#4b7fd6" stroke-opacity="0.35" stroke-width="8"></circle>
+<circle cx="256" cy="256" r="112" fill="url(#pDay)"></circle>
+<circle cx="256" cy="78" r="22" fill="url(#mSunset)" fill-opacity="0.2"></circle>
+<circle cx="316.9" cy="88.7" r="25" fill="url(#mSunset)" fill-opacity="0.4"></circle>
+<circle cx="370.4" cy="119.6" r="32" fill="url(#mSunset)"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">G · Moon in motion</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="A night sky with stars, a striped planet and a colourful moon">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#16203a"></rect>
+<path d="{{stars}}" fill="#ffffff" fill-opacity="0.7"></path>
+<path d="{{wavyRing}}" fill="none" stroke="#8fbaff" stroke-opacity="0.4" stroke-width="7" stroke-linejoin="round"></path>
+<circle cx="256" cy="256" r="112" fill="url(#pNight)"></circle>
+<path d="{{bands}}" fill="none" stroke="#ffffff" stroke-opacity="0.3" stroke-width="10" stroke-linecap="round" clip-path="url(#pClip)"></path>
+<circle cx="256" cy="78" r="30" fill="url(#mSunset)"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">H · Night sky</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="One breath wave passing across the planet, with the moon riding its crest">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="118" fill="url(#pDay)"></circle>
+<path d="{{crossWave}}" fill="none" stroke="#4b7fd6" stroke-opacity="0.75" stroke-width="10" stroke-linecap="round"></path>
+<circle cx="{{crossMoon.x}}" cy="{{crossMoon.y}}" r="30" fill="url(#mCoral)"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">I · Breath wave</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="A warm planet rising over waves, with a colourful moon in the sky">
+<g clip-path="url(#pTile)">
+<rect x="0" y="0" width="512" height="512" fill="#fff1e4"></rect>
+<circle cx="256" cy="330" r="118" fill="url(#pWarm)"></circle>
+<path d="{{horizonFill}}" fill="#fff1e4"></path>
+<path d="{{horizon}}" fill="none" stroke="#e8735a" stroke-opacity="0.7" stroke-width="9" stroke-linecap="round"></path>
+<path d="{{horizon2}}" fill="none" stroke="#e8735a" stroke-opacity="0.35" stroke-width="8" stroke-linecap="round"></path>
+<circle cx="384" cy="132" r="32" fill="url(#mSunset)"></circle>
+</g>
+</svg>
+<span style="font-size: 14px; font-weight: 500">J · Rising over waves</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="A planet with two moons, one for breathing in and one for breathing out">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="178" fill="none" stroke="#4b7fd6" stroke-opacity="0.4" stroke-width="8"></circle>
+<circle cx="256" cy="256" r="112" fill="url(#pDay)"></circle>
+<circle cx="370.4" cy="119.6" r="30" fill="url(#mCoral)"></circle>
+<circle cx="141.6" cy="392.4" r="24" fill="url(#mMint)"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">K · Two moons</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="160" height="160" viewBox="0 0 512 512" role="img" aria-label="A close-up: a big colourful moon passing in front of the planet's wave orbit">
+<rect x="1" y="1" width="510" height="510" rx="112" fill="#ffffff" stroke="rgba(39,48,61,0.12)" stroke-width="2"></rect>
+<path d="{{wavyRing}}" fill="none" stroke="#7d63c8" stroke-opacity="0.45" stroke-width="8" stroke-linejoin="round"></path>
+<circle cx="236" cy="276" r="104" fill="url(#pLav)"></circle>
+<circle cx="374" cy="138" r="52" fill="url(#mGold)"></circle>
+<circle cx="388" cy="124" r="9" fill="#000000" fill-opacity="0.1"></circle>
+<circle cx="360" cy="152" r="6" fill="#000000" fill-opacity="0.1"></circle>
+<circle cx="392" cy="158" r="4" fill="#000000" fill-opacity="0.1"></circle>
+</svg>
+<span style="font-size: 14px; font-weight: 500">L · Big moon</span>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":880,"height":820}}'>
+class Component extends DCLogic {
+renderVals() {
+const f = n => n.toFixed(1);
+// a point on a circle around the centre: deg 0 = top, clockwise
+const at = (deg, r) => {
+const a = deg * Math.PI / 180;
+return [256 + r * Math.sin(a), 256 - r * Math.cos(a)];
+};
+let wavyRing = '';
+for (let d = 0; d <= 360; d += 3) {
+const p = at(d, 178 + 10 * Math.sin(d * 8 * Math.PI / 180));
+wavyRing += (d === 0 ? 'M' : 'L') + f(p[0]) + ' ' + f(p[1]) + ' ';
+}
+// a wavy ellipse (before tilting): t from t0 to t1 in radians
+const ellipse = (t0, t1) => {
+let s = '';
+for (let t = t0, i = 0; t <= t1 + 1e-6; t += 0.05, i++) {
+const k = 1 + 0.07 * Math.sin(8 * t);
+s += (i === 0 ? 'M' : 'L') + f(256 + 208 * k * Math.cos(t)) + ' ' + f(256 + 74 * k * Math.sin(t)) + ' ';
+}
+return s;
+};
+const tm = 0.85, tk = 1 + 0.07 * Math.sin(8 * tm);
+// a sine line from x0 to x1 around height y0
+const sine = (x0, x1, y0, amp, waves, phase) => {
+let s = '';
+for (let x = x0, i = 0; x <= x1; x += 6, i++) {
+const y = y0 + amp * Math.sin(((x - x0) / (x1 - x0)) * waves * 2 * Math.PI + phase);
+s += (i === 0 ? 'M' : 'L') + f(x) + ' ' + f(y) + ' ';
+}
+return s;
+};
+const bands = sine(130, 382, 206, 10, 1.5, 0) + sine(130, 382, 256, 10, 1.5, 1.2) + sine(130, 382, 306, 10, 1.5, 2.4);
+const sea = sine(130, 382, 272, 14, 1.5, 0) + 'L382 390 L130 390 Z';
+const crossY = x => 256 - 64 * Math.sin(((x - 52) / 408) * 1.25 * 2 * Math.PI);
+let crossWave = '';
+for (let x = 52, i = 0; x <= 460; x += 6, i++) crossWave += (i === 0 ? 'M' : 'L') + f(x) + ' ' + f(crossY(x)) + ' ';
+const horizon = sine(0, 512, 344, 12, 2, 0);
+let stars = '';
+[[96, 104, 4], [150, 70, 3], [420, 96, 4], [440, 400, 3], [90, 420, 4], [400, 450, 2.5], [70, 250, 3], [460, 230, 2.5]].forEach(([x, y, r]) => {
+stars += 'M' + (x - r) + ' ' + y + ' a' + r + ' ' + r + ' 0 1 0 ' + 2 * r + ' 0 a' + r + ' ' + r + ' 0 1 0 ' + -2 * r + ' 0 ';
+});
+return {
+wavyRing: wavyRing + 'Z',
+tiltBack: ellipse(Math.PI, 2 * Math.PI),
+tiltFront: ellipse(0, Math.PI),
+tiltMoon: { x: f(256 + 208 * tk * Math.cos(tm)), y: f(256 + 74 * tk * Math.sin(tm)) },
+bands,
+sea,
+crossWave,
+crossMoon: { x: f(133.6), y: f(crossY(133.6) - 4) },
+horizon,
+horizonFill: horizon + 'L512 512 L0 512 Z',
+horizon2: sine(120, 392, 404, 8, 1.5, 0.8),
+stars
+};
+}
+}
+</script>
+</body>
+</html>

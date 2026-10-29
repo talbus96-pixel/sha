@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Current Sha icon in every theme colour</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4b7fd6}a:hover{color:#2f5fb3}
+</style>
+</helmet>
+<div style="width: 880px; height: 520px; box-sizing: border-box; padding: 48px 40px; background: #f7f3ec; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); row-gap: 40px; column-gap: 24px; align-content: center; font-family: Rubik, sans-serif; color: #27303d">
+<sc-for list="{{variants}}" as="v" hint-placeholder-count="9">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<svg width="128" height="128" viewBox="0 0 512 512" role="img" aria-label="{{v.label}}">
+<defs>
+<radialGradient id="{{v.gid}}" cx="38%" cy="32%" r="70%">
+<stop offset="0" stop-color="{{v.orbLight}}"></stop>
+<stop offset="1" stop-color="{{v.orbDark}}"></stop>
+</radialGradient>
+</defs>
+<rect x="1" y="1" width="510" height="510" rx="112" fill="{{v.bg}}" stroke="{{v.edge}}" stroke-width="2"></rect>
+<circle cx="256" cy="256" r="168" fill="none" stroke="{{v.ring}}" stroke-opacity="0.5" stroke-width="10"></circle>
+<circle cx="256" cy="256" r="118" fill="url(#{{v.gid}})"></circle>
+<circle cx="256" cy="88" r="18" fill="{{v.dot}}"></circle>
+</svg>
+<span style="font-size: 15px; font-weight: 500">{{v.name}}</span>
+</div>
+</sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":880,"height":520}}'>
+class Component extends DCLogic {
+renderVals() {
+const light = 'rgba(39, 48, 61, 0.10)';
+const none = 'transparent';
+const list = [
+{ id: 'now', name: 'Now (Night)', bg: '#121a30', ring: '#8fbaff', orbLight: '#a9cbff', orbDark: '#4a6fc9', dot: '#e8edf7', edge: none },
+{ id: 'day', name: 'Day', bg: '#ffffff', ring: '#4b7fd6', orbLight: '#a8c8f5', orbDark: '#4b7fd6', dot: '#e76f51', edge: light },
+{ id: 'sunrise', name: 'Sunrise', bg: '#fff1e4', ring: '#e8735a', orbLight: '#ffc9ae', orbDark: '#e8735a', dot: '#c9405c', edge: light },
+{ id: 'meadow', name: 'Meadow', bg: '#eef7e6', ring: '#3f9a6b', orbLight: '#a9e6c8', orbDark: '#3f9a6b', dot: '#ee8240', edge: light },
+{ id: 'lavender', name: 'Lavender', bg: '#f3eefb', ring: '#7d63c8', orbLight: '#cbbcf2', orbDark: '#7d63c8', dot: '#f0953f', edge: light },
+{ id: 'lagoon', name: 'Lagoon', bg: '#e8f7f6', ring: '#1f9aa8', orbLight: '#a6e3e6', orbDark: '#1f9aa8', dot: '#ff7f5c', edge: light },
+{ id: 'dusk', name: 'Dusk', bg: '#33223f', ring: '#ffb59a', orbLight: '#ffc9ae', orbDark: '#c96b7d', dot: '#fff0e2', edge: none },
+{ id: 'forest', name: 'Forest', bg: '#1b3530', ring: '#8fd9b6', orbLight: '#a9e6c8', orbDark: '#3f8f78', dot: '#f1e4a0', edge: none },
+{ id: 'mix', name: 'Day + coral', bg: '#f7f3ec', ring: '#e76f51', orbLight: '#a8c8f5', orbDark: '#4b7fd6', dot: '#e76f51', edge: light }
+];
+return {
+variants: list.map(v => ({ ...v, gid: 'orb-' + v.id, label: 'Current Sha icon in ' + v.name + ' colours' }))
+};
+}
+}
+</script>
+</body>
+</html>

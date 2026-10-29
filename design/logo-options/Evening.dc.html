@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sha icon · evening sea with reflection</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4b7fd6}a:hover{color:#2f5fb3}
+</style>
+</helmet>
+<div style="width: 880px; height: 760px; box-sizing: border-box; padding: 48px; background: #f7f3ec; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 40px; column-gap: 32px; align-content: start; justify-items: center; font-family: Rubik, sans-serif; color: #27303d">
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="e1" size="220" horizon="wavy" lines="wavy" sea="filled" orbit="ring" reflect="{{yes}}" sky="#ffd9a8" sky-b="#ff9f7a" sea-color="#4f3f8f" sun-a="#fff1c4" sun-b="#ff7a45" ring="#7d63c8" water="#ffd9a8" moon-a="#e4dcfb" moon-b="#7d63c8" hint-size="220px,220px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">E1 · Golden hour</div><div style="font-size: 13px; color: #5d6573">peach sky, violet sea</div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="e2" size="220" horizon="wavy" lines="wavy" sea="filled" orbit="ring" reflect="{{yes}}" sky="#f7c6d6" sky-b="#f59f8f" sea-color="#34407f" sun-a="#ffe3a3" sun-b="#f0953f" ring="#4b5fc0" water="#ffc9b5" moon-a="#fff3c4" moon-b="#e0a02a" hint-size="220px,220px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">E2 · Pink dusk</div><div style="font-size: 13px; color: #5d6573">pink sky, deep blue sea</div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="e3" size="220" horizon="wavy" lines="wavy" sea="filled" orbit="ring" reflect="{{yes}}" sky="#b9a6ef" sky-b="#f2a8b8" sea-color="#2e2a5e" sun-a="#ffd29a" sun-b="#e8735a" ring="#4b3a8c" water="#f2a8b8" moon-a="#ffe3a3" moon-b="#f6b94a" hint-size="220px,220px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">E3 · Purple evening</div><div style="font-size: 13px; color: #5d6573">lilac to rose sky, indigo sea</div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="e4" size="220" horizon="wavy" lines="wavy" sea="filled" orbit="ring" reflect="{{yes}}" stars="{{yes}}" sky="#7f97d8" sky-b="#f0b6a6" sea-color="#1d2d5c" sun-a="#ffe0b0" sun-b="#ff8a6b" ring="#233a7a" water="#a9bcf2" moon-a="#fff3c4" moon-b="#f6b94a" hint-size="220px,220px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">E4 · Blue hour</div><div style="font-size: 13px; color: #5d6573">first stars, navy sea</div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="e5" size="220" horizon="wavy" lines="wavy" sea="filled" orbit="ring" reflect="{{yes}}" stars="{{yes}}" sky="#2f2858" sky-b="#e88a6b" sea-color="#1a1736" sun-a="#ffd29a" sun-b="#e8574a" ring="#ffb38f" water="#ffb38f" moon-a="#f3eefb" moon-b="#b9a6ef" hint-size="220px,220px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">E5 · Last light</div><div style="font-size: 13px; color: #5d6573">night above, glow on the horizon</div></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+<dc-import name="Rise" uid="e6" size="220" horizon="wavy" lines="wavy" sea="filled" orbit="tilt" reflect="{{yes}}" sky="#ffd9a8" sky-b="#ff9f7a" sea-color="#4f3f8f" sun-a="#fff1c4" sun-b="#ff7a45" ring="#7d63c8" water="#ffd9a8" moon-a="#e4dcfb" moon-b="#7d63c8" hint-size="220px,220px"></dc-import>
+<div style="text-align: center; line-height: 1.4"><div style="font-size: 16px; font-weight: 500">E6 · Golden hour, tilted</div><div style="font-size: 13px; color: #5d6573">with the tilted orbit</div></div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":880,"height":760}}'>
+class Component extends DCLogic {
+renderVals() {
+return { yes: true };
+}
+}
+</script>
+</body>
+</html>

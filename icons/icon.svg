@@ -1,10 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Sha icon: a sun setting into a calm violet sea, its ring and a lavender moon (design "E1 · Golden hour", simplified) -->
   <defs>
-    <radialGradient id="bg" cx="50%" cy="0%" r="110%"><stop offset="0" stop-color="#1f2c4f"/><stop offset="0.7" stop-color="#0b1020"/></radialGradient>
-    <radialGradient id="orb" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#a9cbff"/><stop offset="1" stop-color="#4a6fc9"/></radialGradient>
+    <clipPath id="tile"><rect x="0" y="0" width="512" height="512" rx="112"/></clipPath>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd9a8"/><stop offset="0.66" stop-color="#ff9f7a"/></linearGradient>
+    <radialGradient id="sun" cx="40%" cy="30%" r="72%"><stop offset="0" stop-color="#fff1c4"/><stop offset="1" stop-color="#ff7a45"/></radialGradient>
+    <radialGradient id="moon" cx="34%" cy="30%" r="80%"><stop offset="0" stop-color="#e4dcfb"/><stop offset="1" stop-color="#7d63c8"/></radialGradient>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
-  <circle cx="256" cy="256" r="168" fill="none" stroke="#8fbaff" stroke-opacity="0.45" stroke-width="10"/>
-  <circle cx="256" cy="256" r="118" fill="url(#orb)"/>
-  <circle cx="256" cy="88" r="16" fill="#e8edf7"/>
+  <g clip-path="url(#tile)">
+    <rect width="512" height="512" fill="url(#sky)"/>
+    <circle cx="256" cy="300" r="160" fill="none" stroke="#7d63c8" stroke-opacity="0.5" stroke-width="9"/>
+    <circle cx="256" cy="300" r="112" fill="url(#sun)"/>
+    <path d="M-6.0 340.0 L0.0 342.0 L6.0 343.9 L12.0 345.7 L18.0 347.2 L24.0 348.6 L30.0 349.7 L36.0 350.5 L42.0 350.9 L48.0 351.0 L54.0 350.7 L60.0 350.1 L66.0 349.2 L72.0 347.9 L78.0 346.4 L84.0 344.7 L90.0 342.9 L96.0 340.9 L102.0 338.9 L108.0 337.0 L114.0 335.2 L120.0 333.5 L126.0 332.0 L132.0 330.8 L138.0 329.8 L144.0 329.3 L150.0 329.0 L156.0 329.1 L162.0 329.6 L168.0 330.4 L174.0 331.5 L180.0 332.9 L186.0 334.5 L192.0 336.3 L198.0 338.2 L204.0 340.1 L210.0 342.1 L216.0 344.0 L222.0 345.8 L228.0 347.3 L234.0 348.7 L240.0 349.8 L246.0 350.5 L252.0 350.9 L258.0 351.0 L264.0 350.7 L270.0 350.0 L276.0 349.1 L282.0 347.8 L288.0 346.3 L294.0 344.6 L300.0 342.7 L306.0 340.8 L312.0 338.8 L318.0 336.9 L324.0 335.0 L330.0 333.4 L336.0 331.9 L342.0 330.7 L348.0 329.8 L354.0 329.2 L360.0 329.0 L366.0 329.1 L372.0 329.6 L378.0 330.4 L384.0 331.6 L390.0 333.0 L396.0 334.6 L402.0 336.4 L408.0 338.3 L414.0 340.3 L420.0 342.2 L426.0 344.1 L432.0 345.9 L438.0 347.4 L444.0 348.8 L450.0 349.8 L456.0 350.5 L462.0 350.9 L468.0 351.0 L474.0 350.7 L480.0 350.0 L486.0 349.0 L492.0 347.7 L498.0 346.2 L504.0 344.5 L510.0 342.6 L516.0 340.7 L518 520 L-6 520 Z" fill="#4f3f8f"/>
+    <ellipse cx="256" cy="368" rx="84" ry="16" fill="#ff7a45" fill-opacity="0.55"/>
+    <path d="M-6.0 340.0 L0.0 342.0 L6.0 343.9 L12.0 345.7 L18.0 347.2 L24.0 348.6 L30.0 349.7 L36.0 350.5 L42.0 350.9 L48.0 351.0 L54.0 350.7 L60.0 350.1 L66.0 349.2 L72.0 347.9 L78.0 346.4 L84.0 344.7 L90.0 342.9 L96.0 340.9 L102.0 338.9 L108.0 337.0 L114.0 335.2 L120.0 333.5 L126.0 332.0 L132.0 330.8 L138.0 329.8 L144.0 329.3 L150.0 329.0 L156.0 329.1 L162.0 329.6 L168.0 330.4 L174.0 331.5 L180.0 332.9 L186.0 334.5 L192.0 336.3 L198.0 338.2 L204.0 340.1 L210.0 342.1 L216.0 344.0 L222.0 345.8 L228.0 347.3 L234.0 348.7 L240.0 349.8 L246.0 350.5 L252.0 350.9 L258.0 351.0 L264.0 350.7 L270.0 350.0 L276.0 349.1 L282.0 347.8 L288.0 346.3 L294.0 344.6 L300.0 342.7 L306.0 340.8 L312.0 338.8 L318.0 336.9 L324.0 335.0 L330.0 333.4 L336.0 331.9 L342.0 330.7 L348.0 329.8 L354.0 329.2 L360.0 329.0 L366.0 329.1 L372.0 329.6 L378.0 330.4 L384.0 331.6 L390.0 333.0 L396.0 334.6 L402.0 336.4 L408.0 338.3 L414.0 340.3 L420.0 342.2 L426.0 344.1 L432.0 345.9 L438.0 347.4 L444.0 348.8 L450.0 349.8 L456.0 350.5 L462.0 350.9 L468.0 351.0 L474.0 350.7 L480.0 350.0 L486.0 349.0 L492.0 347.7 L498.0 346.2 L504.0 344.5 L510.0 342.6 L516.0 340.7" fill="none" stroke="#ffd9a8" stroke-opacity="0.8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M130.0 396.5 L136.0 397.9 L142.0 398.9 L148.0 399.6 L154.0 400.0 L160.0 399.9 L166.0 399.4 L172.0 398.6 L178.0 397.4 L184.0 396.0 L190.0 394.3 L196.0 392.6 L202.0 390.8 L208.0 389.1 L214.0 387.5 L220.0 386.1 L226.0 385.1 L232.0 384.4 L238.0 384.0 L244.0 384.1 L250.0 384.6 L256.0 385.4 L262.0 386.6 L268.0 388.0 L274.0 389.7 L280.0 391.4 L286.0 393.2 L292.0 394.9 L298.0 396.5 L304.0 397.9 L310.0 398.9 L316.0 399.6 L322.0 400.0 L328.0 399.9 L334.0 399.4 L340.0 398.6 L346.0 397.4 L352.0 396.0 L358.0 394.3 L364.0 392.6 L370.0 390.8 L376.0 389.1 L382.0 387.5" fill="none" stroke="#ffd9a8" stroke-opacity="0.5" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="347.8" cy="168.9" r="26" fill="url(#moon)"/>
+  </g>
 </svg>
