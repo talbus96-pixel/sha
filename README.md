@@ -71,6 +71,7 @@ In Wim Hof's quick breathing, the cue is only a soft tick, because a full bell e
 - **Get-ready countdown**: a 3-second countdown before the first breath.
 - **Vibrate on each phase**: Android phones only. iPhones don't let websites vibrate.
 - **Keep screen on**: stops the phone screen from dimming during a session.
+- **How to use the app**: a short guided tour (9 steps) that lights up each part of the screen and explains it. Next / Back / Skip at any time.
 - **Reminders**: see below.
 - **About & sound credits**.
 
@@ -106,6 +107,7 @@ It can come back later if you miss it.
 | `js/programs.js` | The techniques (texts and settings), custom patterns, the timing of each step, and the shape each pattern makes. |
 | `js/visual.js` | Draws the shape view and the wave view. |
 | `js/i18n.js` | All the app's text in English and Hebrew. |
+| `js/tour.js` | The guided tour (its texts are in `i18n.js` under `tour.*`). |
 | `js/reminders.js` | Builds the calendar reminders (Google Calendar links and the .ics calendar file). |
 | `js/app.js` | Ties it together: the session clock, the buttons and panels, saving your settings. |
 | `js/audio.js` | All the sound: the bowl, chime and tone cues, and playing the nature recordings. |

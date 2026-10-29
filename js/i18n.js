@@ -183,7 +183,33 @@ const I18n = (() => {
             'aria.removeTime': 'Remove this time',
             'aria.backSettings': 'Back to settings',
             'event.title': 'Time to breathe',
-            'event.details': 'A few calm minutes ({min} min). Open Breathe: {url}'
+            'event.details': 'A few calm minutes ({min} min). Open Breathe: {url}',
+
+            // guided tour
+            'tour.open': 'How to use the app',
+            'tour.progress': '{n} of {total}',
+            'tour.next': 'Next',
+            'tour.back': 'Back',
+            'tour.skip': 'Skip',
+            'tour.done': 'Let’s breathe',
+            'tour.welcome.title': 'Welcome to Breathe',
+            'tour.welcome.text': 'A quick tour of everything here. It takes about 30 seconds.',
+            'tour.visual.title': 'Follow the dot',
+            'tour.visual.text': 'It rises as you breathe in, falls as you breathe out, and moves sideways while you hold. Your timings draw the shape: a square, a triangle, a loop…',
+            'tour.readout.title': 'What to do now',
+            'tour.readout.text': 'The current step, and how many seconds are left in it.',
+            'tour.pattern.title': 'Choose a technique',
+            'tour.pattern.text': 'Cyclic sighing, Box breathing and Wim Hof, each with a short guide. Or design your own pattern under Custom.',
+            'tour.play.title': 'Start and pause',
+            'tour.play.text': 'After a short countdown, the session begins. Tap again to pause.',
+            'tour.length.title': 'Session length',
+            'tour.length.text': 'How many minutes to breathe. For Wim Hof, it shows the number of rounds.',
+            'tour.sounds.title': 'Sounds',
+            'tour.sounds.text': 'Pick a gentle cue for each step, and mix in rain, ocean, forest and more.',
+            'tour.settings.title': 'Settings',
+            'tour.settings.text': 'Language, colour themes, the wave view, reminders, and this tour.',
+            'tour.calm.title': 'Calm mode',
+            'tour.calm.text': 'While you breathe, the buttons fade away. Touch the screen to bring them back. Enjoy!'
         },
 
         he: {
@@ -357,7 +383,32 @@ const I18n = (() => {
             'aria.removeTime': 'הסרת השעה',
             'aria.backSettings': 'חזרה להגדרות',
             'event.title': 'זמן לנשום',
-            'event.details': 'כמה דקות של רוגע ({min} דק׳). לפתיחת האפליקציה: {url}'
+            'event.details': 'כמה דקות של רוגע ({min} דק׳). לפתיחת האפליקציה: {url}',
+
+            'tour.open': 'איך משתמשים באפליקציה',
+            'tour.progress': '{n} מתוך {total}',
+            'tour.next': 'הבא',
+            'tour.back': 'הקודם',
+            'tour.skip': 'דילוג',
+            'tour.done': 'בואו נתחיל',
+            'tour.welcome.title': 'ברוכים הבאים ל„נשימה”',
+            'tour.welcome.text': 'סיור קצר בכל מה שיש כאן. זה לוקח כחצי דקה.',
+            'tour.visual.title': 'עקבו אחרי הנקודה',
+            'tour.visual.text': 'היא עולה בשאיפה, יורדת בנשיפה וזזה הצידה בזמן עצירה. הזמנים שלכם יוצרים את הצורה: ריבוע, משולש, לולאה…',
+            'tour.readout.title': 'מה עושים עכשיו',
+            'tour.readout.text': 'השלב הנוכחי, וכמה שניות נשארו בו.',
+            'tour.pattern.title': 'בחירת תרגיל',
+            'tour.pattern.text': 'אנחה מחזורית, נשימת קופסה ווים הוף, כל אחד עם הסבר קצר. אפשר גם ליצור תבנית משלכם בלשונית „מותאם אישית”.',
+            'tour.play.title': 'התחלה והשהיה',
+            'tour.play.text': 'אחרי ספירה קצרה האימון מתחיל. לחיצה נוספת עוצרת אותו.',
+            'tour.length.title': 'משך האימון',
+            'tour.length.text': 'כמה דקות לנשום. בווים הוף מוצג כאן מספר הסבבים.',
+            'tour.sounds.title': 'צלילים',
+            'tour.sounds.text': 'בחרו צליל עדין לכל שלב, והוסיפו גשם, ים, יער ועוד.',
+            'tour.settings.title': 'הגדרות',
+            'tour.settings.text': 'שפה, ערכות צבעים, תצוגת גל, תזכורות והסיור הזה.',
+            'tour.calm.title': 'מצב רוגע',
+            'tour.calm.text': 'בזמן הנשימה הכפתורים נעלמים. נגיעה במסך מחזירה אותם. נשימה נעימה!'
         }
     };
 

@@ -887,6 +887,15 @@
     }
 
     $('btn-open-reminders').addEventListener('click', () => openSheet('sheet-reminders'));
+
+    $('btn-tour').addEventListener('click', () => {
+        closeSheet();
+        pause();
+        $('complete').hidden = true;
+        showUI();
+        clearTimeout(zenTimer);
+        Tour.start();
+    });
     $('btn-reminders-back').addEventListener('click', () => openSheet('sheet-settings'));
 
     $('btn-add-time').addEventListener('click', () => {

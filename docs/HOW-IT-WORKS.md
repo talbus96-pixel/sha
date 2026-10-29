@@ -10,6 +10,7 @@ js/audio.js           the sound engine                       (global: Sound)
 js/programs.js        techniques, step timeline, shapes      (global: Programs)
 js/visual.js          draws the shape and wave views          (global: Visual)
 js/reminders.js       calendar reminders (Google link, .ics)  (global: Reminders)
+js/tour.js            the guided tour                         (global: Tour)
 js/app.js             session clock, panels, settings        (runs once on load)
 sounds/*.mp3          ambient recordings (MP3, 96 kbps, loudness-matched)
 service-worker.js     offline cache
@@ -64,6 +65,12 @@ manifest.webmanifest  home-screen install info
 - `googleLink(time, days, minutes)` builds a Google Calendar "new event" link that repeats daily or on weekdays. `icsFile()` / `downloadIcs()` build one standard calendar file (.ics) holding every time, each with an alert at the start.
 - Times are written without a time zone ("floating"), so 9:00 means 9:00 wherever the phone is. The event links back to the app (the public site address when the page isn't hosted there).
 - Settings live in `settings.reminders` (`times`, `days`). The sheet is built in `renderReminders()` in `app.js`.
+
+## js/tour.js (`Tour`)
+- `STEPS` lists what to light up (a CSS selector, or `null` for a message in the middle of the screen). Each step's title and text are `tour.<key>.title` / `tour.<key>.text` in `i18n.js`.
+- The dimming is one element (`.tour-spot`) with a huge shadow around it. It slides over each target, and the card goes below it, above it, or (for big areas) along the bottom of the screen.
+- Started by "How to use the app" in Settings. The app closes any open panel and pauses a running session first.
+- **To add a step:** add an entry to `STEPS`, then add its two texts in both languages.
 
 ## js/audio.js (`Sound`)
 - `Sound.ensure()` creates the audio system. Browsers only allow this after a tap or click, so it's called from button handlers. On iPhone it also asks to play even when the silent switch is on (Safari 17+).
