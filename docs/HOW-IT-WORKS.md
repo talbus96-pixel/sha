@@ -61,6 +61,7 @@ manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed
 | Mute | `settings.muted`, toggled by the speaker button. `Sound.setMuted()` silences everything at the master volume. |
 | Breathing sheet | The Techniques tab is a list leading to a detail page (`showTechnique`, controls built by `renderTechControls`). The Custom tab is the steppers plus a live shape preview (`renderCustom`, `drawPreview`). |
 | Updates | The page looks for a new version when it comes back on screen and every hour (`registration.update()`), and reloads once when one takes over, only while idle (`reloadIfIdle`). |
+| Wim Hof safety check (`#safety`) | `openWimhof()` asks the safety question until it has been answered "none apply" `SAFETY_ASKS` (3) times. "One applies" sets `settings.wimhofCheck.blocked`, which greys the row out; tapping it shows an "ask me again" link (`askSafety()`). Closing without answering doesn't count. |
 | Wake lock, vibration, calm mode | As the names say. Switching apps pauses the session, because a web page can't keep accurate time in the background. |
 
 ## js/reminders.js (`Reminders`)

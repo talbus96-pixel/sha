@@ -43,6 +43,7 @@
         reminders: { times: ['09:00'], days: 'daily' },  // days: daily | sunthu | weekdays (Mon–Fri)
         lang: I18n.detect(),
         muted: false,
+        wimhofCheck: { ok: 0, blocked: false },  // safety question: times answered "none apply", or locked
         version: 4
     };
 
@@ -57,7 +58,7 @@
             if (saved) {
                 firstVisit = false;
                 const merged = { ...base, ...saved };
-                ['sigh', 'box', 'wimhof', 'custom', 'ambient', 'reminders'].forEach(k => { merged[k] = { ...base[k], ...saved[k] }; });
+                ['sigh', 'box', 'wimhof', 'custom', 'ambient', 'reminders', 'wimhofCheck'].forEach(k => { merged[k] = { ...base[k], ...saved[k] }; });
                 // Day became the default theme in version 3; move people off the old default
                 if ((saved.version || 0) < 3 && merged.theme === 'night') merged.theme = 'day';
                 // cyclic sighing became the default technique in version 4
@@ -515,7 +516,7 @@
     });
 
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeSheet();
+        if (e.key === 'Escape') { if (!$('safety').hidden) closeSafety(); else closeSheet(); }
         if (e.code === 'Space' && !currentSheet && $('complete').hidden) {
             e.preventDefault();
             if (session.step && session.step.open) endOpenHold();
@@ -576,10 +577,62 @@
             row.querySelector('.preset-name').textContent = Programs.text(id, 'name');
             if (T[id].recommended) row.querySelector('.preset-name').appendChild(badge());
             row.querySelector('.preset-desc').textContent = Programs.text(id, 'tagline');
-            row.addEventListener('click', () => showTechnique(id));
+            const locked = id === 'wimhof' && settings.wimhofCheck.blocked;
+            if (locked) {
+                row.classList.add('locked');
+                row.querySelector('.preset-desc').textContent = t('safety.locked');
+                row.addEventListener('click', () => {
+                    if (row.nextElementSibling && row.nextElementSibling.classList.contains('recheck-btn')) return;
+                    const again = document.createElement('button');
+                    again.className = 'recheck-btn';
+                    again.textContent = t('safety.recheck');
+                    again.addEventListener('click', () => askSafety());
+                    row.after(again);
+                });
+            } else {
+                row.addEventListener('click', () => (id === 'wimhof' ? openWimhof() : showTechnique(id)));
+            }
             list.appendChild(row);
         });
     }
+
+    // ---------- Wim Hof safety check ----------
+    // Asked the first 3 times someone opens Wim Hof. "One applies" greys it out until they ask again.
+    const SAFETY_ASKS = 3;
+
+    function openWimhof() {
+        if (settings.wimhofCheck.ok < SAFETY_ASKS) askSafety();
+        else showTechnique('wimhof');
+    }
+
+    function askSafety() {
+        const ul = $('safety-list');
+        ul.innerHTML = '';
+        t('safety.list').forEach(text => {
+            const li = document.createElement('li');
+            li.textContent = text;
+            ul.appendChild(li);
+        });
+        $('safety').hidden = false;
+        $('btn-safety-no').focus();
+    }
+
+    function closeSafety() { $('safety').hidden = true; }
+
+    $('btn-safety-no').addEventListener('click', () => {
+        settings.wimhofCheck.ok += 1;
+        settings.wimhofCheck.blocked = false;
+        saveSettings();
+        closeSafety();
+        showTechnique('wimhof');
+    });
+    $('btn-safety-yes').addEventListener('click', () => {
+        settings.wimhofCheck.blocked = true;
+        saveSettings();
+        closeSafety();
+        renderTechList();
+    });
+    $('safety').addEventListener('click', e => { if (e.target === $('safety')) closeSafety(); });
 
     function badge() {
         const b = document.createElement('span');

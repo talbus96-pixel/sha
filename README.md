@@ -57,7 +57,7 @@ Tap the technique name at the bottom → **Techniques**. **Cyclic sighing** is m
 |---|---|---|
 | **Cyclic sighing** | Breathe in through the nose, take a short extra sip of air to fill the lungs, then a long, slow breath out. In a 2023 Stanford study, 5 minutes a day lifted mood more than meditation. | Pace: Quick (1.5 + 0.5 · 4 s), Steady (2 + 1 · 6 s), Slow (3 + 1 · 8 s) or Deep (4 + 1 · 10 s). The breath out is always twice the breaths in, so it can't be set up wrong. |
 | **Box breathing** | Breathe in, hold, breathe out, hold, all the same length. Used to stay calm and focused under pressure. | The length of each side |
-| **Wim Hof** | Rounds of quick, deep breaths, then a hold on empty lungs (you tap **Breathe in** when you need air), then a 15-second recovery hold. Includes a safety note. Your hold times are shown at the end. | Breaths per round, number of rounds, pace |
+| **Wim Hof** | Rounds of quick, deep breaths, then a hold on empty lungs (you tap **Breathe in** when you need air), then a 15-second recovery hold. Includes a safety note, and the first 3 times you open it, a short safety question (pregnancy, epilepsy, heart problems, high blood pressure, fainting). Answering that one applies greys Wim Hof out; a small "ask me again" link under it unlocks it later. Your hold times are shown at the end. | Breaths per round, number of rounds, pace |
 
 ## Custom patterns
 
