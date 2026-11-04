@@ -1035,6 +1035,45 @@ a.primary-btn { display: block; text-align: center; text-decoration: none; box-s
 [dir="rtl"] .preset-nums,
 [dir="rtl"] .time-row input { direction: ltr; unicode-bidi: isolate; }
 
+/* Menu shortcuts (Progress, Learn) */
+.menu-links { display: flex; gap: 8px; margin-bottom: 8px; }
+.menu-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: var(--surface);
+    text-align: start;
+    min-width: 0;
+}
+.menu-link svg { width: 24px; height: 24px; flex: none; color: var(--accent); }
+.menu-link-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.menu-link-text strong { font-weight: 500; font-size: 0.95rem; }
+.menu-link-text small { color: var(--muted); font-size: 0.76rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Your practice */
+.stats-empty { color: var(--muted); line-height: 1.6; margin: 18px 4px; }
+.stats-head { text-align: center; padding: 10px 0 6px; }
+.stats-big { font-size: 1.7rem; font-weight: 300; }
+.stats-sub { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+.stats-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 10px 4px 4px; }
+.stats-dow { text-align: center; font-size: 0.72rem; color: var(--muted); }
+.stats-day { aspect-ratio: 1; border-radius: 50%; background: var(--surface-strong); max-width: 34px; width: 100%; justify-self: center; }
+.stats-day.future { visibility: hidden; }
+.stats-day.d1 { background: var(--accent); opacity: 0.4; }
+.stats-day.d2 { background: var(--accent); opacity: 0.7; }
+.stats-day.d3 { background: var(--accent); }
+.stats-day.today { outline: 2px solid var(--accent); outline-offset: 2px; }
+.stats-tiles { display: flex; justify-content: space-around; margin: 22px 0 6px; text-align: center; }
+.stats-tile span { display: block; font-size: 1.5rem; font-weight: 300; font-variant-numeric: tabular-nums; }
+.stats-tile small { color: var(--muted); font-size: 0.78rem; }
+.stats-rows { display: flex; flex-direction: column; gap: 6px; }
+.stats-row { display: flex; justify-content: space-between; padding: 11px 14px; border-radius: 14px; background: var(--surface); font-size: 0.95rem; }
+.stats-row-val { color: var(--muted); font-variant-numeric: tabular-nums; }
+.stats-clear { margin-top: 22px; color: var(--muted); }
+
 /* About: a quiet line at the bottom of the menu, not a full section */
 .fold[data-fold="about"] { background: none; margin-top: 4px; }
 .fold[data-fold="about"] .fold-head { justify-content: center; padding: 8px 16px; font-size: 0.82rem; color: var(--muted); }

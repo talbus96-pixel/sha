@@ -291,6 +291,7 @@
         line = Programs.timeline(program);
         drawIdle();
         if (wasActive && (completed || time >= 30)) {
+            Stats.add({ tech: settings.technique, secs: time, breaths, holds });
             $('done-time').textContent = fmtTime(time);
             $('done-breaths').textContent = breaths;
             const extra = $('done-extra');
@@ -441,6 +442,12 @@
     document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeSheet));
     $('btn-pattern').addEventListener('click', () => openBreathing());
     $('btn-settings').addEventListener('click', () => openSheet('sheet-settings'));
+    function openStats() {
+        openSheet('sheet-stats');
+        Stats.render($('stats-body'));
+    }
+    $('btn-open-stats').addEventListener('click', openStats);
+    $('btn-stats-back').addEventListener('click', () => openSheet('sheet-settings'));
     $('btn-length').addEventListener('click', () => {
         if (settings.technique === 'wimhof') openBreathing('wimhof');
         else openSheet('sheet-settings', 'length');
