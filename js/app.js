@@ -485,7 +485,7 @@
         $('sum-length').textContent = settings.minutes > 0 ? t('length.min', { n: settings.minutes }) : t('length.none');
         const r = settings.reminders;
         $('sum-reminders').textContent = `${r.times.map(Reminders.label).join(', ')} · ${t('days.' + r.days)}`;
-        $('sum-look').textContent = `${t('theme.' + settings.theme)} · ${t('visual.' + settings.visual)}`;
+        $('sum-look').textContent = t('theme.' + settings.theme);
     }
 
     // ---------- mute ----------
@@ -879,10 +879,6 @@
             lengths.appendChild(b);
         });
 
-        document.querySelectorAll('#visual-options button').forEach(b => {
-            b.classList.toggle('selected', b.dataset.value === settings.visual);
-        });
-
         renderLanguagePicker();
 
         const themes = $('theme-list');
@@ -908,15 +904,22 @@
         updateSummaries();
     }
 
-    document.querySelectorAll('#visual-options button').forEach(b => {
+    // Shape / wave: two small buttons on the main screen
+    function renderViewToggle() {
+        document.querySelectorAll('#view-toggle button').forEach(b => {
+            b.setAttribute('aria-pressed', String(b.dataset.value === settings.visual));
+        });
+    }
+    document.querySelectorAll('#view-toggle button').forEach(b => {
         b.addEventListener('click', () => {
             settings.visual = b.dataset.value;
             session.trail = [];
             saveSettings();
-            renderSettingsSheet();
+            renderViewToggle();
             render();
         });
     });
+    renderViewToggle();
 
     [['opt-prepare', 'prepare'], ['opt-vibrate', 'vibrate'], ['opt-wake', 'wakeLock']].forEach(([id, key]) => {
         $(id).addEventListener('change', e => {

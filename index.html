@@ -66,6 +66,14 @@
             </div>
             <canvas id="visual" aria-hidden="true"></canvas>
             <button class="next-btn" id="btn-next" data-i18n="next" hidden>Breathe in</button>
+            <div class="view-toggle fade-ui" id="view-toggle">
+                <button data-value="shape" data-i18n-aria="visual.shape" aria-label="Shape" aria-pressed="true">
+                    <svg class="shapes-icon" viewBox="0 0 48 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2" y="3" width="10" height="10" rx="1.2"/><circle cx="24" cy="8" r="5.2"/><path d="M42 2.8l5 9.4H37z"/></g></svg>
+                </button>
+                <button data-value="wave" data-i18n-aria="visual.wave" aria-label="Wave" aria-pressed="false">
+                    <svg viewBox="0 0 24 16" aria-hidden="true"><path d="M2 8c2.2-5 4.3-5 6.5 0s4.3 5 6.5 0 4.3-5 7 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </button>
+            </div>
         </main>
 
         <footer class="dock fade-ui">
@@ -253,11 +261,6 @@
                     <div class="fold-body" hidden>
                         <h3 class="section-title" data-i18n="settings.theme">Theme</h3>
                         <div class="theme-list" id="theme-list"></div>
-                        <h3 class="section-title" data-i18n="settings.visual">Visual</h3>
-                        <div class="segmented" id="visual-options">
-                            <button data-value="shape" data-i18n="visual.shape">Shape</button>
-                            <button data-value="wave" data-i18n="visual.wave">Wave</button>
-                        </div>
                     </div>
                 </section>
                 <section class="fold" data-fold="options">

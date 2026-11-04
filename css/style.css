@@ -244,6 +244,35 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
     min-height: 0;
 }
 
+/* Shape / wave choice: two small buttons at the bottom of the stage */
+.view-toggle {
+    position: absolute;
+    left: 50%;
+    bottom: 4px;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    gap: 8px;
+}
+.view-toggle button {
+    height: 34px;
+    min-width: 44px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--muted);
+    border: 1px solid transparent;
+    display: grid;
+    place-items: center;
+}
+.view-toggle button svg { height: 16px; width: auto; display: block; }
+.view-toggle button .shapes-icon { width: 44px; }
+.view-toggle button[aria-pressed="true"] {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+}
+
 #visual {
     position: absolute;
     inset: 0;
@@ -276,7 +305,7 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
 .next-btn {
     position: absolute;
     left: 50%;
-    bottom: 8px;
+    bottom: 48px;
     transform: translateX(-50%);
     z-index: 2;
     padding: 14px 30px;
