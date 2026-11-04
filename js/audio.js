@@ -163,6 +163,43 @@ const Sound = (() => {
         setTimeout(() => out.disconnect(), (when - ctx.currentTime + 4.5) * 1000);
     }
 
+    // Plucked and tapped instruments: a handful of partials, each [ratio, amplitude, decay seconds].
+    // tap = how much felt/finger "touch" noise starts each note.
+    const PLUCKED = {
+        // thumb piano: a pure, round tine with a quick glassy overtone
+        kalimba: { partials: [[1, 1, 2.4], [5.4, 0.22, 0.4], [9.2, 0.07, 0.14]], attack: 0.003, tap: 0.05, level: 0.42,
+                   notes: { in: 587.33, top: 880, hold: 739.99, out: 440, retain: 293.66 } },      // D5 A5 F#5 A4 D4
+        // soft wooden bar: warm, short, with a hollow second tone
+        marimba: { partials: [[1, 1, 1.1], [3.98, 0.32, 0.28], [9.8, 0.06, 0.07]], attack: 0.003, tap: 0.1, level: 0.45,
+                   notes: { in: 293.66, top: 440, hold: 369.99, out: 220, retain: 146.83 } },      // D4 A4 F#4 A3 D3
+        // harp string: a clean pluck that rings and fades
+        harp: { partials: [[1, 1, 3.2], [2, 0.5, 2.1], [3, 0.28, 1.4], [4, 0.14, 0.9], [5, 0.06, 0.6]], attack: 0.004, tap: 0.07, level: 0.3,
+                notes: { in: 392, top: 587.33, hold: 493.88, out: 293.66, retain: 196 } }          // G4 D5 B4 D4 G3
+    };
+
+    function pluck(spec, freq, level, when = ctx.currentTime, decayScale = 1) {
+        const out = ctx.createGain();
+        out.gain.value = level * spec.level;
+        out.connect(cueBus);
+        let end = when;
+        spec.partials.forEach(([ratio, amp, dec]) => {
+            const osc = ctx.createOscillator();
+            osc.frequency.value = freq * ratio;
+            const g = ctx.createGain();
+            const d = dec * decayScale;
+            g.gain.setValueAtTime(0, when);
+            g.gain.linearRampToValueAtTime(amp, when + spec.attack);
+            g.gain.exponentialRampToValueAtTime(0.0001, when + d);
+            osc.connect(g);
+            g.connect(out);
+            osc.start(when);
+            osc.stop(when + d + 0.05);
+            end = Math.max(end, when + d);
+        });
+        mallet(out, freq * 2.5, spec.tap, when);
+        setTimeout(() => out.disconnect(), (end - ctx.currentTime + 1) * 1000);
+    }
+
     // A tiny filtered noise tap that makes a struck sound feel physical.
     function mallet(dest, freq, level, when) {
         const src = ctx.createBufferSource();
@@ -257,6 +294,19 @@ const Sound = (() => {
     function cue(kind, seconds) {
         if (!ctx || cueStyle === 'off') return;
         if (cueStyle === 'tone') { shapeTone(kind, seconds); return; }
+        if (PLUCKED[cueStyle]) {
+            const spec = PLUCKED[cueStyle], n = spec.notes;
+            switch (kind) {
+                case 'in': pluck(spec, n.in, 1); break;
+                case 'top': pluck(spec, n.top, 0.6, ctx.currentTime, 0.6); break;
+                case 'holdIn':
+                case 'holdOut': pluck(spec, n.hold, 0.5, ctx.currentTime, 0.6); break;
+                case 'out': pluck(spec, n.out, 1); break;
+                case 'retain': pluck(spec, n.retain, 0.9, ctx.currentTime, 1.3); break;
+                case 'powerIn': chime(CHIME_NOTES.top, 0.16); break;
+            }
+            return;
+        }
         const notes = cueStyle === 'bowl' ? BOWL_NOTES : CHIME_NOTES;
         const strike = cueStyle === 'bowl'
             ? (note, level, decay) => bowl(note, level, ctx.currentTime, decay)
@@ -301,6 +351,8 @@ const Sound = (() => {
             bowl(BOWL_NOTES.in, 1);
         } else if (style === 'chime') {
             chime(CHIME_NOTES.in, 1);
+        } else if (PLUCKED[style]) {
+            pluck(PLUCKED[style], PLUCKED[style].notes.in, 1);
         }
     }
 
