@@ -206,7 +206,7 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
     text-align: center;
 }
 
-#btn-mute { justify-self: end; }
+.top-actions { justify-self: end; display: flex; align-items: center; }
 #btn-mute[aria-pressed="true"] { color: var(--text); }
 
 .menu-btn {
@@ -1034,6 +1034,15 @@ a.primary-btn { display: block; text-align: center; text-decoration: none; box-s
 [dir="rtl"] .pattern-nums,
 [dir="rtl"] .preset-nums,
 [dir="rtl"] .time-row input { direction: ltr; unicode-bidi: isolate; }
+
+/* About: a quiet line at the bottom of the menu, not a full section */
+.fold[data-fold="about"] { background: none; margin-top: 4px; }
+.fold[data-fold="about"] .fold-head { justify-content: center; padding: 8px 16px; font-size: 0.82rem; color: var(--muted); }
+.fold[data-fold="about"] .fold-icon,
+.fold[data-fold="about"] .fold-chev,
+.fold[data-fold="about"] .fold-value { display: none; }
+.fold[data-fold="about"] .fold-title { flex: none; text-decoration: underline; text-underline-offset: 3px; }
+.fold[data-fold="about"].open { background: var(--surface); }
 
 /* About text inside the menu */
 .fold[data-fold="about"] .fold-body { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }

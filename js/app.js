@@ -36,7 +36,9 @@
         cue: 'bowl',
         cueVolume: 0.8,
         ambient: Object.fromEntries(AMBIENTS.map(a => [a.id, { on: false, level: 0.6 }])),
-        theme: 'day',
+        theme: 'lagoon',             // default light theme
+        lastLight: 'lagoon',         // what the dark/light switch returns to
+        lastDark: 'night',           // the dark theme the switch picks first
         prepare: true,
         vibrate: true,
         wakeLock: true,
@@ -855,13 +857,26 @@
 
     // ---------- settings sheet ----------
 
+    const DARK_THEMES = ['night', 'dusk', 'forest'];
+    const isDark = id => DARK_THEMES.includes(id);
+
     function applyTheme() {
+        if (isDark(settings.theme)) settings.lastDark = settings.theme; else settings.lastLight = settings.theme;
         document.body.dataset.theme = settings.theme;
+        $('theme-icon').setAttribute('href', isDark(settings.theme) ? '#i-sun' : '#i-moon');
+        $('btn-theme').setAttribute('aria-label', t(isDark(settings.theme) ? 'aria.themeLight' : 'aria.themeDark'));
         const color = getComputedStyle(document.body).getPropertyValue('--bg-bottom').trim();
         document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
         Visual.readColors();
         render();
     }
+
+    $('btn-theme').addEventListener('click', () => {
+        settings.theme = isDark(settings.theme) ? settings.lastLight : settings.lastDark;
+        applyTheme();
+        saveSettings();
+        renderSettingsSheet();
+    });
 
     function renderSettingsSheet() {
         const lengths = $('length-options');
