@@ -448,6 +448,14 @@
     }
     $('btn-open-stats').addEventListener('click', openStats);
     $('btn-stats-back').addEventListener('click', () => openSheet('sheet-settings'));
+
+    // The research page stays hidden until the owner has added studies (js/research.js)
+    $('btn-open-research').hidden = !Research.hasEntries();
+    $('btn-open-research').addEventListener('click', () => {
+        openSheet('sheet-research');
+        Research.render($('research-body'));
+    });
+    $('btn-research-back').addEventListener('click', () => openSheet('sheet-settings'));
     $('btn-length').addEventListener('click', () => {
         if (settings.technique === 'wimhof') openBreathing('wimhof');
         else openSheet('sheet-settings', 'length');

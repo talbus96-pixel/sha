@@ -1074,6 +1074,13 @@ a.primary-btn { display: block; text-align: center; text-decoration: none; box-s
 .stats-row-val { color: var(--muted); font-variant-numeric: tabular-nums; }
 .stats-clear { margin-top: 22px; color: var(--muted); }
 
+/* The research page */
+.research-note { color: var(--muted); font-size: 0.85rem; line-height: 1.5; margin: 6px 2px 14px; }
+.research-entry { padding: 14px; border-radius: 16px; background: var(--surface); margin-bottom: 8px; }
+.research-title { color: var(--accent); font-weight: 500; text-decoration: none; line-height: 1.4; }
+.research-summary { margin: 8px 0 6px; line-height: 1.55; font-size: 0.92rem; }
+.research-source { color: var(--muted); }
+
 /* About: a quiet line at the bottom of the menu, not a full section */
 .fold[data-fold="about"] { background: none; margin-top: 4px; }
 .fold[data-fold="about"] .fold-head { justify-content: center; padding: 8px 16px; font-size: 0.82rem; color: var(--muted); }
