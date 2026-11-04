@@ -17,11 +17,19 @@ Ideas and decisions saved for later, in the owner's order.
 4. **Look**
    - Choose the best default among the **light** themes.
    - Add a **light / dark switch** button. Dark mode uses a dark theme chosen in advance (from Night, Dusk, Forest).
+5. **Statistics page** (a screen of its own)
+   - A log of the breathing sessions done: which technique, how many breaths, how much time.
+   - Something that shows which days you practised, and how much, with no pressure. The goal is to encourage more practice, not to make anyone feel bad about missed days. So no streak counters that reset to zero and no red or "you missed" messages. Ideas: a calm calendar or week view where practised days simply glow, and warm, optional wording.
+   - Data stays on the phone (localStorage), so no login is needed. It should also show Wim Hof hold records.
+6. **Research page** (a screen of its own)
+   - A short overview of each technique and of the scientific findings behind it.
+   - Links to papers. **Every link is checked by hand (opened and read) before it goes in**, and the page says only what the paper actually shows. Nothing is added from memory.
+   - Must be available in Hebrew, English and Russian, and clearly say the app isn't medical advice.
 
 ## Also noted
 - Rewrite the guided tour's texts (21 steps) if wanted.
 - Have a native speaker check the Russian, and review the Hebrew wording.
-- A history screen (sessions per day, Wim Hof hold records), voice guidance, more nature sounds.
+- Voice guidance, more nature sounds.
 - A real Android app / Google Play listing via PWABuilder ($25 one-time Google Play fee).
 - A trademark check on "Sha" before commercial publishing (see README → About the name). Backup name: **Lev**.
 
