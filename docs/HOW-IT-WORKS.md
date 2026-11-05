@@ -75,7 +75,8 @@ manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed
 - Settings live in `settings.reminders` (`times`, `days`). The sheet is built in `renderReminders()` in `app.js`.
 
 ## js/stats.js (`Stats`)
-- Each finished session (completed, or stopped after at least 30 seconds) is added to a log in `localStorage` (`breathe.history.v1`): time, technique, breaths, Wim Hof holds. Nothing leaves the phone.
+- Each finished session (completed, or stopped after at least 30 seconds) is added to a log in `localStorage` (`breathe.history.v1`): time, technique, breaths, Wim Hof holds. Nothing leaves the phone. A session that's abandoned mid-way (the app is closed, not just backgrounded) is still logged the same way, via a `pagehide` listener in `app.js` — best effort, since no web page can catch every way a tab can die.
+- `fixMissingDetail()` runs once per phone: an earlier bug dropped every entry's `detail` field. It fills in the two cases we could state with confidence from the owner (Box at 5 s; the old Custom-built Coherent pattern, now reclassified as `coherent` at 5.5 s) and leaves everything else alone, guarded by a one-time flag (`breathe.history.detailFixed.v1`).
 - `render(root)` draws the Breath journal page: a headline for this week, a 5-week calendar where practised days glow (3 shades by minutes), totals, and time per technique. Missed days are never marked. Each technique's row also shows how it was last set up (box: seconds per side; cyclic sighing / Wim Hof / coherent / wind-down: their usual summary; custom: the quick-pattern name or the stage lengths), taken from the most recent session of that kind.
 
 ## js/research.js (`Research`)

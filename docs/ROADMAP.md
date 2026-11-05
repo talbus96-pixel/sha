@@ -39,3 +39,5 @@ These are open questions the owner wants to keep thinking about. No code for the
 - Safety question before Wim Hof.
 - Two new full techniques: **Coherent breathing** (equal in/out, no holds) and **Wind Down** (the old "4-7-8" quick pattern, now with its own page, intro, steps and caution; the ratio stays fixed, the pace only scales it).
 - A curated **dot color** picker in Look, independent of the theme.
+- Fixed a bug where a session's pace/pattern (`detail`) was never actually saved to the journal. One-time repair on the owner's phone: Box sessions → 5 s; old Custom-built Coherent sessions → reclassified as Coherent, 5.5 s.
+- An abandoned session (app closed mid-way, never stopped) is now logged too, the same 30-second rule as a normal stop.

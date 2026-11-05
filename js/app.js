@@ -379,6 +379,17 @@
         if (document.visibilityState === 'hidden') pause();
     });
 
+    // If the app is actually closed mid-session (not just paused and later resumed), still save
+    // what was practiced so far, the same way a normal stop would. Best effort: there's no way for
+    // a web page to catch every case, such as the phone's battery dying.
+    window.addEventListener('pagehide', () => {
+        if (session.state === 'idle') return;
+        if (session.time >= 30) {
+            Stats.add({ tech: settings.technique, secs: session.time, breaths: session.breaths, holds: session.holds, detail: techDetail() });
+        }
+        session.state = 'idle';
+    });
+
     window.addEventListener('resize', () => { if (session.state !== 'running') render(); });
 
     // ---------- vibration & screen wake ----------

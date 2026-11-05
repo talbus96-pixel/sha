@@ -17,7 +17,7 @@ const Stats = (() => {
         try { localStorage.setItem(KEY, JSON.stringify(list.slice(-MAX_ENTRIES))); } catch (e) {}
     }
 
-    // entry: { tech, secs, breaths, holds }
+    // entry: { tech, secs, breaths, holds, detail }
     function add(entry) {
         const list = load();
         list.push({
@@ -25,7 +25,8 @@ const Stats = (() => {
             tech: entry.tech,
             secs: Math.round(entry.secs),
             breaths: entry.breaths || 0,
-            holds: (entry.holds || []).map(Math.round)
+            holds: (entry.holds || []).map(Math.round),
+            detail: entry.detail
         });
         save(list);
     }
@@ -33,6 +34,28 @@ const Stats = (() => {
     function clear() {
         try { localStorage.removeItem(KEY); } catch (e) {}
     }
+
+    // One-time fix, run once per phone: a bug dropped the "detail" field on every entry
+    // until now, so nothing recorded its pace/pattern. Box and Coherent are the only
+    // techniques this app has ever logged without it that we can state with confidence
+    // (the owner confirmed: Box at 5 s, and Coherent at 5.5 s — back when it had no
+    // technique of its own and was saved as Custom). Everything else is left untouched.
+    function fixMissingDetail() {
+        const FLAG = 'breathe.history.detailFixed.v1';
+        try {
+            if (localStorage.getItem(FLAG)) return;
+            const list = load();
+            let changed = false;
+            list.forEach(e => {
+                if (e.detail !== undefined) return;
+                if (e.tech === 'box') { e.detail = { count: 5 }; changed = true; }
+                else if (e.tech === 'custom') { e.tech = 'coherent'; e.detail = { seconds: 5.5 }; changed = true; }
+            });
+            if (changed) save(list);
+            localStorage.setItem(FLAG, '1');
+        } catch (err) {}
+    }
+    fixMissingDetail();
 
     const pad = n => String(n).padStart(2, '0');
     const dayKey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
