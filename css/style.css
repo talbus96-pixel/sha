@@ -746,6 +746,22 @@ input[type="range"]::-moz-range-thumb {
     border: 1px solid var(--faint);
 }
 
+/* Dot color */
+.ball-colors { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 2px; }
+.ball-swatch {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    box-shadow: 0 0 0 1px var(--faint);
+    flex: none;
+}
+.ball-swatch.selected { border-color: var(--text); }
+.ball-swatch-auto {
+    background: conic-gradient(var(--accent), var(--hold), var(--accent));
+    opacity: 0.85;
+}
+
 /* Toggles */
 .toggle-row {
     position: relative;

@@ -39,6 +39,7 @@
         cueVolume: 0.8,
         ambient: Object.fromEntries(AMBIENTS.map(a => [a.id, { on: false, level: 0.6 }])),
         theme: 'lagoon',             // default light theme
+        ballColor: null,             // null = the theme's own dot color, else a curated hex
         lastLight: 'lagoon',         // what the dark/light switch returns to
         lastDark: 'night',           // the dark theme the switch picks first
         prepare: true,
@@ -884,9 +885,21 @@
     const DARK_THEMES = ['night', 'dusk', 'forest'];
     const isDark = id => DARK_THEMES.includes(id);
 
+    // A small curated set of dot colors, independent of the theme. [id, hex]
+    const BALL_COLORS = [
+        ['coral', '#ff7a59'],
+        ['amber', '#ffb347'],
+        ['mint', '#2ec4b6'],
+        ['sky', '#4da8da'],
+        ['violet', '#9b7edc'],
+        ['rose', '#e85d75']
+    ];
+
     function applyTheme() {
         if (isDark(settings.theme)) settings.lastDark = settings.theme; else settings.lastLight = settings.theme;
         document.body.dataset.theme = settings.theme;
+        if (settings.ballColor) document.body.style.setProperty('--ball', settings.ballColor);
+        else document.body.style.removeProperty('--ball');
         $('theme-icon').setAttribute('href', isDark(settings.theme) ? '#i-sun' : '#i-moon');
         $('btn-theme').setAttribute('aria-label', t(isDark(settings.theme) ? 'aria.themeLight' : 'aria.themeDark'));
         const color = getComputedStyle(document.body).getPropertyValue('--bg-bottom').trim();
@@ -935,6 +948,22 @@
                 renderSettingsSheet();
             });
             themes.appendChild(b);
+        });
+
+        const balls = $('ball-colors');
+        balls.innerHTML = '';
+        const autoBtn = document.createElement('button');
+        autoBtn.className = 'ball-swatch ball-swatch-auto' + (settings.ballColor ? '' : ' selected');
+        autoBtn.setAttribute('aria-label', t('ball.auto'));
+        autoBtn.addEventListener('click', () => { settings.ballColor = null; applyTheme(); saveSettings(); renderSettingsSheet(); render(); });
+        balls.appendChild(autoBtn);
+        BALL_COLORS.forEach(([id, hex]) => {
+            const b = document.createElement('button');
+            b.className = 'ball-swatch' + (settings.ballColor === hex ? ' selected' : '');
+            b.style.background = hex;
+            b.setAttribute('aria-label', t('ball.' + id));
+            b.addEventListener('click', () => { settings.ballColor = hex; applyTheme(); saveSettings(); renderSettingsSheet(); render(); });
+            balls.appendChild(b);
         });
 
         $('opt-prepare').checked = settings.prepare;

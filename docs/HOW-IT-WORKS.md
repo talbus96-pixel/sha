@@ -21,6 +21,7 @@ manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed
 
 ## css/style.css
 - **Themes** are sets of colour variables at the top (`day` is the default, plus `sunrise`, `meadow`, `lavender`, `lagoon`, `night`, `dusk`, `forest`). Colours must be written as `#rrggbb`, because the drawing code adds see-through versions of them. `app.js` sets `data-theme` on `<body>`. To add a theme, copy one of these blocks and add a matching entry to `THEMES` in `app.js`.
+- **Dot color** is independent of the theme: `settings.ballColor` is `null` (use the theme's own `--ball`) or a hex from a curated list (`BALL_COLORS` in `app.js`). `applyTheme()` sets or clears a `--ball` override directly on `<body>`'s inline style, which wins over the theme's own value.
 - The layout is built for phones first. `@media (min-width: 700px)` turns the bottom sheets into centred dialogs on larger screens, and `@media (max-height: 520px)` puts the visual and the controls side by side when a phone is held sideways.
 - `body.zen` hides everything marked `.fade-ui` (calm mode). `body.running` is set while a session runs.
 
