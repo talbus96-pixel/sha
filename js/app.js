@@ -235,7 +235,8 @@
         line = Programs.timeline(program);
         Object.assign(session, {
             state: settings.prepare ? 'prepare' : 'running',
-            time: 0, clock: 0, prep: PREPARE_SECONDS, step: null, breaths: 0, holds: [], trail: []
+            time: 0, clock: 0, prep: PREPARE_SECONDS, step: null, breaths: 0, holds: [], trail: [],
+            startedAt: Date.now()
         });
         afterResume();
     }
@@ -280,7 +281,7 @@
 
     function stop(completed) {
         const wasActive = session.state !== 'idle';
-        const { time, breaths, holds } = session;
+        const { time, breaths, holds, startedAt } = session;
         session.state = 'idle';
         session.step = null;
         cancelAnimationFrame(session.rafId);
@@ -294,7 +295,7 @@
         line = Programs.timeline(program);
         drawIdle();
         if (wasActive && (completed || time >= 30)) {
-            Stats.add({ tech: settings.technique, secs: time, breaths, holds, detail: techDetail() });
+            Stats.add({ tech: settings.technique, secs: time, breaths, holds, detail: techDetail(), start: startedAt });
             $('done-time').textContent = fmtTime(time);
             $('done-breaths').textContent = breaths;
             const extra = $('done-extra');
@@ -385,7 +386,7 @@
     window.addEventListener('pagehide', () => {
         if (session.state === 'idle') return;
         if (session.time >= 30) {
-            Stats.add({ tech: settings.technique, secs: session.time, breaths: session.breaths, holds: session.holds, detail: techDetail() });
+            Stats.add({ tech: settings.technique, secs: session.time, breaths: session.breaths, holds: session.holds, detail: techDetail(), start: session.startedAt });
         }
         session.state = 'idle';
     });

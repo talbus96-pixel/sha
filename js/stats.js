@@ -17,7 +17,10 @@ const Stats = (() => {
         try { localStorage.setItem(KEY, JSON.stringify(list.slice(-MAX_ENTRIES))); } catch (e) {}
     }
 
-    // entry: { tech, secs, breaths, holds, detail }
+    // entry: { tech, secs, breaths, holds, detail, start }
+    // 'at' is when the session was logged (used to bucket it by day); 'start' is when it
+    // actually began, kept separately so a session that runs past midnight still lands on
+    // the day it was practised, and so the journal can show "when" apart from "how long".
     function add(entry) {
         const list = load();
         list.push({
@@ -26,7 +29,8 @@ const Stats = (() => {
             secs: Math.round(entry.secs),
             breaths: entry.breaths || 0,
             holds: (entry.holds || []).map(Math.round),
-            detail: entry.detail
+            detail: entry.detail,
+            start: entry.start || (Date.now() - Math.round(entry.secs) * 1000)
         });
         save(list);
     }
@@ -103,6 +107,18 @@ const Stats = (() => {
     // Wraps an embedded LTR number (like a time) so it reads correctly inside an RTL sentence.
     const iso = s => `\u2066${s}\u2069`;
 
+    // A session's start, as a clock time ("14:32"), in the phone's own language and format.
+    const clockTime = ms => new Intl.DateTimeFormat(I18n.lang, { hour: '2-digit', minute: '2-digit' }).format(new Date(ms));
+
+    // "Today", "Yesterday", or a short date — never a bare number, so it can never be mistaken
+    // for the clock time next to it.
+    function dayLabel(d, now) {
+        const diff = Math.round((startOfDay(now) - startOfDay(d)) / 86400000);
+        if (diff === 0) return t('stats.today');
+        if (diff === 1) return t('stats.yesterday');
+        return d.toLocaleDateString(I18n.lang, { weekday: 'short', day: 'numeric', month: 'short' });
+    }
+
     function el(tag, cls, text) {
         const e = document.createElement(tag);
         if (cls) e.className = cls;
@@ -175,6 +191,25 @@ const Stats = (() => {
             tiles.appendChild(tile);
         });
         root.appendChild(tiles);
+
+        // Recent sessions: when each one started (a day label + a clock time), kept apart from
+        // how long it lasted (the number on the right, the same way every duration is shown
+        // on this page) so the two can never be mixed up.
+        const RECENT_LIMIT = 15;
+        root.appendChild(el('h3', 'section-title', t('stats.recent')));
+        const recent = el('div', 'stats-rows');
+        list.slice(-RECENT_LIMIT).reverse().forEach(e => {
+            const row = el('div', 'stats-row');
+            const left = el('span', 'stats-row-name');
+            const start = e.start || (e.at - e.secs * 1000); // older entries saved before 'start' existed
+            left.appendChild(el('span', 'session-when', `${dayLabel(new Date(start), now)} · ${iso(clockTime(start))}`));
+            const detail = formatDetail(e.tech, e.detail);
+            left.appendChild(el('small', 'stats-row-detail', techName(e.tech) + (detail ? ' · ' + detail : '')));
+            row.appendChild(left);
+            row.appendChild(el('span', 'stats-row-val', fmtTime(e.secs)));
+            recent.appendChild(row);
+        });
+        root.appendChild(recent);
 
         // time per technique
         const techs = Object.entries(s.byTech).sort((a, b) => b[1] - a[1]);
