@@ -8,7 +8,7 @@ Everything runs in the web browser, on a computer or a phone. There's no account
 
 - **How to open it on a computer or phone:** [docs/HOW-TO-RUN.md](docs/HOW-TO-RUN.md)
 - **How the code works (for making changes):** [docs/HOW-IT-WORKS.md](docs/HOW-IT-WORKS.md)
-- **Progress and Learn:** the menu has a *Progress* card (a calm calendar of the days you practised, with no streaks or pressure) and a *Learn* card that appears once research entries are added.
+- **Breath journal and Learn:** the menu has a *Breath journal* card (a calm calendar of the days you practised, with no streaks or pressure) and a *Learn* card that appears once research entries are added.
 - **Future plans:** [docs/ROADMAP.md](docs/ROADMAP.md)
 
 ---

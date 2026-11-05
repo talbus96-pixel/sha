@@ -10,7 +10,7 @@ Ideas and decisions saved for later, in the owner's order.
    - Plan: push notifications sent by a small free server (Supabase). People using the app won't log in anywhere; they only allow notifications. On iPhone this works only for an app added to the home screen (iOS 16.4+).
    - Supabase's free plan may pause a project after about a week without activity. Check this when building.
 2. **Research page: content.** The page is built (menu → Learn) but hidden until the owner supplies studies. They go in `js/research.js` (format explained at the top of that file), with a title, a one-line summary and a link, in Hebrew, English and Russian.
-3. **Tour:** needs new steps for the Progress card, the Learn card (once it has content), the light/dark switch, the shape/wave buttons, and the dot-color picker. None of these are in the 21-step tour yet.
+3. **Tour:** needs new steps for the Breath journal card, the Learn card (once it has content), the light/dark switch, the shape/wave buttons, and the dot-color picker. None of these are in the 21-step tour yet.
 
 ## To think about, not to build yet
 These are open questions the owner wants to keep thinking about. No code for them until there's a clearer answer.
@@ -35,7 +35,7 @@ These are open questions the owner wants to keep thinking about. No code for the
 - Menu: Reminders below Options; About is a small underlined link.
 - Default theme is now **Lagoon** (new users only; existing users keep their choice). Light/dark switch in the top bar; dark is **Night**, and the switch remembers the last light and dark theme you picked.
 - Three more breathing cues: Kalimba, Marimba, Harp (Bowl and Chime unchanged). "Chime" is now פעמונית in Hebrew and Перезвон in Russian.
-- "Your practice" page (menu → Progress): a calm 5-week calendar, totals, time per technique (plus how it was last set up — pace, seconds, or pattern), and the longest Wim Hof hold. Stored only on the phone.
+- "Your practice" page (menu → Breath journal): a calm 5-week calendar, totals, time per technique (plus how it was last set up — pace, seconds, or pattern), and the longest Wim Hof hold. Stored only on the phone.
 - Safety question before Wim Hof.
 - Two new full techniques: **Coherent breathing** (equal in/out, no holds) and **Wind Down** (the old "4-7-8" quick pattern, now with its own page, intro, steps and caution; the ratio stays fixed, the pace only scales it).
 - A curated **dot color** picker in Look, independent of the theme.
