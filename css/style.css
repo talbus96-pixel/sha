@@ -1071,6 +1071,8 @@ a.primary-btn { display: block; text-align: center; text-decoration: none; box-s
 .stats-tile small { color: var(--muted); font-size: 0.78rem; }
 .stats-rows { display: flex; flex-direction: column; gap: 6px; }
 .stats-row { display: flex; justify-content: space-between; padding: 11px 14px; border-radius: 14px; background: var(--surface); font-size: 0.95rem; }
+.stats-row-name { display: flex; flex-direction: column; gap: 1px; }
+.stats-row-detail { color: var(--muted); font-size: 0.78rem; }
 .stats-row-val { color: var(--muted); font-variant-numeric: tabular-nums; }
 .stats-clear { margin-top: 22px; color: var(--muted); }
 

@@ -87,9 +87,7 @@ const I18n = (() => {
             'custom.holdOut': 'Hold',
             'off': 'Off',
             'bpmHint': 'One breath takes {c} seconds, about {n} breaths per minute.',
-            'quick.coherent': 'Coherent',
             'quick.relax': 'Relax',
-            'quick.478': '4-7-8',
             'quick.tactical': 'Tactical',
             'quick.triangle': 'Triangle',
 
@@ -125,6 +123,27 @@ const I18n = (() => {
                 'Take a deep breath in and hold it for 15 seconds, then let go. That is one round.'
             ],
             'wimhof.note': 'Your hold times are shown at the end.',
+            'coherent.name': 'Coherent breathing',
+            'coherent.tagline': 'Steady and even',
+            'coherent.intro': 'Equal breaths in and out, with no holds, at about 5\u20136 breaths a minute. Researchers call this rate "coherent" because it brings heart rate and breathing into a smooth rhythm together.',
+            'coherent.steps': [
+                'Breathe in slowly through your nose.',
+                'Breathe out slowly, the same length as the breath in.',
+                'Keep the rhythm steady, breath after breath.'
+            ],
+            'coherent.note': 'Most people find 5 or 5.5 seconds a side comfortable to start with.',
+            'windDown.name': 'Wind Down',
+            'windDown.tagline': 'A slow count toward sleep',
+            'windDown.intro': 'Breathe in, hold, and breathe out for much longer, in a fixed 4:7:8 rhythm. Often used at bedtime, or any time you want to slow down.',
+            'windDown.steps': [
+                'Breathe in quietly through your nose.',
+                'Hold your breath.',
+                'Breathe out slowly through your mouth, longer than the hold.',
+                'Begin again.'
+            ],
+            'windDown.note': 'The three sides always stay in this ratio; the pace only makes all three longer or shorter together.',
+            'windDown.caution': 'The long hold isn\u2019t for everyone. If you have a breathing or heart condition, or feel light-headed, breathe normally instead.',
+            'windDown.describe': 'Breathe in {a} s, hold {b} s, breathe out {c} s',
             'control.pace': 'Pace',
             'control.eachSide': 'Each side',
             'control.breaths': 'Breaths',
@@ -133,6 +152,7 @@ const I18n = (() => {
             'pace.steady': 'Steady',
             'pace.slow': 'Slow',
             'pace.deep': 'Deep',
+            'pace.gentle': 'Gentle',
             'pace.medium': 'Medium',
             'pace.fast': 'Fast',
 
@@ -360,9 +380,7 @@ const I18n = (() => {
             'custom.holdOut': 'עצירה',
             'off': 'כבוי',
             'bpmHint': 'נשימה אחת נמשכת {c} שניות, בערך {n} נשימות בדקה.',
-            'quick.coherent': 'קוהרנטית',
             'quick.relax': 'הרפיה',
-            'quick.478': '4-7-8',
             'quick.tactical': 'טקטית',
             'quick.triangle': 'משולש',
 
@@ -397,6 +415,27 @@ const I18n = (() => {
                 'שאפו עמוק והחזיקו 15 שניות, ואז שחררו. זה סבב אחד.'
             ],
             'wimhof.note': 'זמני העצירה שלכם יוצגו בסוף.',
+            'coherent.name': 'נשימה קוהרנטית',
+            'coherent.tagline': 'קצובה ואחידה',
+            'coherent.intro': 'שאיפה ונשיפה שוות באורכן, בלי עצירות, בקצב של כ־5–6 נשימות בדקה. חוקרים קוראים לקצב הזה "קוהרנטי" כי הוא מביא את קצב הלב והנשימה לפעול יחד בקצב חלק.',
+            'coherent.steps': [
+                'שאפו לאט דרך האף.',
+                'נשפו לאט, באותו האורך של השאיפה.',
+                'שמרו על קצב קבוע, נשימה אחר נשימה.'
+            ],
+            'coherent.note': 'לרוב האנשים נוח להתחיל עם 5 או 5.5 שניות לכל צד.',
+            'windDown.name': 'הרגעה לשינה',
+            'windDown.tagline': 'ספירה איטית לקראת שינה',
+            'windDown.intro': 'שאיפה, עצירה ונשיפה ארוכה בהרבה, ביחס קבוע של 4:7:8. נפוץ לפני השינה, או בכל פעם שרוצים להאט.',
+            'windDown.steps': [
+                'שאפו בשקט דרך האף.',
+                'עצרו את הנשימה.',
+                'נשפו לאט דרך הפה, זמן ארוך יותר מהעצירה.',
+                'התחילו שוב.'
+            ],
+            'windDown.note': 'שלושת הצדדים תמיד נשארים ביחס הזה; הקצב רק מאריך או מקצר את כולם יחד.',
+            'windDown.caution': 'העצירה הארוכה לא מתאימה לכולם. אם יש לכם בעיית נשימה או לב, או שאתם מרגישים סחרחורת, נשמו כרגיל במקום.',
+            'windDown.describe': 'שאיפה {a} ש׳, עצירה {b} ש׳, נשיפה {c} ש׳',
             'control.pace': 'קצב',
             'control.eachSide': 'כל צלע',
             'control.breaths': 'נשימות',
@@ -405,6 +444,7 @@ const I18n = (() => {
             'pace.steady': 'יציב',
             'pace.slow': 'איטי',
             'pace.deep': 'עמוק',
+            'pace.gentle': 'עדין',
             'pace.medium': 'בינוני',
             'pace.fast': 'מהיר',
 
@@ -627,9 +667,7 @@ const I18n = (() => {
             'custom.holdOut': 'Задержка',
             'off': 'Выкл.',
             'bpmHint': 'Один цикл длится {c} с. Вдохов в минуту: около {n}.',
-            'quick.coherent': 'Когерентное',
             'quick.relax': 'Расслабление',
-            'quick.478': '4-7-8',
             'quick.tactical': 'Тактическое',
             'quick.triangle': 'Треугольник',
 
@@ -664,6 +702,27 @@ const I18n = (() => {
                 'Глубоко вдохните и задержите дыхание на 15 секунд, затем отпустите. Это один раунд.'
             ],
             'wimhof.note': 'Время ваших задержек будет показано в конце.',
+            'coherent.name': 'Когерентное дыхание',
+            'coherent.tagline': 'Ровно и размеренно',
+            'coherent.intro': 'Равные по длине вдох и выдох, без задержек, около 5\u20136 дыханий в минуту. Такой темп называют «когерентным», потому что он сводит пульс и дыхание в единый плавный ритм.',
+            'coherent.steps': [
+                'Медленно вдохните через нос.',
+                'Медленно выдохните, так же долго, как вдох.',
+                'Держите ровный ритм, вдох за вдохом.'
+            ],
+            'coherent.note': 'Большинству удобно начать с 5 или 5.5 секунды на сторону.',
+            'windDown.name': 'Перед сном',
+            'windDown.tagline': 'Медленный счёт ко сну',
+            'windDown.intro': 'Вдох, задержка и гораздо более долгий выдох, в постоянном ритме 4:7:8. Часто используется перед сном или когда хочется замедлиться.',
+            'windDown.steps': [
+                'Тихо вдохните через нос.',
+                'Задержите дыхание.',
+                'Медленно выдохните через рот, дольше, чем задержка.',
+                'Начните заново.'
+            ],
+            'windDown.note': 'Соотношение трёх фаз всегда одинаковое; темп лишь удлиняет или укорачивает их все вместе.',
+            'windDown.caution': 'Долгая задержка подходит не всем. Если у вас проблемы с дыханием или сердцем, либо кружится голова, дышите обычным образом.',
+            'windDown.describe': 'Вдох {a} с, задержка {b} с, выдох {c} с',
             'control.pace': 'Темп',
             'control.eachSide': 'Каждая сторона',
             'control.breaths': 'Вдохи',
@@ -672,6 +731,7 @@ const I18n = (() => {
             'pace.steady': 'Ровный',
             'pace.slow': 'Медленный',
             'pace.deep': 'Глубокий',
+            'pace.gentle': 'Мягкий',
             'pace.medium': 'Средний',
             'pace.fast': 'Быстрый',
 

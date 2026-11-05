@@ -30,6 +30,8 @@
         sigh: { pace: 'steady' },
         box: { count: 4 },
         wimhof: { breaths: 30, rounds: 3, pace: 'medium' },
+        coherent: { seconds: 5.5 },
+        windDown: { pace: 'steady' },
         custom: { pattern: [4, 7, 8, 0] },
         minutes: 5,
         visual: 'shape',             // shape | wave
@@ -60,7 +62,7 @@
             if (saved) {
                 firstVisit = false;
                 const merged = { ...base, ...saved };
-                ['sigh', 'box', 'wimhof', 'custom', 'ambient', 'reminders', 'wimhofCheck'].forEach(k => { merged[k] = { ...base[k], ...saved[k] }; });
+                ['sigh', 'box', 'wimhof', 'coherent', 'windDown', 'custom', 'ambient', 'reminders', 'wimhofCheck'].forEach(k => { merged[k] = { ...base[k], ...saved[k] }; });
                 // Day became the default theme in version 3; move people off the old default
                 if ((saved.version || 0) < 3 && merged.theme === 'night') merged.theme = 'day';
                 // cyclic sighing became the default technique in version 4
@@ -291,7 +293,7 @@
         line = Programs.timeline(program);
         drawIdle();
         if (wasActive && (completed || time >= 30)) {
-            Stats.add({ tech: settings.technique, secs: time, breaths, holds });
+            Stats.add({ tech: settings.technique, secs: time, breaths, holds, detail: techDetail() });
             $('done-time').textContent = fmtTime(time);
             $('done-breaths').textContent = breaths;
             const extra = $('done-extra');
@@ -299,6 +301,13 @@
             extra.textContent = holds.length ? t('done.holds', { list: holds.map(fmtTime).join('  ·  ') }) : '';
             $('complete').hidden = false;
         }
+    }
+
+    // A snapshot of the settings that shaped this session, for the practice log.
+    function techDetail() {
+        const tech = settings.technique;
+        const params = tech === 'custom' ? settings.custom.pattern : settings[tech];
+        return JSON.parse(JSON.stringify(params));
     }
 
     function onStepStart(step) {

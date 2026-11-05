@@ -43,16 +43,32 @@ const Stats = (() => {
     function summarise(list, now = new Date()) {
         const byDay = {};
         const byTech = {};
+        const lastDetail = {};
         let secs = 0, breaths = 0, bestHold = 0;
         list.forEach(e => {
             const k = dayKey(new Date(e.at));
             byDay[k] = (byDay[k] || 0) + e.secs;
             byTech[e.tech] = (byTech[e.tech] || 0) + e.secs;
+            if (e.detail !== undefined) lastDetail[e.tech] = e.detail; // list is chronological, so the last one wins
             secs += e.secs;
             breaths += e.breaths;
             (e.holds || []).forEach(h => { bestHold = Math.max(bestHold, h); });
         });
-        return { byDay, byTech, secs, breaths, bestHold, sessions: list.length };
+        return { byDay, byTech, lastDetail, secs, breaths, bestHold, sessions: list.length };
+    }
+
+    // How a technique was set up, in the same short form shown elsewhere in the app.
+    // Box: seconds per side. Cyclic sighing / Wim Hof / Coherent / Wind Down: their usual summary.
+    // Custom: the quick-pattern name if it matches one, otherwise the stage lengths.
+    function formatDetail(id, detail) {
+        if (detail === undefined) return '';
+        if (id === 'custom') {
+            const quick = Programs.QUICK_PATTERNS.find(q => q.pattern.every((v, i) => v === detail[i]));
+            if (quick) return t('quick.' + quick.id);
+            return detail.filter(n => n > 0).map(Programs.fmt).join(' · ');
+        }
+        const tech = Programs.TECHNIQUES[id];
+        return tech && tech.summary ? tech.summary(detail) : '';
     }
 
     function weekStart(date, firstDay) {
@@ -141,7 +157,10 @@ const Stats = (() => {
         const rows = el('div', 'stats-rows');
         techs.forEach(([id, secs]) => {
             const row = el('div', 'stats-row');
-            row.appendChild(el('span', '', techName(id)));
+            const name = el('span', 'stats-row-name', techName(id));
+            const detail = formatDetail(id, s.lastDetail[id]);
+            if (detail) name.appendChild(el('small', 'stats-row-detail', detail));
+            row.appendChild(name);
             row.appendChild(el('span', 'stats-row-val', t('length.min', { n: Math.max(1, minutes(secs)) })));
             rows.appendChild(row);
         });

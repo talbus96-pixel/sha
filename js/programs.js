@@ -38,6 +38,25 @@ const Programs = (() => {
                 { key: 'pace', label: 'control.pace', options: [['slow', 'pace.slow'], ['medium', 'pace.medium'], ['fast', 'pace.fast']] }
             ],
             summary: p => t('roundsCount', { n: p.rounds })
+        },
+        coherent: {
+            controls: [
+                { key: 'seconds', label: 'control.eachSide', min: 4, max: 7, step: 0.5, unit: 'unit.s' }
+            ],
+            summary: p => secs(p.seconds)
+        },
+        windDown: {
+            controls: [
+                { key: 'pace', label: 'control.pace', options: [['gentle', 'pace.gentle'], ['steady', 'pace.steady'], ['deep', 'pace.deep']] }
+            ],
+            describe: p => {
+                const w = windDownTimes(p);
+                return t('windDown.describe', { a: fmt(w.inhale), b: fmt(w.hold), c: fmt(w.exhale) });
+            },
+            summary: p => {
+                const w = windDownTimes(p);
+                return `${fmt(w.inhale)}-${fmt(w.hold)}-${fmt(w.exhale)}`;
+            }
         }
     };
 
@@ -47,14 +66,20 @@ const Programs = (() => {
     }
 
     const QUICK_PATTERNS = [
-        { id: 'coherent', pattern: [5.5, 0, 5.5, 0] },
         { id: 'relax', pattern: [4, 0, 6, 0] },
-        { id: '478', pattern: [4, 7, 8, 0] },
         { id: 'tactical', pattern: [4, 2, 4, 2] },
         { id: 'triangle', pattern: [4, 4, 4, 0] }
     ];
 
     const PACE_SECONDS = { slow: 3.5, medium: 2.6, fast: 1.9 };
+
+    // Wind-down breathing keeps the classic 4:7:8 ratio; the pace scales all three sides together.
+    const WINDDOWN_PACES = {
+        gentle: { inhale: 3, hold: 5.25, exhale: 6 },
+        steady: { inhale: 4, hold: 7, exhale: 8 },
+        deep: { inhale: 5, hold: 8.75, exhale: 10 }
+    };
+    function windDownTimes(p) { return WINDDOWN_PACES[p.pace] || WINDDOWN_PACES.steady; }
 
     // Cyclic sighing paces: the breath out is always twice the two breaths in combined.
     const SIGH_PACES = {
@@ -109,6 +134,14 @@ const Programs = (() => {
             return { cycle: cycleFromPattern([c, c, c, c]) };
         }
         if (t === 'wimhof') return buildWimHof(settings.wimhof);
+        if (t === 'coherent') {
+            const c = settings.coherent.seconds;
+            return { cycle: cycleFromPattern([c, 0, c, 0]) };
+        }
+        if (t === 'windDown') {
+            const w = windDownTimes(settings.windDown);
+            return { cycle: cycleFromPattern([w.inhale, w.hold, w.exhale, 0]) };
+        }
         return { cycle: cycleFromPattern(settings.custom.pattern) };
     }
 
