@@ -1049,6 +1049,8 @@ a.primary-btn { display: block; text-align: center; text-decoration: none; box-s
 /* numbers and times read left to right even inside Hebrew text */
 [dir="rtl"] .pattern-nums,
 [dir="rtl"] .preset-nums,
+[dir="rtl"] .stats-row-val,
+[dir="rtl"] .stats-tile span,
 [dir="rtl"] .time-row input { direction: ltr; unicode-bidi: isolate; }
 
 /* Menu shortcuts (Progress, Learn) */

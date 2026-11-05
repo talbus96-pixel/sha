@@ -100,6 +100,8 @@ const Stats = (() => {
     }
 
     const fmtTime = s => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
+    // Wraps an embedded LTR number (like a time) so it reads correctly inside an RTL sentence.
+    const iso = s => `\u2066${s}\u2069`;
 
     function el(tag, cls, text) {
         const e = document.createElement(tag);
@@ -136,7 +138,7 @@ const Stats = (() => {
         // a warm headline
         const head = el('div', 'stats-head');
         head.appendChild(el('div', 'stats-big', weekDays ? t('stats.weekDays', { n: weekDays }) : t('stats.freshWeek')));
-        if (weekDays) head.appendChild(el('div', 'stats-sub', t('stats.weekMin', { n: Math.max(1, minutes(weekSecs)) })));
+        if (weekDays) head.appendChild(el('div', 'stats-sub', t('stats.weekMin', { time: iso(fmtTime(weekSecs)) })));
         head.appendChild(el('div', 'stats-sub', t(s.byDay[dayKey(today)] ? 'stats.todayDone' : 'stats.todayNudge')));
         root.appendChild(head);
 
@@ -158,7 +160,7 @@ const Stats = (() => {
                 const has = s.byDay[dayKey(d)];
                 if (has) cell.classList.add(m >= 15 ? 'd3' : m >= 5 ? 'd2' : 'd1');
                 if (+d === +today) cell.classList.add('today');
-                cell.title = `${d.toLocaleDateString(I18n.lang, { day: 'numeric', month: 'short' })}${has ? ' · ' + t('length.min', { n: Math.max(1, m) }) : ''}`;
+                cell.title = `${d.toLocaleDateString(I18n.lang, { day: 'numeric', month: 'short' })}${has ? ' · ' + iso(fmtTime(s.byDay[dayKey(d)])) : ''}`;
             }
             grid.appendChild(cell);
         }
@@ -166,7 +168,7 @@ const Stats = (() => {
 
         // all-time totals
         const tiles = el('div', 'stats-tiles');
-        [[s.sessions, 'stats.sessions'], [minutes(s.secs), 'stats.minutes'], [s.breaths, 'stats.breaths']].forEach(([n, key]) => {
+        [[s.sessions, 'stats.sessions'], [fmtTime(s.secs), 'done.time'], [s.breaths, 'stats.breaths']].forEach(([n, key]) => {
             const tile = el('div', 'stats-tile');
             tile.appendChild(el('span', '', n));
             tile.appendChild(el('small', '', t(key)));
@@ -184,7 +186,7 @@ const Stats = (() => {
             const detail = formatDetail(id, s.lastDetail[id]);
             if (detail) name.appendChild(el('small', 'stats-row-detail', detail));
             row.appendChild(name);
-            row.appendChild(el('span', 'stats-row-val', t('length.min', { n: Math.max(1, minutes(secs)) })));
+            row.appendChild(el('span', 'stats-row-val', fmtTime(secs)));
             rows.appendChild(row);
         });
         if (s.bestHold) {
