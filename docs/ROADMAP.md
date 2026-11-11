@@ -48,3 +48,4 @@ These are open questions the owner wants to keep thinking about. No code for the
 - The top-bar sounds button now opens the Sounds menu directly (one tap), with a prominent **Mute all sounds** switch at the top of it; its icon still shows whether you're muted.
 - Accessibility pass on the Sounds screen: the cue-style buttons now expose which one is selected (`aria-pressed`), and both the cue-style and ambience groups are labelled for screen readers.
 - A new Options toggle: show the time left even while calm mode fades everything else.
+- Fixed a sound bug: quickly switching a background sound off then on again (within about 2.5 seconds) could leave two copies of it playing on top of each other for a couple of seconds. Found by a sub-agent specifically testing for "ambience doesn't start immediately" reports.
