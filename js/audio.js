@@ -440,12 +440,22 @@ const Sound = (() => {
                 applyAmbient(id);
             }).catch(() => { a.loading = null; });
         } else if (a.on && a.voice) {
+            // Turning back on while the same voice is still mid fade-out (see below): cancel
+            // the pending stop and revive it in place, instead of starting a second, overlapping one.
+            if (a.voice.stopTimer) { clearTimeout(a.voice.stopTimer); a.voice.stopTimer = null; }
             a.voice.gain.gain.setTargetAtTime(a.level, t, 0.5);
         } else if (!a.on && a.voice) {
+            // Fade out and stop, but keep the voice referenced (and cancel-able) until the stop
+            // actually fires, so a quick on/off/on doesn't leave this fading-out source running
+            // underneath a brand new one.
             const v = a.voice;
-            a.voice = null;
+            if (v.stopTimer) clearTimeout(v.stopTimer); // repeated off: don't stack up stop timers
             v.gain.gain.setTargetAtTime(0, t, 0.4);
-            setTimeout(() => { try { v.src.stop(); } catch (e) {} v.gain.disconnect(); }, 2500);
+            v.stopTimer = setTimeout(() => {
+                if (a.voice === v) a.voice = null;
+                try { v.src.stop(); } catch (e) {}
+                v.gain.disconnect();
+            }, 2500);
         }
     }
 
