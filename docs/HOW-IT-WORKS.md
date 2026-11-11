@@ -61,7 +61,7 @@ manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed
 | `tick()` | Runs every screen frame. It moves the clock, finds the current step, and when the step changes plays its cue (`onStepStart`). When the time limit is reached, it ends after the next full breath out. |
 | `render()` | Draws the shape or the wave for the current moment. |
 | Menu (`#sheet-settings`) | One sheet of folding sections (`.fold`, `data-fold="sounds"`…). `openFold(key)` opens one and closes the rest, and `updateSummaries()` writes the current choice on each heading. `openSheet('sheet-settings', 'length')` opens the menu with a section already open. |
-| Mute | `settings.muted`, toggled by the speaker button. `Sound.setMuted()` silences everything at the master volume. |
+| Sounds button | The speaker button in the top bar no longer toggles mute directly — it opens the Sounds fold (`openSheet('sheet-settings', 'sounds')`). Its icon still reflects `settings.muted` for an at-a-glance status. Mute itself is a prominent switch at the top of that fold (`#opt-mute-all` → `settings.muted` → `Sound.setMuted()`). |
 | Breathing sheet | The Techniques tab is a list leading to a detail page (`showTechnique`, controls built by `renderTechControls`). The Custom tab is the steppers plus a live shape preview (`renderCustom`, `drawPreview`). |
 | Updates | The page looks for a new version when it comes back on screen and every hour (`registration.update()`), and reloads once when one takes over, only while idle (`reloadIfIdle`). |
 | Theme and view | `settings.theme`; the moon/sun button in the top bar switches between the last light and the last dark theme (`lastLight`, `lastDark`). The two small buttons under the visual set `settings.visual` (shape or wave). |
@@ -69,7 +69,7 @@ manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed
 | Wake lock, vibration, calm mode | As the names say. Switching apps pauses the session, because a web page can't keep accurate time in the background. |
 
 ## Ambience, independent of any breathing session
-Ambient sounds are controlled purely by their own on/off toggles in the Sounds menu (`settings.ambient`) — not by whether a breathing session is running. `syncAmbientGate()` in `app.js` opens the master ambient gate whenever at least one sound is on, and is called after anything that could change that (toggling a sound, starting or resuming a session, opening the Sounds fold). Starting, pausing, resuming or stopping a session no longer force the gate open or shut by itself.
+Toggling a sound on in the Sounds menu (`settings.ambient`) only adds it to your mix — it doesn't start playing by itself. The mix actually plays when either of two things is true: a breathing session is prepping or running (same as always), or `settings.ambientPlaying` ("Keep playing in the background") is on. `syncAmbientGate()` in `app.js` checks both and opens or closes the master ambient gate accordingly; it's called from `afterResume()`, `pause()`, `stop()`, and the "Keep playing in the background" toggle. Opening the Sounds fold temporarily forces the gate open too, so you can hear your mix while you build it (`openFold()`), and that's undone when you leave it (`closeSheet()`).
 
 ## js/reminders.js (`Reminders`)
 - Web pages can't schedule their own notifications while closed, so reminders become **repeating calendar events**.

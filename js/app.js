@@ -46,6 +46,7 @@
         vibrate: true,
         wakeLock: true,
         zenShowTime: false,   // show the time left (session-meta) even while calm mode fades the rest
+        ambientPlaying: false, // "Keep playing in the background": ambience plays even without a session
         reminders: { times: ['09:00'], days: 'daily' },  // days: daily | sunthu | weekdays (Mon–Fri)
         lang: I18n.detect(),
         muted: false,
@@ -233,7 +234,6 @@
 
     function start() {
         Sound.ensure();
-        syncAmbientGate();
         line = Programs.timeline(program);
         Object.assign(session, {
             state: settings.prepare ? 'prepare' : 'running',
@@ -249,6 +249,7 @@
         session.state = 'paused';
         cancelAnimationFrame(session.rafId);
         Sound.pause();
+        syncAmbientGate();
         releaseWakeLock();
         setPlayIcon(false);
         document.body.classList.remove('running');
@@ -260,7 +261,6 @@
 
     function resume() {
         Sound.ensure();
-        syncAmbientGate();
         session.state = session.resumeTo || 'running';
         const s = session.step;
         if (session.state === 'running' && s) {
@@ -270,6 +270,7 @@
     }
 
     function afterResume() {
+        syncAmbientGate();
         requestWakeLock();
         setPlayIcon(true);
         stopBtn.disabled = false;
@@ -287,6 +288,7 @@
         session.step = null;
         cancelAnimationFrame(session.rafId);
         if (completed) Sound.finish(); else Sound.pause();
+        syncAmbientGate();
         releaseWakeLock();
         setPlayIcon(false);
         stopBtn.disabled = true;
@@ -452,9 +454,11 @@
     function closeSheet() {
         if (!currentSheet) return;
         closeLanguagePicker();
+        const id = currentSheet.id;
         currentSheet.hidden = true;
         backdrop.hidden = true;
         currentSheet = null;
+        if (id === 'sheet-settings') syncAmbientGate(); // stop previewing once the sounds fold isn't showing
         scheduleZen();
     }
 
@@ -500,9 +504,14 @@
             f.querySelector('.fold-body').hidden = !on;
             if (on) setTimeout(() => f.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 50);
         });
-        // let the person hear their ambience mix while choosing sounds
-        if (key === 'sounds') Sound.ensure();
-        syncAmbientGate();
+        // let the person hear their ambience mix while choosing sounds; otherwise just
+        // reflect whether a session or "keep playing" is actually meant to be audible
+        if (key === 'sounds') {
+            Sound.ensure();
+            Sound.setAmbientGate(true);
+        } else {
+            syncAmbientGate();
+        }
     }
 
     document.querySelectorAll('.fold').forEach(f => {
@@ -523,26 +532,32 @@
 
     // ---------- ambience, independent of any breathing session ----------
 
-    // Ambience plays whenever at least one sound is switched on in the menu — whether a
-    // session is running, paused, idle, or doesn't exist at all. Call this after anything
-    // that could change settings.ambient, or after Sound.ensure() runs for the first time.
+    // Ambience plays during a breathing session on its own (prepare/running), the same as
+    // always. The rest of the time, it plays only if "Keep playing in the background" is on
+    // — picking a sound just adds it to the mix; it doesn't start playing by itself. Call
+    // this after anything that could change either of those two things.
     function syncAmbientGate(fadeSeconds) {
-        Sound.setAmbientGate(AMBIENTS.some(a => settings.ambient[a.id].on), fadeSeconds);
+        Sound.setAmbientGate(sessionActive() || settings.ambientPlaying, fadeSeconds);
     }
 
     // ---------- mute ----------
 
     function applyMute() {
         Sound.setMuted(settings.muted);
+        // the icon shows the real mute state; the button itself now opens the sounds menu
         $('mute-icon').setAttribute('href', settings.muted ? '#i-sound-off' : '#i-sound');
-        $('btn-mute').setAttribute('aria-pressed', settings.muted);
-        $('btn-mute').setAttribute('aria-label', t(settings.muted ? 'aria.unmute' : 'aria.mute'));
     }
 
-    $('btn-mute').addEventListener('click', () => {
-        settings.muted = !settings.muted;
-        saveSettings();
-        applyMute();
+    // One tap opens the sounds menu directly; mute itself lives inside it (see below).
+    $('btn-mute').addEventListener('click', () => openSheet('sheet-settings', 'sounds'));
+
+    [['opt-mute-all', 'muted'], ['opt-ambient-play', 'ambientPlaying']].forEach(([id, key]) => {
+        $(id).addEventListener('change', e => {
+            settings[key] = e.target.checked;
+            if (key === 'muted') applyMute();
+            else syncAmbientGate();
+            saveSettings();
+        });
     });
 
     // Swipe a sheet down to close it
@@ -827,6 +842,7 @@
     // ---------- sounds sheet ----------
 
     function renderSoundsSheet() {
+        $('opt-mute-all').checked = settings.muted;
         document.querySelectorAll('#cue-style button').forEach(b => {
             const on = b.dataset.value === settings.cue;
             b.classList.toggle('selected', on);
@@ -849,7 +865,7 @@
                 s.on = !s.on;
                 Sound.ensure();
                 Sound.setAmbient(a.id, s.on, s.level);
-                syncAmbientGate(); // ambience plays on its own, with or without a breathing session
+                // no gate change here: picking a sound sets up the mix, it doesn't start playing it
                 saveSettings();
                 renderSoundsSheet();
             });
@@ -875,6 +891,7 @@
             input.addEventListener('change', saveSettings);
             mix.appendChild(row);
         });
+        $('opt-ambient-play').checked = settings.ambientPlaying;
         updateSummaries();
     }
 

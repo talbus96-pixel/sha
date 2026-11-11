@@ -38,7 +38,7 @@ The icon is a sun setting into a calm violet sea, with its ring and a small lave
 ## What you see
 
 The main screen is kept minimal:
-- **At the top:** the ☰ **Menu** button on the left (on the right in Hebrew), the app name in the middle, and a 🔊 **mute** button on the other side that turns all sounds off or on with one tap. Below them: what to do now ("Breathe in", "Hold", "Breathe out"…) and the seconds left.
+- **At the top:** the ☰ **Menu** button on the left (on the right in Hebrew), the app name in the middle, and a 🔊 **Sounds** button on the other side that opens the sounds menu directly. Below them: what to do now ("Breathe in", "Hold", "Breathe out"…) and the seconds left.
 - **In the middle:** the shape and the moving dot. The side you're on now lights up. Breathing sides are blue, holding sides are lilac.
 - **At the bottom:**
   - the technique's name (tap it to choose another)
@@ -82,7 +82,7 @@ All cues are created live by the app, with a soft "room" echo added.
 
 **Ambience**: real nature recordings. You can mix as many as you like, each with its own volume: Rain, Ocean, Stream, Forest (birds), Fire (crackling fireplace), Night (crickets), Wind, and Noise (soft brown noise). The recordings loop without a gap, and each one starts from a random point, so it doesn't sound the same every time. Ambience plays during your session, and while the Sounds section of the menu is open, so you can hear your mix.
 
-Choose sounds in ☰ Menu → **Sounds**. The 🔊 button at the top only mutes or unmutes everything.
+Choose sounds in ☰ Menu → **Sounds** — or tap the 🔊 button at the top, which opens straight to this menu. A prominent **Mute all sounds** switch sits right at the top of it. Ambient sounds you switch on are added to your mix and play automatically during a breathing session, the same as always; they don't start playing on their own just because you picked them. If you want one playing right now, with or without a session, switch on **Keep playing in the background**, underneath the ambience tiles.
 
 In Wim Hof's quick breathing, the cue is only a soft tick, because a full bell every 2 seconds would be too much. A deep bowl marks the start of the breath hold.
 

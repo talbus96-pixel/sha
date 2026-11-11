@@ -746,6 +746,15 @@ input[type="range"]::-moz-range-thumb {
     border: 1px solid var(--faint);
 }
 
+/* The prominent mute switch at the top of the Sounds menu */
+.mute-row {
+    background: var(--accent-soft);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    border-bottom: none;
+}
+
 /* Dot color */
 .ball-colors { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 2px; }
 .ball-swatch {

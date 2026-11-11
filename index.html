@@ -62,7 +62,7 @@
             <div class="brand" data-i18n="brand">Sha</div>
             <div class="top-actions">
                 <button class="icon-btn" id="btn-theme" data-i18n-aria="aria.themeDark" aria-label="Dark mode"><svg><use href="#i-moon" id="theme-icon"/></svg></button>
-                <button class="icon-btn" id="btn-mute" aria-pressed="false"><svg><use href="#i-sound" id="mute-icon"/></svg></button>
+                <button class="icon-btn" id="btn-mute" data-i18n-aria="aria.sounds" aria-label="Sounds"><svg><use href="#i-sound" id="mute-icon"/></svg></button>
             </div>
         </header>
 
@@ -238,6 +238,10 @@
                         <svg class="fold-chev"><use href="#i-chevron"/></svg>
                     </button>
                     <div class="fold-body" hidden>
+                        <label class="toggle-row mute-row">
+                            <span data-i18n="sounds.muteAll">Mute all sounds</span>
+                            <input type="checkbox" id="opt-mute-all"><span class="switch"></span>
+                        </label>
                         <h3 class="section-title" id="sounds-cue-title" data-i18n="sounds.cue">Breathing cue</h3>
                         <div class="segmented wrap" id="cue-style" role="group" aria-labelledby="sounds-cue-title">
                             <button data-value="bowl" data-i18n="cue.bowl">Bowl</button>
@@ -254,6 +258,10 @@
                         </label>
                         <h3 class="section-title"><span id="sounds-ambience-title" data-i18n="sounds.ambience">Ambience</span> <small data-i18n="sounds.mixHint">mix as many as you like</small></h3>
                         <div class="ambient-grid" id="ambient-grid" role="group" aria-labelledby="sounds-ambience-title"></div>
+                        <label class="toggle-row">
+                            <span data-i18n="sounds.playBackground">Keep playing in the background</span>
+                            <input type="checkbox" id="opt-ambient-play"><span class="switch"></span>
+                        </label>
                         <div class="ambient-mix" id="ambient-mix"></div>
                     </div>
                 </section>

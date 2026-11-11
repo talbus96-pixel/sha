@@ -44,6 +44,7 @@ These are open questions the owner wants to keep thinking about. No code for the
 - A curated **dot color** picker in Look, independent of the theme.
 - Fixed a bug where a session's pace/pattern (`detail`) was never actually saved to the journal. One-time repair on the owner's phone: Box sessions → 5 s; old Custom-built Coherent sessions → reclassified as Coherent, 5.5 s.
 - An abandoned session (app closed mid-way, never stopped) is now logged too, the same 30-second rule as a normal stop.
-- Ambient sounds are now independent of any breathing session: they play as soon as they're switched on, and keep playing until switched off, regardless of whether a session starts, pauses, or ends.
+- Ambient sounds, refined: picking a sound just adds it to your mix (used automatically in sessions, as always) — it no longer starts playing by itself. A dedicated **Keep playing in the background** switch is what makes a mix play standalone, with or without a session.
+- The top-bar sounds button now opens the Sounds menu directly (one tap), with a prominent **Mute all sounds** switch at the top of it; its icon still shows whether you're muted.
 - Accessibility pass on the Sounds screen: the cue-style buttons now expose which one is selected (`aria-pressed`), and both the cue-style and ambience groups are labelled for screen readers.
 - A new Options toggle: show the time left even while calm mode fades everything else.
