@@ -23,7 +23,7 @@ manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed
 - **Themes** are sets of colour variables at the top (`day` is the default, plus `sunrise`, `meadow`, `lavender`, `lagoon`, `night`, `dusk`, `forest`). Colours must be written as `#rrggbb`, because the drawing code adds see-through versions of them. `app.js` sets `data-theme` on `<body>`. To add a theme, copy one of these blocks and add a matching entry to `THEMES` in `app.js`.
 - **Dot color** is independent of the theme: `settings.ballColor` is `null` (use the theme's own `--ball`) or a hex from a curated list (`BALL_COLORS` in `app.js`). `applyTheme()` sets or clears a `--ball` override directly on `<body>`'s inline style, which wins over the theme's own value.
 - The layout is built for phones first. `@media (min-width: 700px)` turns the bottom sheets into centred dialogs on larger screens, and `@media (max-height: 520px)` puts the visual and the controls side by side when a phone is held sideways.
-- `body.zen` hides everything marked `.fade-ui` (calm mode). `body.running` is set while a session runs.
+- `body.zen` hides everything marked `.fade-ui` (calm mode). `body.running` is set while a session runs. `#session-meta` (the time-left line) carries `.fade-ui` only when `settings.zenShowTime` is off, so it can be excluded on its own (`applyZenShowTime()` in `app.js`).
 
 ## js/i18n.js (`I18n`)
 - Every piece of text lives in `STRINGS.en`, `STRINGS.he` and `STRINGS.ru`. If a key is missing in a language, the English text is shown. Russian plurals (1 вдох, 2 вдоха, 5 вдохов) use `ruPlural()`. `detect()` picks the first of the phone's preferred languages that the app knows.
@@ -67,6 +67,9 @@ manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed
 | Theme and view | `settings.theme`; the moon/sun button in the top bar switches between the last light and the last dark theme (`lastLight`, `lastDark`). The two small buttons under the visual set `settings.visual` (shape or wave). |
 | Wim Hof safety check (`#safety`) | `openWimhof()` asks the safety question until it has been answered "none apply" `SAFETY_ASKS` (3) times. "One applies" sets `settings.wimhofCheck.blocked`, which greys the row out; tapping it shows an "ask me again" link (`askSafety()`). Closing without answering doesn't count. |
 | Wake lock, vibration, calm mode | As the names say. Switching apps pauses the session, because a web page can't keep accurate time in the background. |
+
+## Ambience, independent of any breathing session
+Ambient sounds are controlled purely by their own on/off toggles in the Sounds menu (`settings.ambient`) — not by whether a breathing session is running. `syncAmbientGate()` in `app.js` opens the master ambient gate whenever at least one sound is on, and is called after anything that could change that (toggling a sound, starting or resuming a session, opening the Sounds fold). Starting, pausing, resuming or stopping a session no longer force the gate open or shut by itself.
 
 ## js/reminders.js (`Reminders`)
 - Web pages can't schedule their own notifications while closed, so reminders become **repeating calendar events**.

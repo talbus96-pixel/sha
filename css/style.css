@@ -335,7 +335,7 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
     background: var(--surface);
     border: 1px solid var(--faint);
     font-size: 0.95rem;
-    transition: background 0.2s;
+    transition: background 0.2s, opacity 0.9s ease;
 }
 .pattern-chip:hover { background: var(--surface-strong); }
 .pattern-nums { color: var(--muted); font-variant-numeric: tabular-nums; }

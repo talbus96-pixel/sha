@@ -45,6 +45,7 @@
         prepare: true,
         vibrate: true,
         wakeLock: true,
+        zenShowTime: false,   // show the time left (session-meta) even while calm mode fades the rest
         reminders: { times: ['09:00'], days: 'daily' },  // days: daily | sunthu | weekdays (Mon–Fri)
         lang: I18n.detect(),
         muted: false,
@@ -232,6 +233,7 @@
 
     function start() {
         Sound.ensure();
+        syncAmbientGate();
         line = Programs.timeline(program);
         Object.assign(session, {
             state: settings.prepare ? 'prepare' : 'running',
@@ -247,7 +249,6 @@
         session.state = 'paused';
         cancelAnimationFrame(session.rafId);
         Sound.pause();
-        Sound.setAmbientGate(false);
         releaseWakeLock();
         setPlayIcon(false);
         document.body.classList.remove('running');
@@ -259,6 +260,7 @@
 
     function resume() {
         Sound.ensure();
+        syncAmbientGate();
         session.state = session.resumeTo || 'running';
         const s = session.step;
         if (session.state === 'running' && s) {
@@ -268,7 +270,6 @@
     }
 
     function afterResume() {
-        Sound.setAmbientGate(true);
         requestWakeLock();
         setPlayIcon(true);
         stopBtn.disabled = false;
@@ -286,7 +287,6 @@
         session.step = null;
         cancelAnimationFrame(session.rafId);
         if (completed) Sound.finish(); else Sound.pause();
-        Sound.setAmbientGate(false, completed ? 5 : 1.2);
         releaseWakeLock();
         setPlayIcon(false);
         stopBtn.disabled = true;
@@ -452,11 +452,9 @@
     function closeSheet() {
         if (!currentSheet) return;
         closeLanguagePicker();
-        const id = currentSheet.id;
         currentSheet.hidden = true;
         backdrop.hidden = true;
         currentSheet = null;
-        if (id === 'sheet-settings' && !sessionActive()) Sound.setAmbientGate(false);
         scheduleZen();
     }
 
@@ -503,12 +501,8 @@
             if (on) setTimeout(() => f.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 50);
         });
         // let the person hear their ambience mix while choosing sounds
-        if (key === 'sounds') {
-            Sound.ensure();
-            Sound.setAmbientGate(true);
-        } else if (!sessionActive()) {
-            Sound.setAmbientGate(false);
-        }
+        if (key === 'sounds') Sound.ensure();
+        syncAmbientGate();
     }
 
     document.querySelectorAll('.fold').forEach(f => {
@@ -525,6 +519,15 @@
         const r = settings.reminders;
         $('sum-reminders').textContent = `${r.times.map(Reminders.label).join(', ')} · ${t('days.' + r.days)}`;
         $('sum-look').textContent = t('theme.' + settings.theme);
+    }
+
+    // ---------- ambience, independent of any breathing session ----------
+
+    // Ambience plays whenever at least one sound is switched on in the menu — whether a
+    // session is running, paused, idle, or doesn't exist at all. Call this after anything
+    // that could change settings.ambient, or after Sound.ensure() runs for the first time.
+    function syncAmbientGate(fadeSeconds) {
+        Sound.setAmbientGate(AMBIENTS.some(a => settings.ambient[a.id].on), fadeSeconds);
     }
 
     // ---------- mute ----------
@@ -825,7 +828,9 @@
 
     function renderSoundsSheet() {
         document.querySelectorAll('#cue-style button').forEach(b => {
-            b.classList.toggle('selected', b.dataset.value === settings.cue);
+            const on = b.dataset.value === settings.cue;
+            b.classList.toggle('selected', on);
+            b.setAttribute('aria-pressed', on);
         });
         const vol = $('cue-volume');
         vol.value = settings.cueVolume;
@@ -837,13 +842,14 @@
             const tile = document.createElement('button');
             tile.className = 'ambient-tile' + (settings.ambient[a.id].on ? ' on' : '');
             tile.setAttribute('aria-pressed', settings.ambient[a.id].on);
-            tile.innerHTML = `<svg><use href="#${a.icon}"/></svg><span></span>`;
+            tile.innerHTML = `<svg aria-hidden="true"><use href="#${a.icon}"/></svg><span></span>`;
             tile.querySelector('span').textContent = t('amb.' + a.id);
             tile.addEventListener('click', () => {
                 const s = settings.ambient[a.id];
                 s.on = !s.on;
                 Sound.ensure();
                 Sound.setAmbient(a.id, s.on, s.level);
+                syncAmbientGate(); // ambience plays on its own, with or without a breathing session
                 saveSettings();
                 renderSoundsSheet();
             });
@@ -981,6 +987,7 @@
         $('opt-prepare').checked = settings.prepare;
         $('opt-vibrate').checked = settings.vibrate;
         $('opt-wake').checked = settings.wakeLock;
+        $('opt-zen-time').checked = settings.zenShowTime;
         updateSummaries();
     }
 
@@ -1001,7 +1008,13 @@
     });
     renderViewToggle();
 
-    [['opt-prepare', 'prepare'], ['opt-vibrate', 'vibrate'], ['opt-wake', 'wakeLock']].forEach(([id, key]) => {
+    // Calm mode fades out everything marked .fade-ui; #session-meta carries that class only
+    // when the person has chosen to hide the time, so it can be excluded on its own.
+    function applyZenShowTime() {
+        sessionMeta.classList.toggle('fade-ui', !settings.zenShowTime);
+    }
+
+    [['opt-prepare', 'prepare'], ['opt-vibrate', 'vibrate'], ['opt-wake', 'wakeLock'], ['opt-zen-time', 'zenShowTime']].forEach(([id, key]) => {
         $(id).addEventListener('change', e => {
             settings[key] = e.target.checked;
             if (key === 'wakeLock') {
@@ -1009,6 +1022,7 @@
                 else if (session.state === 'running') requestWakeLock();
             }
             if (key === 'vibrate' && settings.vibrate && canVibrate) navigator.vibrate(30);
+            if (key === 'zenShowTime') applyZenShowTime();
             saveSettings();
         });
     });
@@ -1191,6 +1205,7 @@
     });
     applyTheme();
     applyMute();
+    applyZenShowTime();
     updateChip();
     drawIdle();
 

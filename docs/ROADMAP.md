@@ -11,6 +11,9 @@ Ideas and decisions saved for later, in the owner's order.
    - Supabase's free plan may pause a project after about a week without activity. Check this when building.
 2. **Research page: content.** The page is built (menu → Learn) but hidden until the owner supplies studies. They go in `js/research.js` (format explained at the top of that file), with a title, a one-line summary and a link, in Hebrew, English and Russian.
 3. **Tour:** needs new steps for the Breath journal card, the Learn card (once it has content), the light/dark switch, the shape/wave buttons, and the dot-color picker. None of these are in the 21-step tour yet.
+4. **Wisdom quotes**, shown at the end of sessions and in other fitting places (the complete card, maybe the empty Breath journal, maybe the tour). Drawn from old traditions and wisdom literature: Judaism, Buddhism, Hinduism, Confucianism and other Eastern traditions and schools (White Lotus and others), Sufism, Stoicism, and any others worth including.
+   - **Before any code is written**, this needs real research: hand-pick and verify every quote (correct attribution, a real primary or reliably-translated source, not a misattributed "internet quote"), check it reads naturally in Hebrew, English and Russian, and only then decide how and where it's shown.
+   - This is a research task on its own, not a coding task — do it as a dedicated pass before building the feature.
 
 ## To think about, not to build yet
 These are open questions the owner wants to keep thinking about. No code for them until there's a clearer answer.
@@ -41,3 +44,6 @@ These are open questions the owner wants to keep thinking about. No code for the
 - A curated **dot color** picker in Look, independent of the theme.
 - Fixed a bug where a session's pace/pattern (`detail`) was never actually saved to the journal. One-time repair on the owner's phone: Box sessions → 5 s; old Custom-built Coherent sessions → reclassified as Coherent, 5.5 s.
 - An abandoned session (app closed mid-way, never stopped) is now logged too, the same 30-second rule as a normal stop.
+- Ambient sounds are now independent of any breathing session: they play as soon as they're switched on, and keep playing until switched off, regardless of whether a session starts, pauses, or ends.
+- Accessibility pass on the Sounds screen: the cue-style buttons now expose which one is selected (`aria-pressed`), and both the cue-style and ambience groups are labelled for screen readers.
+- A new Options toggle: show the time left even while calm mode fades everything else.

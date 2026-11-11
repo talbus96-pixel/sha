@@ -62,7 +62,7 @@ Tap the technique name at the bottom → **Techniques**. **Cyclic sighing** is m
 
 ## Custom patterns
 
-The **Custom** tab lets you set **Breathe in, Hold, Breathe out, Hold** yourself, in half-second steps (holds can be off). A small preview shows the shape your pattern makes. Quick picks: Coherent (5.5 · 5.5), Relax (4 · 6), 4-7-8, Tactical (4 · 2 · 4 · 2), Triangle (4 · 4 · 4).
+The **Custom** tab lets you set **Breathe in, Hold, Breathe out, Hold** yourself, in half-second steps (holds can be off). A small preview shows the shape your pattern makes. Quick picks: Relax (4 · 6), Tactical (4 · 2 · 4 · 2), Triangle (4 · 4 · 4). (Coherent breathing and the 4-7-8 "Wind Down" pattern are now full techniques of their own — see the table above.)
 
 How the shape follows the timings:
 - All four steps equal → **square**
@@ -90,14 +90,14 @@ In Wim Hof's quick breathing, the cue is only a soft tick, because a full bell e
 
 In the menu's top corner is the 🌐 **language** button. Below the title, a large button opens the **guided tour**: 21 short steps that light up each part of the app and explain it. On some steps the person taps the highlighted button themselves (the technique name, Cyclic sighing, and the Menu button), so the tour opens the real screens and explains what's inside. Next / Back / Skip at any time.
 
-Below it, a short list of sections. Tap a heading to open it; opening one closes the others. Each heading shows your current choice (for example "Look · Day · Shape"), so you can see your settings without opening anything.
-- **Sounds**: breathing cue, cue volume, and the ambience mix (see above).
+Below it, a short list of sections. Tap a heading to open it; opening one closes the others. Each heading shows your current choice (for example "Look · Lagoon"), so you can see your settings without opening anything. The **shape/wave** view is chosen with two small buttons under the main screen, not in the menu.
+- **Sounds**: breathing cue, cue volume, and the ambience mix (see above). Ambient sounds play as soon as you switch them on — no need to start a breathing session, and they keep playing after a session ends until you switch them off.
 - **Session length**: 1, 3, 5, 10, 15, 20 or 30 minutes, or no limit. (Wim Hof uses rounds instead.) Tapping the length button on the main screen opens this section directly.
 - **Reminders**: see below.
 - **Look**:
-  - **Theme**: five light ones: **Day** (the default), **Sunrise** (warm peach), **Meadow** (fresh green), **Lavender** and **Lagoon** (sea-glass aqua). Three dark ones for evenings: **Night**, **Dusk** and **Forest**.
-  - **Visual**: **Shape** (the default) or **Wave**.
-- **Options**: the 3-second get-ready countdown, vibration (Android only; iPhones don't let websites vibrate), and keeping the screen on during a session.
+  - **Theme**: five light ones: **Day**, **Sunrise** (warm peach), **Meadow** (fresh green), **Lavender** and **Lagoon** (sea-glass aqua, the default for new installs). Three dark ones for evenings: **Night**, **Dusk** and **Forest**. A 🌙/☀️ button in the top bar switches between the last light and last dark theme you picked.
+  - **Dot color**: match the theme, or pick from a curated set of colors, independent of the theme.
+- **Options**: the 3-second get-ready countdown, vibration (Android only; iPhones don't let websites vibrate), keeping the screen on during a session, and whether the time left stays visible during calm mode.
 - **About**: what the app is, and the sound credits.
 
 ## Reminders

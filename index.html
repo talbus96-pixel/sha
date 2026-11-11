@@ -83,13 +83,13 @@
             </div>
         </main>
 
-        <footer class="dock fade-ui">
-            <button class="pattern-chip" id="btn-pattern" data-i18n-aria="aria.pattern" aria-label="Change breathing technique">
+        <footer class="dock">
+            <button class="pattern-chip fade-ui" id="btn-pattern" data-i18n-aria="aria.pattern" aria-label="Change breathing technique">
                 <span id="pattern-name">Box breathing</span>
                 <span class="pattern-nums" id="pattern-nums">4 s</span>
             </button>
 
-            <div class="controls">
+            <div class="controls fade-ui">
                 <button class="side-btn" id="btn-length" data-i18n-aria="aria.length" aria-label="Session length">
                     <span class="side-value" id="length-value">5</span>
                     <span class="side-label" id="length-label">min</span>
@@ -238,8 +238,8 @@
                         <svg class="fold-chev"><use href="#i-chevron"/></svg>
                     </button>
                     <div class="fold-body" hidden>
-                        <h3 class="section-title" data-i18n="sounds.cue">Breathing cue</h3>
-                        <div class="segmented wrap" id="cue-style">
+                        <h3 class="section-title" id="sounds-cue-title" data-i18n="sounds.cue">Breathing cue</h3>
+                        <div class="segmented wrap" id="cue-style" role="group" aria-labelledby="sounds-cue-title">
                             <button data-value="bowl" data-i18n="cue.bowl">Bowl</button>
                             <button data-value="chime" data-i18n="cue.chime">Chime</button>
                             <button data-value="kalimba" data-i18n="cue.kalimba">Kalimba</button>
@@ -252,8 +252,8 @@
                             <span data-i18n="sounds.cueVolume">Cue volume</span>
                             <input type="range" id="cue-volume" min="0" max="1" step="0.01">
                         </label>
-                        <h3 class="section-title"><span data-i18n="sounds.ambience">Ambience</span> <small data-i18n="sounds.mixHint">mix as many as you like</small></h3>
-                        <div class="ambient-grid" id="ambient-grid"></div>
+                        <h3 class="section-title"><span id="sounds-ambience-title" data-i18n="sounds.ambience">Ambience</span> <small data-i18n="sounds.mixHint">mix as many as you like</small></h3>
+                        <div class="ambient-grid" id="ambient-grid" role="group" aria-labelledby="sounds-ambience-title"></div>
                         <div class="ambient-mix" id="ambient-mix"></div>
                     </div>
                 </section>
@@ -301,6 +301,10 @@
                         <label class="toggle-row" id="row-wake">
                             <span data-i18n="opt.wake">Keep screen on during session</span>
                             <input type="checkbox" id="opt-wake"><span class="switch"></span>
+                        </label>
+                        <label class="toggle-row">
+                            <span data-i18n="opt.zenTime">Show time left in calm mode</span>
+                            <input type="checkbox" id="opt-zen-time"><span class="switch"></span>
                         </label>
                     </div>
                 </section>
