@@ -323,6 +323,7 @@ const I18n = (() => {
             // my practices (saved set-ups)
             'practice.title': 'My practices',
             'practice.repeatLast': 'Repeat last practice',
+            'practice.empty': 'Practices you save, and your last session, will appear here, ready to start in one tap.',
             'practice.hint': 'One tap starts it with the same method, pace, length and sounds.',
             'practice.save': 'Save as my practice',
             'practice.saved': 'Saved ✓',
@@ -654,6 +655,7 @@ const I18n = (() => {
             // התרגולים שלי
             'practice.title': 'התרגולים שלי',
             'practice.repeatLast': 'חזרה על התרגול האחרון',
+            'practice.empty': 'תרגולים ששמרתם, והאימון האחרון שלכם, יופיעו כאן, מוכנים להתחלה בלחיצה אחת.',
             'practice.hint': 'לחיצה אחת מתחילה אותו עם אותה שיטה, אותו קצב, אותו משך ואותם צלילים.',
             'practice.save': 'שמירה כתרגול שלי',
             'practice.saved': 'נשמר ✓',
@@ -984,6 +986,7 @@ const I18n = (() => {
             // мои практики
             'practice.title': 'Мои практики',
             'practice.repeatLast': 'Повторить последнюю практику',
+            'practice.empty': 'Сохранённые практики и ваше последнее занятие появятся здесь, чтобы начать в одно касание.',
             'practice.hint': 'Одно касание — и всё начнётся с тем же методом, темпом, длительностью и звуками.',
             'practice.save': 'Сохранить как мою практику',
             'practice.saved': 'Сохранено ✓',

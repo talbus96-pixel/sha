@@ -465,7 +465,6 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
 
 /* My practices (saved set-ups) */
 .practices { margin-bottom: 4px; }
-.practices .section-title { margin-top: 6px; }
 .practice-row { display: flex; align-items: center; gap: 4px; margin-top: 8px; }
 .practice-row:first-of-type { margin-top: 0; }
 .practice-row .preset { flex: 1; min-width: 0; }
