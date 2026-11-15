@@ -103,6 +103,7 @@
             </div>
 
             <div class="session-meta" id="session-meta">&nbsp;</div>
+            <button class="notice-link fade-ui" id="btn-notice" data-i18n="notice.link" hidden>Prefer not to focus on your breath?</button>
         </footer>
     </div>
 
@@ -115,7 +116,33 @@
                 <div><span id="done-breaths">0</span><small data-i18n="done.breaths">breaths</small></div>
             </div>
             <div class="complete-extra" id="done-extra" hidden></div>
+            <button class="secondary-btn done-save" id="btn-done-save" hidden></button>
             <button class="primary-btn" id="btn-done" data-i18n="done.button">Done</button>
+        </div>
+    </div>
+
+    <!-- First visit: one instruction and a one-minute practice -->
+    <div class="complete welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcome-title" hidden>
+        <div class="complete-card welcome-card">
+            <div class="complete-title" id="welcome-title" data-i18n="welcome.title">Welcome to Sha</div>
+            <p class="welcome-text" data-i18n="welcome.text">Follow the dot: breathe in as it rises, and out slowly as it falls.</p>
+            <button class="primary-btn" id="btn-welcome-start" data-i18n="welcome.start">Start a 1-minute practice</button>
+            <div class="welcome-more">
+                <button class="quiet-btn" id="btn-welcome-tour" data-i18n="welcome.tour">Take the full tour</button>
+                <button class="quiet-btn" id="btn-welcome-skip" data-i18n="welcome.skip">Not now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notice your surroundings: a short exercise with no breathing to follow -->
+    <div class="complete notice" id="notice" role="dialog" aria-modal="true" aria-labelledby="notice-title" hidden>
+        <div class="complete-card notice-card">
+            <button class="icon-btn notice-close" id="btn-notice-close" data-i18n-aria="aria.close" aria-label="Close"><svg><use href="#i-close"/></svg></button>
+            <div class="notice-title" id="notice-title" data-i18n="notice.title">Notice your surroundings</div>
+            <p class="notice-text" id="notice-text" aria-live="polite"></p>
+            <div class="notice-dots" id="notice-dots" aria-hidden="true"></div>
+            <div class="notice-bar" id="notice-bar" aria-hidden="true"><span id="notice-bar-fill"></span></div>
+            <button class="primary-btn" id="btn-notice-next" data-i18n="notice.next">Next</button>
         </div>
     </div>
 
@@ -151,7 +178,12 @@
                 </div>
 
                 <div id="tab-techniques">
+                    <div class="practices" id="practices" hidden></div>
                     <div class="tech-list" id="tech-list"></div>
+                    <button class="preset notice-entry" id="btn-open-notice">
+                        <div><div class="preset-name" data-i18n="notice.title">Notice your surroundings</div><div class="preset-desc" data-i18n="notice.rowText">A short pause, with no breathing to follow</div></div>
+                        <svg class="chev" width="20" height="20"><use href="#i-chevron"/></svg>
+                    </button>
                 </div>
 
                 <div id="tab-custom" hidden>
@@ -159,6 +191,7 @@
                     <div class="stepper-grid" id="stepper-grid"></div>
                     <p class="hint" id="bpm-hint"></p>
                     <div class="chip-row" id="quick-patterns"></div>
+                    <button class="secondary-btn save-practice" id="btn-custom-save"></button>
                 </div>
             </div>
 
@@ -172,6 +205,7 @@
                 </details>
                 <div class="tech-controls" id="tech-controls"></div>
                 <button class="primary-btn" id="btn-tech-start" data-i18n="start">Start</button>
+                <button class="secondary-btn save-practice" id="btn-tech-save"></button>
             </div>
         </div>
     </section>
@@ -374,6 +408,7 @@
     <script src="js/stats.js"></script>
     <script src="js/research.js"></script>
     <script src="js/tour.js"></script>
+    <script src="js/notice.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

@@ -318,7 +318,38 @@ const I18n = (() => {
             'tour.menuOptions.title': 'Options',
             'tour.menuOptions.text': 'The countdown before you start, vibration, and keeping the screen on.',
             'tour.calm.title': 'Calm mode',
-            'tour.calm.text': 'While you breathe, the buttons fade away. Touch the screen to bring them back. Enjoy!'
+            'tour.calm.text': 'While you breathe, the buttons fade away. Touch the screen to bring them back. Enjoy!',
+
+            // my practices (saved set-ups)
+            'practice.title': 'My practices',
+            'practice.repeatLast': 'Repeat last practice',
+            'practice.hint': 'One tap starts it with the same method, pace, length and sounds.',
+            'practice.save': 'Save as my practice',
+            'practice.saved': 'Saved ✓',
+            'practice.full': 'You can keep up to {n} practices. Remove one to save another.',
+            'practice.remove': 'Remove this practice',
+            'practice.minutes': '{n} min',
+
+            // first-time welcome
+            'welcome.title': 'Welcome to Sha',
+            'welcome.text': 'Follow the dot: breathe in as it rises, and out slowly as it falls.',
+            'welcome.start': 'Start a 1-minute practice',
+            'welcome.tour': 'Take the full tour',
+            'welcome.skip': 'Not now',
+
+            // notice your surroundings (a short exercise with no breathing to follow)
+            'notice.title': 'Notice your surroundings',
+            'notice.rowText': 'A short pause, with no breathing to follow',
+            'notice.link': 'Prefer not to focus on your breath?',
+            'notice.steps': [
+                'Look around slowly. Pick one thing you can see, and notice its colour and shape.',
+                'Now listen. Which sounds are close to you? Which are far away?',
+                'Notice where your body is resting: the chair, the floor or the bed.',
+                'Find something within reach and touch it. Notice how it feels.'
+            ],
+            'notice.finish': 'Whenever you’re ready, you can come back.',
+            'notice.next': 'Next',
+            'notice.done': 'Done'
         },
 
         he: {
@@ -618,7 +649,38 @@ const I18n = (() => {
             'tour.menuOptions.title': 'אפשרויות',
             'tour.menuOptions.text': 'ספירה לאחור לפני ההתחלה, רטט, והשארת המסך דולק.',
             'tour.calm.title': 'מצב רוגע',
-            'tour.calm.text': 'בזמן הנשימה הכפתורים נעלמים. נגיעה במסך מחזירה אותם. נשימה נעימה!'
+            'tour.calm.text': 'בזמן הנשימה הכפתורים נעלמים. נגיעה במסך מחזירה אותם. נשימה נעימה!',
+
+            // התרגולים שלי
+            'practice.title': 'התרגולים שלי',
+            'practice.repeatLast': 'חזרה על התרגול האחרון',
+            'practice.hint': 'לחיצה אחת מתחילה אותו עם אותה שיטה, אותו קצב, אותו משך ואותם צלילים.',
+            'practice.save': 'שמירה כתרגול שלי',
+            'practice.saved': 'נשמר ✓',
+            'practice.full': 'אפשר לשמור עד {n} תרגולים. הסירו אחד כדי לשמור נוסף.',
+            'practice.remove': 'הסרת התרגול',
+            'practice.minutes': '{n} דק׳',
+
+            // ברוכים הבאים (ביקור ראשון)
+            'welcome.title': 'ברוכים הבאים ל„שָׁה”',
+            'welcome.text': 'עקבו אחרי הנקודה: שאפו כשהיא עולה, ונשפו לאט כשהיא יורדת.',
+            'welcome.start': 'התחלת תרגול של דקה',
+            'welcome.tour': 'סיור מלא באפליקציה',
+            'welcome.skip': 'לא עכשיו',
+
+            // רגע לשים לב לסביבה (תרגיל קצר בלי נשימה לעקוב אחריה)
+            'notice.title': 'רגע לשים לב לסביבה',
+            'notice.rowText': 'הפסקה קצרה, בלי נשימה לעקוב אחריה',
+            'notice.link': 'לא נוח להתמקד בנשימה?',
+            'notice.steps': [
+                'הסתכלו סביב לאט. בחרו דבר אחד שאתם רואים, ושימו לב לצבע ולצורה שלו.',
+                'עכשיו הקשיבו. אילו קולות קרובים אליכם? ואילו רחוקים?',
+                'שימו לב איפה הגוף נח: על הכיסא, על הרצפה או על המיטה.',
+                'מצאו משהו בהישג יד וגעו בו. שימו לב איך זה מרגיש.'
+            ],
+            'notice.finish': 'כשתרצו, אפשר לחזור.',
+            'notice.next': 'הבא',
+            'notice.done': 'סיום'
         },
         ru: {
             'app.title': 'Ша',
@@ -917,7 +979,38 @@ const I18n = (() => {
             'tour.menuOptions.title': 'Параметры',
             'tour.menuOptions.text': 'Обратный отсчёт перед началом, вибрация и экран, который не гаснет.',
             'tour.calm.title': 'Режим покоя',
-            'tour.calm.text': 'Во время дыхания кнопки исчезают. Коснитесь экрана, чтобы вернуть их. Приятной практики!'
+            'tour.calm.text': 'Во время дыхания кнопки исчезают. Коснитесь экрана, чтобы вернуть их. Приятной практики!',
+
+            // мои практики
+            'practice.title': 'Мои практики',
+            'practice.repeatLast': 'Повторить последнюю практику',
+            'practice.hint': 'Одно касание — и всё начнётся с тем же методом, темпом, длительностью и звуками.',
+            'practice.save': 'Сохранить как мою практику',
+            'practice.saved': 'Сохранено ✓',
+            'practice.full': 'Можно сохранить до {n} практик. Удалите одну, чтобы сохранить другую.',
+            'practice.remove': 'Удалить практику',
+            'practice.minutes': '{n} мин',
+
+            // первый визит
+            'welcome.title': 'Добро пожаловать в «Ша»',
+            'welcome.text': 'Следуйте за точкой: вдыхайте, пока она поднимается, и медленно выдыхайте, пока она опускается.',
+            'welcome.start': 'Начать практику на 1 минуту',
+            'welcome.tour': 'Пройти полный тур',
+            'welcome.skip': 'Не сейчас',
+
+            // заметить, что вокруг (короткое упражнение без дыхания)
+            'notice.title': 'Заметить, что вокруг',
+            'notice.rowText': 'Короткая пауза без дыхания, за которым нужно следить',
+            'notice.link': 'Не хочется сосредоточиваться на дыхании?',
+            'notice.steps': [
+                'Медленно оглядитесь. Выберите один предмет, который вы видите, и заметьте его цвет и форму.',
+                'Теперь прислушайтесь. Какие звуки рядом с вами? А какие далеко?',
+                'Заметьте, где опирается ваше тело: на стуле, на полу или на кровати.',
+                'Найдите что-нибудь в пределах досягаемости и прикоснитесь. Заметьте, какое оно на ощупь.'
+            ],
+            'notice.finish': 'Когда будете готовы, можно вернуться.',
+            'notice.next': 'Далее',
+            'notice.done': 'Готово'
         }
     };
 

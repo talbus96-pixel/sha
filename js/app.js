@@ -51,12 +51,24 @@
         lang: I18n.detect(),
         muted: false,
         wimhofCheck: { ok: 0, blocked: false },  // safety question: times answered "none apply", or locked
+        practices: [],                // saved practices (see "My practices" below)
+        lastPractice: null,           // the set-up of the most recent session, for "Repeat last practice"
         version: 4
     };
 
     // ---------- settings ----------
 
     let firstVisit = true;
+
+    // A saved practice is { tech, params, minutes, cue, ambient: { id: level } }. Anything that
+    // doesn't fit (an old technique that no longer exists, a damaged entry) is dropped on load.
+    const MAX_PRACTICES = 5;
+    function validPractice(p) {
+        if (!p || typeof p !== 'object' || typeof p.cue !== 'string' || !Number.isFinite(p.minutes)) return false;
+        if (!p.ambient || typeof p.ambient !== 'object') return false;
+        if (p.tech === 'custom') return Array.isArray(p.params) && p.params.length === 4 && p.params.every(Number.isFinite);
+        return !!T[p.tech] && !!p.params && typeof p.params === 'object';
+    }
 
     function loadSettings() {
         const base = JSON.parse(JSON.stringify(DEFAULTS));
@@ -71,6 +83,8 @@
                 // cyclic sighing became the default technique in version 4
                 // every visit opens with the recommended technique; its settings (and the others') are kept
                 merged.technique = 'sigh';
+                merged.practices = (Array.isArray(saved.practices) ? saved.practices : []).filter(validPractice).slice(0, MAX_PRACTICES);
+                merged.lastPractice = validPractice(saved.lastPractice) ? saved.lastPractice : null;
                 merged.version = base.version;
                 return merged;
             }
@@ -127,6 +141,7 @@
         step: null,
         breaths: 0,
         holds: [],          // Wim Hof hold times
+        limit: null,        // minutes for this session only (the first-visit practice); null = the saved length
         trail: [],
         lastFrame: 0,
         rafId: 0
@@ -143,8 +158,9 @@
         else render();
     }
 
-    const totalSeconds = () => settings.minutes * 60;
-    const timeUp = () => !hasFixedEnd() && settings.minutes > 0 && session.time >= totalSeconds();
+    const sessionMinutes = () => (session.limit != null ? session.limit : settings.minutes);
+    const totalSeconds = () => sessionMinutes() * 60;
+    const timeUp = () => !hasFixedEnd() && sessionMinutes() > 0 && session.time >= totalSeconds();
 
     // ---------- drawing ----------
 
@@ -209,7 +225,7 @@
             return;
         }
         let text;
-        if (settings.minutes > 0) {
+        if (sessionMinutes() > 0) {
             text = timeUp() ? t('lastBreath') : t('timeLeft', { t: fmtTime(totalSeconds() - session.time) });
         } else {
             text = fmtTime(session.time);
@@ -232,14 +248,18 @@
         playBtn.setAttribute('aria-label', t(playing ? 'aria.pause' : 'aria.start'));
     }
 
-    function start() {
+    // opts.minutes: a length for this session only, without changing the saved one
+    function start(opts) {
         Sound.ensure();
         line = Programs.timeline(program);
         Object.assign(session, {
             state: settings.prepare ? 'prepare' : 'running',
             time: 0, clock: 0, prep: PREPARE_SECONDS, step: null, breaths: 0, holds: [], trail: [],
+            limit: opts && opts.minutes != null ? opts.minutes : null,
             startedAt: Date.now()
         });
+        settings.lastPractice = snapshotPractice(settings.technique, sessionMinutes());
+        saveSettings();
         afterResume();
     }
 
@@ -247,6 +267,7 @@
         if (session.state !== 'prepare' && session.state !== 'running') return;
         session.resumeTo = session.state;
         session.state = 'paused';
+        updateNoticeLink();
         cancelAnimationFrame(session.rafId);
         Sound.pause();
         syncAmbientGate();
@@ -270,6 +291,7 @@
     }
 
     function afterResume() {
+        updateNoticeLink();
         syncAmbientGate();
         requestWakeLock();
         setPlayIcon(true);
@@ -286,6 +308,7 @@
         const { time, breaths, holds, startedAt } = session;
         session.state = 'idle';
         session.step = null;
+        updateNoticeLink();
         cancelAnimationFrame(session.rafId);
         if (completed) Sound.finish(); else Sound.pause();
         syncAmbientGate();
@@ -303,6 +326,7 @@
             const extra = $('done-extra');
             extra.hidden = !holds.length;
             extra.textContent = holds.length ? t('done.holds', { list: holds.map(fmtTime).join('  ·  ') }) : '';
+            refreshSaveButton($('btn-done-save'), settings.lastPractice);
             $('complete').hidden = false;
         }
     }
@@ -573,8 +597,13 @@
     });
 
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') { if (!$('safety').hidden) closeSafety(); else closeSheet(); }
-        if (e.code === 'Space' && !currentSheet && $('complete').hidden) {
+        if (e.key === 'Escape') {
+            if (Notice.isOpen()) Notice.close();
+            else if (!$('welcome').hidden) $('welcome').hidden = true;
+            else if (!$('safety').hidden) closeSafety();
+            else closeSheet();
+        }
+        if (e.code === 'Space' && !currentSheet && $('complete').hidden && $('welcome').hidden && !Notice.isOpen()) {
             e.preventDefault();
             if (session.step && session.step.open) endOpenHold();
             else playBtn.click();
@@ -625,6 +654,7 @@
     });
 
     function renderTechList() {
+        renderPractices();
         const list = $('tech-list');
         list.innerHTML = '';
         Object.keys(T).forEach(id => {
@@ -638,14 +668,7 @@
             if (locked) {
                 row.classList.add('locked');
                 row.querySelector('.preset-desc').textContent = t('safety.locked');
-                row.addEventListener('click', () => {
-                    if (row.nextElementSibling && row.nextElementSibling.classList.contains('recheck-btn')) return;
-                    const again = document.createElement('button');
-                    again.className = 'recheck-btn';
-                    again.textContent = t('safety.recheck');
-                    again.addEventListener('click', () => askSafety());
-                    row.after(again);
-                });
+                row.addEventListener('click', () => attachRecheck(row));
             } else {
                 row.addEventListener('click', () => (id === 'wimhof' ? openWimhof() : showTechnique(id)));
             }
@@ -690,6 +713,209 @@
         renderTechList();
     });
     $('safety').addEventListener('click', e => { if (e.target === $('safety')) closeSafety(); });
+
+    // A locked Wim Hof row offers an "ask me again" link under it when tapped.
+    function attachRecheck(row) {
+        const anchor = row.closest('.practice-row') || row;
+        if (anchor.nextElementSibling && anchor.nextElementSibling.classList.contains('recheck-btn')) return;
+        const again = document.createElement('button');
+        again.className = 'recheck-btn';
+        again.textContent = t('safety.recheck');
+        again.addEventListener('click', () => askSafety());
+        anchor.after(again);
+    }
+
+    // ---------- my practices: saved set-ups, and "repeat last practice" ----------
+    // A practice remembers the method, its pace, the session length, the cue sound and the
+    // ambience mix. The last session's set-up is kept automatically (settings.lastPractice);
+    // up to MAX_PRACTICES more can be saved by hand. Names are built from the set-up, so they
+    // follow the language. Nothing here leaves the phone.
+
+    function snapshotPractice(tech, minutes) {
+        const params = tech === 'custom' ? settings.custom.pattern : settings[tech];
+        const ambient = {};
+        AMBIENTS.forEach(a => { if (settings.ambient[a.id].on) ambient[a.id] = settings.ambient[a.id].level; });
+        return JSON.parse(JSON.stringify({ tech, params, minutes, cue: settings.cue, ambient }));
+    }
+
+    const samePractice = (a, b) => !!a && !!b &&
+        JSON.stringify([a.tech, a.params, a.minutes, a.cue, a.ambient]) === JSON.stringify([b.tech, b.params, b.minutes, b.cue, b.ambient]);
+
+    // { name: "Box breathing", detail: "4 s · 5 min · Bowl, Rain" }
+    function describePractice(p) {
+        let name, summary;
+        if (p.tech === 'custom') {
+            const quick = Programs.QUICK_PATTERNS.find(q => q.pattern.every((v, i) => v === p.params[i]));
+            name = t(quick ? 'quick.' + quick.id : 'custom');
+            summary = p.params.filter(n => n > 0).map(fmtNum).join(' · ');
+        } else {
+            name = Programs.text(p.tech, 'name');
+            summary = T[p.tech].summary(p.params);
+        }
+        const bits = [summary];
+        if (p.tech !== 'wimhof') bits.push(p.minutes > 0 ? t('practice.minutes', { n: p.minutes }) : t('length.none'));
+        const sounds = [p.cue !== 'off' ? t('cue.' + p.cue) : null]
+            .concat(AMBIENTS.filter(a => a.id in p.ambient).map(a => t('amb.' + a.id)))
+            .filter(Boolean);
+        if (sounds.length) bits.push(sounds.join(', '));
+        return { name, detail: bits.join(' · ') };
+    }
+
+    // Puts a practice's choices back into the settings (without choosing the technique yet).
+    function applyPractice(p) {
+        Sound.ensure();
+        if (p.tech === 'custom') settings.custom.pattern = p.params.slice();
+        else settings[p.tech] = { ...settings[p.tech], ...p.params };
+        settings.minutes = p.minutes;
+        settings.cue = p.cue;
+        Sound.setCueStyle(p.cue);
+        AMBIENTS.forEach(a => {
+            const s = settings.ambient[a.id];
+            s.on = a.id in p.ambient;
+            if (s.on) s.level = p.ambient[a.id];
+            Sound.setAmbient(a.id, s.on, s.level);
+        });
+        updateChip();
+        saveSettings();
+    }
+
+    const wimhofLocked = () => settings.wimhofCheck.blocked;
+
+    // One tap: set everything as it was, and start. Wim Hof never skips its safety question.
+    function startPractice(p) {
+        applyPractice(p);
+        if (p.tech === 'wimhof' && (wimhofLocked() || settings.wimhofCheck.ok < SAFETY_ASKS)) {
+            if (!wimhofLocked()) openWimhof();
+            return;
+        }
+        settings.technique = p.tech;
+        breathingTab = 'techniques';
+        saveSettings();
+        closeSheet();
+        if (session.state !== 'idle') stop(false);
+        $('complete').hidden = true;
+        rebuildProgram();
+        start();
+    }
+
+    function practiceButton(p, repeat) {
+        const d = describePractice(p);
+        const row = document.createElement('button');
+        row.className = 'preset' + (repeat ? ' repeat' : '');
+        row.innerHTML = `<div><div class="preset-name"></div><div class="preset-desc"></div></div><svg class="play-mark" aria-hidden="true"><use href="#i-play"/></svg>`;
+        row.querySelector('.preset-name').textContent = repeat ? t('practice.repeatLast') : d.name;
+        row.querySelector('.preset-desc').textContent = repeat ? `${d.name} · ${d.detail}` : d.detail;
+        if (p.tech === 'wimhof' && wimhofLocked()) {
+            row.classList.add('locked');
+            row.querySelector('.preset-desc').textContent = t('safety.locked');
+            row.addEventListener('click', () => attachRecheck(row));
+        } else {
+            row.addEventListener('click', () => startPractice(p));
+        }
+        return row;
+    }
+
+    function renderPractices() {
+        const box = $('practices');
+        const last = settings.lastPractice;
+        const saved = settings.practices;
+        box.innerHTML = '';
+        box.hidden = !last && !saved.length;
+        if (box.hidden) return;
+        const title = document.createElement('h3');
+        title.className = 'section-title';
+        title.textContent = t('practice.title');
+        box.appendChild(title);
+        if (last) {
+            const wrap = document.createElement('div');
+            wrap.className = 'practice-row';
+            wrap.appendChild(practiceButton(last, true));
+            box.appendChild(wrap);
+        }
+        saved.forEach((p, i) => {
+            const wrap = document.createElement('div');
+            wrap.className = 'practice-row';
+            wrap.appendChild(practiceButton(p, false));
+            const remove = document.createElement('button');
+            remove.className = 'icon-btn practice-remove';
+            remove.setAttribute('aria-label', t('practice.remove'));
+            remove.innerHTML = '<svg aria-hidden="true"><use href="#i-close"/></svg>';
+            remove.addEventListener('click', () => {
+                settings.practices.splice(i, 1);
+                saveSettings();
+                renderPractices();
+                refreshSaveButtons();
+            });
+            wrap.appendChild(remove);
+            box.appendChild(wrap);
+        });
+        if (saved.length) {
+            const hint = document.createElement('p');
+            hint.className = 'hint';
+            hint.textContent = t('practice.hint');
+            box.appendChild(hint);
+        }
+    }
+
+    // "Save as my practice" buttons: they show Saved ✓ for a set-up that's already kept, and
+    // say so when the list is full.
+    function refreshSaveButton(btn, p) {
+        if (!p) { btn.hidden = true; return; }
+        btn.hidden = false;
+        const have = settings.practices.some(q => samePractice(q, p));
+        const full = !have && settings.practices.length >= MAX_PRACTICES;
+        btn.disabled = have || full;
+        btn.textContent = have ? t('practice.saved') : full ? t('practice.full', { n: MAX_PRACTICES }) : t('practice.save');
+    }
+
+    function refreshSaveButtons() {
+        refreshSaveButton($('btn-tech-save'), detailId ? snapshotPractice(detailId, settings.minutes) : null);
+        refreshSaveButton($('btn-custom-save'), snapshotPractice('custom', settings.minutes));
+        refreshSaveButton($('btn-done-save'), settings.lastPractice);
+    }
+
+    function savePractice(p) {
+        if (!p || settings.practices.length >= MAX_PRACTICES || settings.practices.some(q => samePractice(q, p))) return;
+        settings.practices.push(JSON.parse(JSON.stringify(p)));
+        saveSettings();
+        renderPractices();
+        refreshSaveButtons();
+    }
+
+    $('btn-tech-save').addEventListener('click', () => savePractice(snapshotPractice(detailId, settings.minutes)));
+    $('btn-custom-save').addEventListener('click', () => savePractice(snapshotPractice('custom', settings.minutes)));
+    $('btn-done-save').addEventListener('click', () => savePractice(settings.lastPractice));
+
+    // ---------- first visit, and a way out of breath focus ----------
+
+    // A new visitor gets one instruction and a one-minute practice; the full tour stays optional.
+    function showWelcome() {
+        $('welcome').hidden = false;
+        $('btn-welcome-start').focus();
+    }
+    $('btn-welcome-start').addEventListener('click', () => {
+        $('welcome').hidden = true;
+        start({ minutes: 1 }); // for this practice only; the saved session length is left alone
+    });
+    $('btn-welcome-tour').addEventListener('click', () => {
+        $('welcome').hidden = true;
+        Tour.start(tourHooks);
+    });
+    $('btn-welcome-skip').addEventListener('click', () => { $('welcome').hidden = true; });
+    $('welcome').addEventListener('click', e => { if (e.target === $('welcome')) $('welcome').hidden = true; });
+
+    // "Notice your surroundings" (js/notice.js): offered quietly during a session and in the
+    // technique list. Opening it pauses a session, so nothing is lost.
+    function updateNoticeLink() {
+        $('btn-notice').hidden = session.state === 'idle';
+    }
+    function openNotice() {
+        if (sessionActive()) pause();
+        closeSheet();
+        Notice.open(showUI);
+    }
+    $('btn-notice').addEventListener('click', openNotice);
+    $('btn-open-notice').addEventListener('click', openNotice);
 
     function badge() {
         const b = document.createElement('span');
@@ -762,6 +988,7 @@
             hint.textContent = tech.describe(params);
             box.appendChild(hint);
         }
+        refreshSaveButtons();
     }
 
     function stepperInline(valueHtml, onChange) {
@@ -822,6 +1049,7 @@
         });
 
         drawPreview();
+        refreshSaveButtons();
     }
 
     function setCustom(pattern) {
@@ -1226,10 +1454,10 @@
     updateChip();
     drawIdle();
 
-    // First time here: show the tour once (Skip is always there).
+    // First time here: a short welcome with one instruction and a one-minute practice. The full tour is one tap away.
     if (firstVisit) {
         saveSettings();
-        setTimeout(() => Tour.start(tourHooks), 700);
+        setTimeout(showWelcome, 700);
     }
 
     // Offline / installable app support (only works when served from a web address, not a file)
@@ -1238,7 +1466,7 @@
         // going on: not mid-session, with no panel, tour or "Well done" card open.
         const hadVersion = !!navigator.serviceWorker.controller;
         let updateReady = false, reloaded = false;
-        const idle = () => !sessionActive() && !currentSheet && $('complete').hidden && !document.querySelector('.tour:not([hidden])');
+        const idle = () => !sessionActive() && !currentSheet && $('complete').hidden && $('welcome').hidden && !Notice.isOpen() && !document.querySelector('.tour:not([hidden])');
         const reloadIfIdle = () => {
             if (updateReady && !reloaded && idle()) {
                 reloaded = true;
