@@ -47,7 +47,9 @@ The main screen is kept minimal:
   - a **stop** button that appears once a session has started
   - the time left and how many breaths you've taken
 - **Calm mode:** while you breathe, the buttons fade away after 4 seconds. Touch the screen to bring them back.
-- **First visit:** the guided tour opens by itself once. Skip is always there, and the tour can be reopened from the menu.
+- **First visit:** a small welcome offers a one-minute practice with a single instruction. The full guided tour is one tap below it, and can be reopened from the menu.
+- **My practices:** under Breathing → Techniques, **Repeat last practice** and up to five saved practices (method, pace, length and sounds) start in one tap.
+- **Notice your surroundings:** a short exercise with no breathing to follow, for moments when focusing on the breath doesn't feel right. It's in the technique list, and a small link under the controls during a session pauses it and opens the exercise.
 - **Finished screen:** when time is up, the app waits for your last breath out, rings a soft closing bell, and shows your time and number of breaths.
 
 ## Techniques
@@ -133,6 +135,7 @@ It can come back later if you miss it.
 | `js/visual.js` | Draws the shape view and the wave view. |
 | `js/i18n.js` | All the app's text in English, Hebrew and Russian. |
 | `js/tour.js` | The guided tour (its texts are in `i18n.js` under `tour.*`). |
+| `js/notice.js` | The "Notice your surroundings" exercise (its prompts are in `i18n.js` under `notice.*`). |
 | `js/reminders.js` | Builds the calendar reminders (Google Calendar links and the .ics calendar file). |
 | `js/app.js` | Ties it together: the session clock, the buttons and panels, saving your settings. |
 | `js/audio.js` | All the sound: the bowl, chime and tone cues, and playing the nature recordings. |

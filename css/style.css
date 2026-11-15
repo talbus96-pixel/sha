@@ -440,6 +440,45 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
 .preset.locked .chev { visibility: hidden; }
 .recheck-btn { align-self: flex-start; padding: 4px 2px 8px; font-size: 0.84rem; color: var(--accent); text-decoration: underline; }
 
+/* First-visit welcome */
+.welcome-card { padding: 34px 24px 14px; }
+.welcome-text { margin: 14px 0 26px; line-height: 1.6; font-size: 1rem; }
+.welcome-more { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; }
+.quiet-btn { padding: 10px 6px; font-size: 0.88rem; color: var(--muted); text-decoration: underline; }
+.quiet-btn:hover { color: var(--text); }
+
+/* Notice your surroundings: a short exercise with no breathing to follow */
+.notice-card { position: relative; width: min(88vw, 360px); padding: 34px 24px 24px; }
+.notice-title { font-size: 1.3rem; font-weight: 300; padding-inline: 28px; }
+.notice-close { position: absolute; top: 8px; inset-inline-end: 8px; width: 40px; height: 40px; }
+.notice-text { min-height: 7em; margin: 22px 0 14px; font-size: 1.1rem; font-weight: 300; line-height: 1.6; display: flex; align-items: center; justify-content: center; }
+.notice-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; }
+.notice-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); transition: background 0.4s; }
+.notice-dots span.on { background: var(--accent); }
+.notice-bar { height: 3px; border-radius: 2px; background: var(--faint); overflow: hidden; margin-bottom: 22px; }
+.notice-bar.off { visibility: hidden; }
+.notice-bar span { display: block; height: 100%; width: 0; background: var(--accent); opacity: 0.7; }
+.notice-link { font-size: 0.8rem; color: var(--muted); text-decoration: underline; padding: 4px 10px; margin-top: -6px; }
+.notice-link:hover { color: var(--text); }
+.notice-entry { margin-top: 18px; background: transparent; border: 1px dashed var(--faint); }
+.notice-entry:hover { background: var(--surface); }
+
+/* My practices (saved set-ups) */
+.practices { margin-bottom: 4px; }
+.practices .section-title { margin-top: 6px; }
+.practice-row { display: flex; align-items: center; gap: 4px; margin-top: 8px; }
+.practice-row:first-of-type { margin-top: 0; }
+.practice-row .preset { flex: 1; min-width: 0; }
+.practice-remove { flex: none; width: 40px; height: 40px; }
+.practice-remove svg { width: 20px; height: 20px; }
+.preset.repeat { border-color: var(--accent); background: var(--accent-soft); }
+.preset .play-mark { width: 22px; height: 22px; flex: none; color: var(--accent); }
+.preset.locked .play-mark { visibility: hidden; }
+.practices .hint { margin-top: 10px; }
+.save-practice, .done-save { margin-top: 10px; }
+.save-practice:disabled, .done-save:disabled { opacity: 0.6; }
+.done-save { margin: 0 0 10px; }
+
 /* ---------- Sheets ---------- */
 .backdrop {
     position: fixed;

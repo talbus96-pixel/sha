@@ -10,10 +10,16 @@ Ideas and decisions saved for later, in the owner's order.
    - Plan: push notifications sent by a small free server (Supabase). People using the app won't log in anywhere; they only allow notifications. On iPhone this works only for an app added to the home screen (iOS 16.4+).
    - Supabase's free plan may pause a project after about a week without activity. Check this when building.
 2. **Research page: content.** The page is built (menu → Learn) but hidden until the owner supplies studies. They go in `js/research.js` (format explained at the top of that file), with a title, a one-line summary and a link, in Hebrew, English and Russian.
-3. **Tour:** needs new steps for the Breath journal card, the Learn card (once it has content), the light/dark switch, the shape/wave buttons, and the dot-color picker. None of these are in the 21-step tour yet.
+3. **Tour:** needs new steps for My practices, the Breath journal card, the Learn card (once it has content), the light/dark switch, the shape/wave buttons, and the dot-color picker. None of these are in the 21-step tour yet.
 4. **Wisdom quotes**, shown at the end of sessions and in other fitting places (the complete card, maybe the empty Breath journal, maybe the tour). Drawn from old traditions and wisdom literature: Judaism, Buddhism, Hinduism, Confucianism and other Eastern traditions and schools (White Lotus and others), Sufism, Stoicism, and any others worth including.
    - **Before any code is written**, this needs real research: hand-pick and verify every quote (correct attribution, a real primary or reliably-translated source, not a misattributed "internet quote"), check it reads naturally in Hebrew, English and Russian, and only then decide how and where it's shown.
    - This is a research task on its own, not a coding task — do it as a dedicated pass before building the feature.
+
+## Small follow-ups for the new features
+- Naming a saved practice yourself (today the name is built from its set-up).
+- A one-tap "Repeat last practice" on the main screen itself, if the Techniques tab turns out to be one tap too far.
+- Have a native speaker read the Hebrew and Russian wording of the surroundings exercise; it should stay plain and never sound like therapy.
+- More than one surroundings exercise (for example a short body-and-sounds one), if the first is used.
 
 ## To think about, not to build yet
 These are open questions the owner wants to keep thinking about. No code for them until there's a clearer answer.
@@ -34,6 +40,9 @@ These are open questions the owner wants to keep thinking about. No code for the
 - On the owner's Galaxy S23+, Chrome kept a broken "already installed" record from earlier attempts, so the app was installed through **Samsung Internet** instead (≡ → Add page to → Home screen).
 
 ## Done since the first plan
+- **My practices:** the method, pace, length and sounds of a session can be saved (up to 5) from a technique's page, the Custom tab or the "Well done" card, and **Repeat last practice** replays the previous session, both in one tap from the top of the Techniques tab. Wim Hof still asks its safety question first.
+- **Simple start for new users:** the first visit now opens a small welcome (one instruction, one button) that runs a one-minute practice, instead of the long tour. The full tour is one tap below it, and still in the menu.
+- **Notice your surroundings:** a short exercise (see, hear, feel) with no breathing to follow, offered as a quiet link during sessions and as a row in the technique list.
 - Shape / wave choice moved to two small buttons on the main screen.
 - Menu: Reminders below Options; About is a small underlined link.
 - Default theme is now **Lagoon** (new users only; existing users keep their choice). Light/dark switch in the top bar; dark is **Night**, and the switch remembers the last light and dark theme you picked.

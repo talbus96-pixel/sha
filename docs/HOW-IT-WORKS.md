@@ -13,6 +13,7 @@ js/reminders.js       calendar reminders (Google link, .ics)  (global: Reminders
 js/stats.js           practice history and the Breath journal page  (global: Stats)
 js/research.js        studies for the Learn page (owner-supplied) (global: Research)
 js/tour.js            the guided tour                         (global: Tour)
+js/notice.js          the "Notice your surroundings" exercise  (global: Notice)
 js/app.js             session clock, panels, settings        (runs once on load)
 sounds/*.mp3          ambient recordings (MP3, 96 kbps, loudness-matched)
 service-worker.js     offline cache
@@ -94,6 +95,11 @@ Toggling a sound on in the Sounds menu (`settings.ambient`) only adds it to your
 - The dimming is one element (`.tour-spot`) with a huge shadow around it. It slides over each target, and the card goes below it, above it, or (for big areas) along the bottom of the screen.
 - Started by the tour button at the top of the menu, and automatically once on a person's first visit. The app closes any open panel and pauses a running session first.
 - **To add a step:** add an entry to `STEPS`, then add its two texts in both languages.
+
+## My practices, the first-visit welcome, and "Notice your surroundings"
+- **My practices** (`app.js`, section "my practices"): a practice is `{ tech, params, minutes, cue, ambient: { id: level } }`, a snapshot of the method, its pace, the session length, the cue sound and the ambience mix (`snapshotPractice()`). `start()` stores the snapshot of every session as `settings.lastPractice`, which is what "Repeat last practice" replays. Up to `MAX_PRACTICES` (5) more are kept in `settings.practices`, saved by hand with "Save as my practice" (on a technique's page, on the Custom tab, and on the "Well done" card). Names are built from the set-up (`describePractice()`), so they follow the language. Broken or outdated entries are dropped on load (`validPractice()`). They are listed at the top of the Techniques tab (`renderPractices()`); one tap runs `startPractice()`, which restores everything and starts. **Wim Hof never skips its safety question:** its practices go through `openWimhof()`, and are greyed out while the check says "blocked".
+- **First visit** (`showWelcome()`): instead of opening the 21-step tour, a new person sees one instruction and a button. It runs a one-minute practice with `start({ minutes: 1 })`. `session.limit` holds that length for this session only, so the saved session length is untouched (`sessionMinutes()` reads it). "Take the full tour" and "Not now" are below the button.
+- **Notice your surroundings** (`js/notice.js`): four short prompts about what you can see, hear and feel, one at a time. Each moves on by itself after 20 seconds, or sooner with Next; there is no breathing in it and it is not worded as a treatment. It is offered in two places: a quiet link under the controls while a session is prepared, running or paused (`#btn-notice`, shown by `updateNoticeLink()`; it fades with calm mode and comes back on touch), and a row under the technique list. Opening it pauses a running session; closing it leaves the session paused, so nothing is lost. The prompts are `notice.steps` in `i18n.js`.
 
 ## js/audio.js (`Sound`)
 - `Sound.ensure()` creates the audio system. Browsers only allow this after a tap or click, so it's called from button handlers. On iPhone it also asks to play even when the silent switch is on (Safari 17+).
