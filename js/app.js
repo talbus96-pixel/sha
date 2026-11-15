@@ -503,6 +503,7 @@
         openSheet('sheet-research');
         Research.render($('research-body'));
     });
+    $('btn-open-notes').addEventListener('click', () => { location.href = 'notes.html'; }); // temporary, see notes.html
     $('btn-research-back').addEventListener('click', () => openSheet('sheet-settings'));
     $('btn-length').addEventListener('click', () => {
         if (settings.technique === 'wimhof') openBreathing('wimhof');
