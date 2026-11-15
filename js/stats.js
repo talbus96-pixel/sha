@@ -4,6 +4,7 @@ const Stats = (() => {
     const KEY = 'breathe.history.v1';
     const MAX_ENTRIES = 3000;
     const WEEKS = 5;
+    const GOOD_WEEK = 4; // sessions in one week that make it a good week
     const t = (k, v) => I18n.t(k, v);
 
     function load() {
@@ -127,6 +128,7 @@ const Stats = (() => {
     }
 
     function techName(id) {
+        if (id === 'notice') return t('notice.title');
         return id === 'custom' ? t('custom') : Programs.text(id, 'name');
     }
 
@@ -165,6 +167,14 @@ const Stats = (() => {
         grid.setAttribute('aria-label', t('stats.calendar'));
         const names = new Intl.DateTimeFormat(I18n.lang, { weekday: 'narrow' });
         for (let i = 0; i < 7; i++) grid.appendChild(el('div', 'stats-dow', names.format(addDays(thisWeek, i))));
+        // A week with 4 or more sessions (breathing or "notice your surroundings") counts as a
+        // good week: its quiet days glow in a second, softer colour, so the whole week feels
+        // like the success it was. Nothing is ever written about the unlit days.
+        const perWeek = {};
+        list.forEach(e => {
+            const k = dayKey(weekStart(new Date(e.at), firstDay));
+            perWeek[k] = (perWeek[k] || 0) + 1;
+        });
         const first = addDays(thisWeek, -7 * (WEEKS - 1));
         for (let i = 0; i < 7 * WEEKS; i++) {
             const d = addDays(first, i);
@@ -175,6 +185,7 @@ const Stats = (() => {
                 const m = minutes(s.byDay[dayKey(d)] || 0);
                 const has = s.byDay[dayKey(d)];
                 if (has) cell.classList.add(m >= 15 ? 'd3' : m >= 5 ? 'd2' : 'd1');
+                else if (perWeek[dayKey(weekStart(d, firstDay))] >= GOOD_WEEK) cell.classList.add('rest');
                 if (+d === +today) cell.classList.add('today');
                 cell.title = `${d.toLocaleDateString(I18n.lang, { day: 'numeric', month: 'short' })}${has ? ' · ' + iso(fmtTime(s.byDay[dayKey(d)])) : ''}`;
             }

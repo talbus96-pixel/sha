@@ -175,15 +175,19 @@
                 <div class="segmented" id="breathing-tabs">
                     <button data-value="techniques" data-i18n="tab.techniques">Techniques</button>
                     <button data-value="custom" data-i18n="tab.custom">Custom</button>
+                    <button data-value="practices" data-i18n="practice.title">My practices</button>
                 </div>
 
                 <div id="tab-techniques">
-                    <div class="practices" id="practices" hidden></div>
                     <div class="tech-list" id="tech-list"></div>
                     <button class="preset notice-entry" id="btn-open-notice">
                         <div><div class="preset-name" data-i18n="notice.title">Notice your surroundings</div><div class="preset-desc" data-i18n="notice.rowText">A short pause, with no breathing to follow</div></div>
                         <svg class="chev" width="20" height="20"><use href="#i-chevron"/></svg>
                     </button>
+                </div>
+
+                <div id="tab-practices" hidden>
+                    <div class="practices" id="practices"></div>
                 </div>
 
                 <div id="tab-custom" hidden>

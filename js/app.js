@@ -646,7 +646,10 @@
         });
         $('tab-techniques').hidden = breathingTab !== 'techniques';
         $('tab-custom').hidden = breathingTab !== 'custom';
-        if (breathingTab === 'techniques') renderTechList(); else renderCustom();
+        $('tab-practices').hidden = breathingTab !== 'practices';
+        if (breathingTab === 'techniques') renderTechList();
+        else if (breathingTab === 'practices') renderPractices();
+        else renderCustom();
     }
 
     document.querySelectorAll('#breathing-tabs button').forEach(b => {
@@ -654,7 +657,6 @@
     });
 
     function renderTechList() {
-        renderPractices();
         const list = $('tech-list');
         list.innerHTML = '';
         Object.keys(T).forEach(id => {
@@ -820,12 +822,13 @@
         const last = settings.lastPractice;
         const saved = settings.practices;
         box.innerHTML = '';
-        box.hidden = !last && !saved.length;
-        if (box.hidden) return;
-        const title = document.createElement('h3');
-        title.className = 'section-title';
-        title.textContent = t('practice.title');
-        box.appendChild(title);
+        if (!last && !saved.length) {
+            const empty = document.createElement('p');
+            empty.className = 'hint';
+            empty.textContent = t('practice.empty');
+            box.appendChild(empty);
+            return;
+        }
         if (last) {
             const wrap = document.createElement('div');
             wrap.className = 'practice-row';
