@@ -36,6 +36,7 @@
         minutes: 5,
         visual: 'shape',             // shape | wave
         cue: 'bowl',
+        ring: 'natural',             // how long the ringing cues sound: natural | breath | swell
         cueVolume: 0.8,
         ambient: Object.fromEntries(AMBIENTS.map(a => [a.id, { on: false, level: 0.6 }])),
         theme: 'lagoon',             // default light theme
@@ -64,8 +65,10 @@
     // A saved practice is { tech, params, minutes, cue, ambient: { id: level } }. Anything that
     // doesn't fit (an old technique that no longer exists, a damaged entry) is dropped on load.
     const MAX_PRACTICES = 5;
+    const CUE_STYLES = ['bowl', 'chime', 'kalimba', 'marimba', 'harp', 'tone', 'off'];
+    const RING_STYLES = ['natural', 'breath', 'swell'];
     function validPractice(p) {
-        if (!p || typeof p !== 'object' || typeof p.cue !== 'string' || !Number.isFinite(p.minutes)) return false;
+        if (!p || typeof p !== 'object' || !CUE_STYLES.includes(p.cue) || !Number.isFinite(p.minutes)) return false;
         if (!p.ambient || typeof p.ambient !== 'object') return false;
         if (p.tech === 'custom') return Array.isArray(p.params) && p.params.length === 4 && p.params.every(Number.isFinite);
         return !!T[p.tech] && !!p.params && typeof p.params === 'object';
@@ -84,6 +87,9 @@
                 // cyclic sighing became the default technique in version 4
                 // every visit opens with the recommended technique; its settings (and the others') are kept
                 merged.technique = 'sigh';
+                // sound styles that no longer exist (or damaged values) go back to the defaults
+                if (!CUE_STYLES.includes(merged.cue)) merged.cue = base.cue;
+                if (!RING_STYLES.includes(merged.ring)) merged.ring = base.ring;
                 merged.practices = (Array.isArray(saved.practices) ? saved.practices : []).filter(validPractice).slice(0, MAX_PRACTICES);
                 merged.lastPractice = validPractice(saved.lastPractice) ? saved.lastPractice : null;
                 merged.version = base.version;
@@ -573,10 +579,14 @@
         });
     });
 
+    // Ring length applies to the ringing instruments, not to Tone or Off.
+    const ringApplies = () => settings.cue !== 'tone' && settings.cue !== 'off';
+
     // The current choice shown on each closed section, e.g. "Theme · Day".
     function updateSummaries() {
         const amb = AMBIENTS.filter(a => settings.ambient[a.id].on).map(a => t('amb.' + a.id));
-        $('sum-sounds').textContent = `${t('cue.' + settings.cue)} · ${amb.length ? amb.join(', ') : t('sum.noAmbience')}`;
+        const ringBit = settings.ring !== 'natural' && ringApplies() ? ` (${t('ring.' + settings.ring)})` : '';
+        $('sum-sounds').textContent = `${t('cue.' + settings.cue)}${ringBit} · ${amb.length ? amb.join(', ') : t('sum.noAmbience')}`;
         $('sum-length').textContent = settings.minutes > 0 ? t('length.min', { n: settings.minutes }) : t('length.none');
         const r = settings.reminders;
         $('sum-reminders').textContent = `${r.times.map(Reminders.label).join(', ')} · ${t('days.' + r.days)}`;
@@ -766,7 +776,7 @@
         const params = tech === 'custom' ? settings.custom.pattern : settings[tech];
         const ambient = {};
         AMBIENTS.forEach(a => { if (settings.ambient[a.id].on) ambient[a.id] = settings.ambient[a.id].level; });
-        return JSON.parse(JSON.stringify({ tech, params, minutes, cue: settings.cue, ambient }));
+        return JSON.parse(JSON.stringify({ tech, params, minutes, cue: settings.cue, ring: settings.ring, ambient }));
     }
 
     const samePractice = (a, b) => !!a && !!b &&
@@ -799,7 +809,9 @@
         else settings[p.tech] = { ...settings[p.tech], ...p.params };
         settings.minutes = p.minutes;
         settings.cue = p.cue;
+        if (RING_STYLES.includes(p.ring)) settings.ring = p.ring;   // practices saved before "Ring length" existed keep the current choice
         Sound.setCueStyle(p.cue);
+        Sound.setRing(settings.ring);
         AMBIENTS.forEach(a => {
             const s = settings.ambient[a.id];
             s.on = a.id in p.ambient;
@@ -1111,6 +1123,14 @@
         const vol = $('cue-volume');
         vol.value = settings.cueVolume;
         setSliderFill(vol);
+        // "Ring length" only means something for the ringing instruments
+        $('ring-block').hidden = !ringApplies();
+        document.querySelectorAll('#ring-style button').forEach(b => {
+            const on = b.dataset.value === settings.ring;
+            b.classList.toggle('selected', on);
+            b.setAttribute('aria-pressed', on);
+        });
+        $('ring-hint').textContent = t('ring.hint.' + settings.ring);
 
         const grid = $('ambient-grid');
         grid.innerHTML = '';
@@ -1159,6 +1179,16 @@
         b.addEventListener('click', () => {
             settings.cue = b.dataset.value;
             Sound.setCueStyle(settings.cue);
+            Sound.preview(settings.cue);
+            saveSettings();
+            renderSoundsSheet();
+        });
+    });
+
+    document.querySelectorAll('#ring-style button').forEach(b => {
+        b.addEventListener('click', () => {
+            settings.ring = b.dataset.value;
+            Sound.setRing(settings.ring);
             Sound.preview(settings.cue);
             saveSettings();
             renderSoundsSheet();
@@ -1480,6 +1510,7 @@
     // ---------- start up ----------
 
     Sound.setCueStyle(settings.cue);
+    Sound.setRing(settings.ring);
     Sound.setCueLevel(settings.cueVolume);
     AMBIENTS.forEach(a => {
         const s = settings.ambient[a.id];
