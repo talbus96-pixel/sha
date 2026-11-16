@@ -78,12 +78,12 @@ How the shape follows the timings:
 - **Bowl**: a Tibetan singing bowl. A higher note means breathe in, a lower note means breathe out, and a soft small "ting" means hold. The extra sip in cyclic sighing gets its own lighter note.
 - **Chime**: a soft, warm chime with a similar high/low pattern.
 - **Tone**: a continuous, gentle hum that swells and brightens as you breathe in and settles as you breathe out. It's good if you prefer to follow sound rather than look at the screen.
-- **Rising tone**: made to be followed with your eyes closed. A soft chord that never stops: its pitch rises as you breathe in, stays steady while you hold, and falls as you breathe out.
-- **Breath wave**: also for eyes closed. A soft "shhh" like a wave: it swells and brightens as you breathe in, stays while you hold, and draws back as you breathe out.
-- **Tone + wave**: the two above together.
 - **Off**: silence.
 
-Bowl, Chime, Kalimba, Marimba and Harp ring once at the start of each step and then fade, which is lovely to listen to. The three eyes-closed styles keep sounding through the whole breath instead. Pick whichever suits the moment; the others stay exactly as they were.
+**Ring length** (for Bowl, Chime, Kalimba, Marimba and Harp): how long each sound lasts.
+- **Natural**: each sound rings and fades by itself, as it always has.
+- **Fits the breath**: each sound lasts exactly as long as the step and fades out as it ends, with the echo cut off too, so it never runs into the next one.
+- **Swell**: the sound is held through the whole step. It grows as you breathe in, stays on a hold and fades as you breathe out, so you can follow your breath by ear with your eyes closed.
 
 All cues are created live by the app, with a soft "room" echo added.
 
@@ -143,7 +143,7 @@ It can come back later if you miss it.
 | `js/notice.js` | The "Notice your surroundings" exercise (its prompts are in `i18n.js` under `notice.*`). |
 | `js/reminders.js` | Builds the calendar reminders (Google Calendar links and the .ics calendar file). |
 | `js/app.js` | Ties it together: the session clock, the buttons and panels, saving your settings. |
-| `js/audio.js` | All the sound: the bowl, chime, tone and follow-the-breath cues, and playing the nature recordings. |
+| `js/audio.js` | All the sound: the bowl, chime, plucked and tone cues, their ring length, and playing the nature recordings. |
 | `sounds/` | The nature recordings. |
 | `design/` | The saved logo options and an icon preview. |
 | `manifest-sha.webmanifest`, `service-worker.js`, `icons/` | Let phones install the app on the home screen and use it without internet. |

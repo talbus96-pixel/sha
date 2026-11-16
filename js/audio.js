@@ -1,4 +1,4 @@
-// Sound engine: synthesised breathing cues (singing bowl, chime, breath tone, follow-the-breath glide and wave)
+// Sound engine: synthesised breathing cues (singing bowl, chime, plucked instruments, breath tone)
 // and looping ambient recordings. Everything runs through the Web Audio API.
 const Sound = (() => {
     const AMBIENT_FILES = {
@@ -21,8 +21,9 @@ const Sound = (() => {
     const ambient = {};      // id -> { on, level, voice: {src, gain} | null, loading }
     const bufferCache = {};  // id -> Promise<AudioBuffer>
     let tone = null;         // continuous breath-tone voice
-    let follow = null;       // continuous "follow the breath" voice (rising tone / breath wave)
-    let followBus, followNoise;
+    let ring = 'natural';    // how long the ringing instruments sound: natural | breath | swell
+    let wetGate;             // lets the reverb be cut off exactly when a step ends ("breath" mode)
+    let swellVoice = null;   // the held note of the current step ("swell" mode)
     let previewTimers = [];
 
     // ---------- setup ----------
@@ -53,16 +54,13 @@ const Sound = (() => {
             reverb.buffer = makeImpulse(4.8, 2.4);
             const wet = ctx.createGain();
             wet.gain.value = 0.5;
+            wetGate = ctx.createGain();
+            wetGate.gain.value = 1;
             cueBus.connect(master);
             cueBus.connect(reverb);
             reverb.connect(wet);
-            wet.connect(master);
-
-            // Follow-the-breath sounds go straight to the output with no reverb,
-            // so the pitch and the swell stay clear and in step with the breath.
-            followBus = ctx.createGain();
-            followBus.gain.value = cueLevel;
-            followBus.connect(master);
+            wet.connect(wetGate);
+            wetGate.connect(master);
 
             ambientBus = ctx.createGain();
             ambientBus.gain.value = 0;
@@ -71,17 +69,6 @@ const Sound = (() => {
             noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
             const nd = noiseBuf.getChannelData(0);
             for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
-
-            // A few seconds of soft, slightly dark noise for the breath wave (loops without an audible seam)
-            followNoise = ctx.createBuffer(2, ctx.sampleRate * 4, ctx.sampleRate);
-            for (let ch = 0; ch < 2; ch++) {
-                const d = followNoise.getChannelData(ch);
-                let last = 0;
-                for (let i = 0; i < d.length; i++) {
-                    last = last * 0.55 + (Math.random() * 2 - 1) * 0.45;
-                    d[i] = last;
-                }
-            }
 
             Object.keys(ambient).forEach(applyAmbient);
             setAmbientGate(ambientGateOpen);
@@ -121,7 +108,8 @@ const Sound = (() => {
     // ---------- cue instruments ----------
 
     // Singing bowl: inharmonic partials, each a slightly detuned pair so it shimmers.
-    function bowl(freq, level, when = ctx.currentTime, decayScale = 1) {
+    function bowl(freq, level, when = ctx.currentTime, decayScale = 1, fit = 0) {
+        if (fit) decayScale = fit * FIT / 9;   // 9 s is the bowl's natural ring
         const partials = [
             // [ratio, amplitude, decay seconds]
             [1, 1, 9],
@@ -132,7 +120,7 @@ const Sound = (() => {
         ];
         const out = ctx.createGain();
         out.gain.value = level * 0.32;
-        out.connect(cueBus);
+        out.connect(noteDest(when, fit));
         let end = when;
         partials.forEach(([ratio, amp, dec], k) => {
             [-1, 1].forEach(side => {
@@ -162,25 +150,27 @@ const Sound = (() => {
     }
 
     // Soft felt-mallet chime: warm fundamental with a quiet, quickly fading overtone.
-    function chime(freq, level, when = ctx.currentTime) {
+    function chime(freq, level, when = ctx.currentTime, fit = 0) {
         const partials = [[1, 1, 3.4], [2, 0.18, 1.6], [4.01, 0.08, 0.5]];
+        const k = fit ? fit * FIT / 3.4 : 1;   // 3.4 s is the chime's natural ring
+        if (fit) level *= Math.min(1, Math.sqrt(1 / k));
         const out = ctx.createGain();
         out.gain.value = level * 0.42;
-        out.connect(cueBus);
+        out.connect(noteDest(when, fit));
         partials.forEach(([ratio, amp, dec]) => {
             const osc = ctx.createOscillator();
             osc.frequency.value = freq * ratio;
             const g = ctx.createGain();
             g.gain.setValueAtTime(0, when);
             g.gain.linearRampToValueAtTime(amp, when + 0.004);
-            g.gain.exponentialRampToValueAtTime(0.0001, when + dec);
+            g.gain.exponentialRampToValueAtTime(0.0001, when + dec * k);
             osc.connect(g);
             g.connect(out);
             osc.start(when);
-            osc.stop(when + dec + 0.05);
+            osc.stop(when + dec * k + 0.05);
         });
         mallet(out, freq * 2, 0.06, when);
-        setTimeout(() => out.disconnect(), (when - ctx.currentTime + 4.5) * 1000);
+        setTimeout(() => out.disconnect(), (when - ctx.currentTime + 4.5 * Math.max(1, k)) * 1000);
     }
 
     // Plucked and tapped instruments: a handful of partials, each [ratio, amplitude, decay seconds].
@@ -197,10 +187,15 @@ const Sound = (() => {
                 notes: { in: 392, top: 587.33, hold: 493.88, out: 293.66, retain: 196 } }          // G4 D5 B4 D4 G3
     };
 
-    function pluck(spec, freq, level, when = ctx.currentTime, decayScale = 1) {
+    function pluck(spec, freq, level, when = ctx.currentTime, decayScale = 1, fit = 0) {
+        if (fit) {
+            const natural = spec.partials[0][2];            // the instrument's own natural ring
+            decayScale = fit * FIT / natural;
+            level *= Math.min(1, Math.sqrt(natural / (fit * FIT)));   // a stretched note holds its energy longer, so it needs to be quieter
+        }
         const out = ctx.createGain();
         out.gain.value = level * spec.level;
-        out.connect(cueBus);
+        out.connect(noteDest(when, fit));
         let end = when;
         spec.partials.forEach(([ratio, amp, dec]) => {
             const osc = ctx.createOscillator();
@@ -306,145 +301,115 @@ const Sound = (() => {
         setTimeout(() => v.out.disconnect(), (fade + 0.3) * 1000);
     }
 
-    // ---------- follow-the-breath sounds ----------
-    // Unlike the ringing instruments above, these never fade away by themselves. They glide up
-    // while you breathe in, glide down while you breathe out and stay put while you hold, so the
-    // sound always says where you are in the breath, even with your eyes closed.
-    //   glide     = a soft chord whose pitch rises and falls by one octave
-    //   wave      = soft noise that swells and brightens like a wave arriving, then draws back
-    //   glidewave = both together
-    const FOLLOW_STYLES = ['glide', 'wave', 'glidewave'];
-    const easeInOutSine = x => -(Math.cos(Math.PI * x) - 1) / 2;
+    // ---------- ring length ----------
+    // The ringing instruments can sound in three ways (the "Ring length" setting):
+    //   natural = each note rings and fades by itself, as it always has
+    //   breath  = each note is shaped to last exactly as long as its step, and the reverb is cut off
+    //             at the end of the step, so nothing runs into the next one
+    //   swell   = each note is held for the whole step; it gets louder as you breathe in and softer
+    //             as you breathe out (the pitch never moves)
+    const FIT = 1.4;   // in "breath" mode a note reaches silence at 1.4 x the step, so it is already very faint by the end
 
-    // Moves a parameter from a to b over `secs` seconds, easing in and out the same way the dot does.
-    function rampEased(param, a, b, t0, secs, exponential) {
-        const N = 12;
-        for (let i = 1; i <= N; i++) {
-            const x = i / N, e = easeInOutSine(x);
-            const v = exponential ? a * Math.pow(b / a, e) : a + (b - a) * e;
-            param.linearRampToValueAtTime(v, t0 + secs * x);
+    // Where a note is sent. In "breath" mode it passes through a short release that finishes exactly as the step ends.
+    function noteDest(when, fit) {
+        if (!fit) return cueBus;
+        const env = ctx.createGain();
+        env.gain.setValueAtTime(1, when);
+        env.gain.setValueAtTime(1, when + Math.max(0.1, fit - 0.35));
+        env.gain.linearRampToValueAtTime(0, when + fit);
+        env.connect(cueBus);
+        setTimeout(() => env.disconnect(), (when - ctx.currentTime + fit + 1) * 1000);
+        return env;
+    }
+
+    // The reverb tail is allowed through at the start of a step and faded out as the step ends.
+    function openGate() {
+        if (!ctx) return;
+        const t = ctx.currentTime;
+        holdParam(wetGate.gain, t);
+        wetGate.gain.linearRampToValueAtTime(1, t + 0.05);
+    }
+
+    function gateForStep(fit) {
+        const t = ctx.currentTime;
+        holdParam(wetGate.gain, t);
+        wetGate.gain.linearRampToValueAtTime(1, t + 0.03);
+        if (fit) {
+            wetGate.gain.setValueAtTime(1, t + Math.max(0.1, fit - 0.3));
+            wetGate.gain.linearRampToValueAtTime(0.0001, t + fit);
         }
     }
 
-    // Each part reacts to the lung level L (0 = empty, 1 = full).
-    // jump(L, t): be at level L right now.  glide(from, to, t, secs): move there over secs.
-    function glidePart(dest, weight) {
-        const lvl = ctx.createGain();
-        lvl.gain.value = 0.0001;
-        lvl.connect(dest);
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 2200;
-        filter.Q.value = 0.5;
-        filter.connect(lvl);
-        const gainAt = L => weight * (0.17 + 0.33 * L);   // never silent, so there is always something to hold on to
-        const centsAt = L => L * 1200;                    // one octave from empty to full
-        const oscs = [
-            // [freq, type, level, detune cents]: G3, a slightly detuned copy, the fifth above, a faint octave
-            [196, 'sine', 0.55, 0],
-            [196, 'sine', 0.3, 6],
-            [294, 'sine', 0.2, -4],
-            [392, 'triangle', 0.08, 3]
-        ].map(([f, type, level, off]) => {
-            const osc = ctx.createOscillator();
-            osc.type = type;
-            osc.frequency.value = f;
-            const g = ctx.createGain();
-            g.gain.value = level;
-            osc.connect(g);
-            g.connect(filter);
-            osc.start();
-            return { osc, off };
-        });
-        return {
-            jump(L, t) {
-                lvl.gain.setValueAtTime(gainAt(L), t);
-                oscs.forEach(({ osc, off }) => osc.detune.setValueAtTime(centsAt(L) + off, t));
-            },
-            glide(from, to, t, secs) {
-                holdParam(lvl.gain, t);
-                rampEased(lvl.gain, gainAt(from), gainAt(to), t, secs, false);
-                oscs.forEach(({ osc, off }) => {
-                    holdParam(osc.detune, t);
-                    rampEased(osc.detune, centsAt(from) + off, centsAt(to) + off, t, secs, false);
-                });
-            },
-            stop(when) {
-                oscs.forEach(({ osc }) => osc.stop(when));
-            }
-        };
+    const easeInOutSine = x => -(Math.cos(Math.PI * x) - 1) / 2;
+
+    // Moves a parameter from a to b over `secs` seconds, easing in and out the same way the dot does.
+    function rampEased(param, a, b, t0, secs) {
+        const N = 12;
+        for (let i = 1; i <= N; i++) {
+            const x = i / N;
+            param.linearRampToValueAtTime(a + (b - a) * easeInOutSine(x), t0 + secs * x);
+        }
     }
 
-    function wavePart(dest, weight) {
-        const lvl = ctx.createGain();
-        lvl.gain.value = 0.0001;
-        lvl.connect(dest);
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.Q.value = 0.8;
-        filter.frequency.value = 400;
-        filter.connect(lvl);
-        const src = ctx.createBufferSource();
-        src.buffer = followNoise;
-        src.loop = true;
-        src.connect(filter);
-        src.start(0, Math.random() * 3);
-        const gainAt = L => weight * 4 * (0.35 + 0.65 * L);  // noise through a filter is quiet, so make up the level
-        const cutoffAt = L => 400 * Math.pow(6, L);          // 400 Hz (dull, far away) to 2400 Hz (bright, close)
-        return {
-            jump(L, t) {
-                lvl.gain.setValueAtTime(gainAt(L), t);
-                filter.frequency.setValueAtTime(cutoffAt(L), t);
-            },
-            glide(from, to, t, secs) {
-                holdParam(lvl.gain, t);
-                rampEased(lvl.gain, gainAt(from), gainAt(to), t, secs, false);
-                holdParam(filter.frequency, t);
-                rampEased(filter.frequency, cutoffAt(from), cutoffAt(to), t, secs, true);
-            },
-            stop(when) {
-                src.stop(when);
-            }
-        };
+    // The same instruments' own tones, made able to be held.
+    function swellRecipe(style) {
+        if (style === 'bowl') return { partials: [[1, 1], [2.71, 0.42], [5.12, 0.2], [8.3, 0.09], [12.2, 0.04]], level: 0.16, notes: BOWL_NOTES };
+        if (style === 'chime') return { partials: [[1, 1], [2, 0.18], [4.01, 0.08]], level: 0.2, notes: CHIME_NOTES };
+        const spec = PLUCKED[style];
+        return { partials: spec.partials.map(([ratio, amp]) => [ratio, amp]), level: spec.level * (style === 'marimba' ? 0.35 : 0.55), notes: spec.notes };
     }
 
-    function followVoice(style, startLevel) {
-        if (follow && follow.style === style) return follow;
-        if (follow) silenceFollow(0.15);
-        const t = ctx.currentTime;
-        const fade = ctx.createGain();
-        fade.gain.setValueAtTime(0.0001, t);
-        fade.gain.linearRampToValueAtTime(1, t + 0.4);
-        fade.connect(followBus);
-        const both = style === 'glidewave';
-        const parts = [];
-        if (style !== 'wave') parts.push(glidePart(fade, both ? 0.75 : 1));
-        if (style !== 'glide') parts.push(wavePart(fade, both ? 0.7 : 1));
-        parts.forEach(p => p.jump(startLevel, t));
-        follow = { style, fade, parts };
-        return follow;
-    }
-
-    // Moves the sound from lung level `from` to `to` over `seconds`. Holds have from == to,
-    // so the sound simply stays where it is.
-    function shapeFollow(style, seconds, from, to) {
+    // One held note for a step. Its loudness goes from the lung level `from` to `to`, like the dot.
+    function swell(kind, seconds, from, to) {
         if (!Number.isFinite(from)) from = 0;
         if (!Number.isFinite(to)) to = from;
+        const r = swellRecipe(cueStyle);
+        const n = r.notes;
+        const freq = { in: n.in, top: n.top, holdIn: n.hold, holdOut: n.hold, out: n.out, retain: n.retain }[kind] || n.in;
         const t = ctx.currentTime;
-        const v = followVoice(style, from);
-        const secs = Math.abs(to - from) < 0.001 ? 0.3 : Math.max(0.2, seconds);
-        v.parts.forEach(p => p.glide(from, to, t, secs));
+        const gainAt = L => r.level * (0.2 + 0.8 * L);   // never silent, so there is always something to follow
+
+        const env = ctx.createGain();
+        env.gain.setValueAtTime(0.0001, t);
+        env.gain.linearRampToValueAtTime(gainAt(from), t + 0.3);          // soft start
+        if (Math.abs(to - from) > 0.001 && seconds > 0.6) rampEased(env.gain, gainAt(from), gainAt(to), t + 0.3, seconds - 0.3);
+        env.gain.setValueAtTime(gainAt(to), t + seconds);
+        env.gain.linearRampToValueAtTime(0.0001, t + seconds + 0.6);      // gentle release into the next step
+        const filter = ctx.createBiquadFilter();                          // keeps the held tone soft
+        filter.type = 'lowpass';
+        filter.frequency.value = 1800;
+        filter.Q.value = 0.4;
+        filter.connect(env);
+        env.connect(cueBus);
+
+        const oscs = [];
+        r.partials.forEach(([ratio, amp], k) => {
+            // the two lowest partials get a quiet, slightly detuned twin: a faint shimmer that
+            // never gets loud enough to be mistaken for the swell of the breath
+            (k < 2 ? [[0, 1], [0.4, 0.25]] : [[0, 1]]).forEach(([offset, weight]) => {
+                const osc = ctx.createOscillator();
+                osc.frequency.value = freq * ratio + offset;
+                const g = ctx.createGain();
+                g.gain.value = amp * weight;
+                osc.connect(g);
+                g.connect(filter);
+                osc.start(t);
+                osc.stop(t + seconds + 0.7);
+                oscs.push(osc);
+            });
+        });
+        setTimeout(() => { filter.disconnect(); env.disconnect(); }, (seconds + 1.2) * 1000);
+        swellVoice = { env, oscs };
     }
 
-    function silenceFollow(fade = 0.6) {
-        if (!follow) return;
-        const v = follow;
-        follow = null;
+    function silenceSwell(fade = 0.4) {
+        if (!swellVoice) return;
+        const v = swellVoice;
+        swellVoice = null;
         const t = ctx.currentTime;
-        holdParam(v.fade.gain, t);
-        v.fade.gain.linearRampToValueAtTime(0.0001, t + fade);
-        v.parts.forEach(p => p.stop(t + fade + 0.05));
-        setTimeout(() => v.fade.disconnect(), (fade + 0.3) * 1000);
+        holdParam(v.env.gain, t);
+        v.env.gain.linearRampToValueAtTime(0.0001, t + fade);
+        v.oscs.forEach(o => { try { o.stop(t + fade + 0.05); } catch (e) {} });
     }
 
     function clearPreview() {
@@ -457,34 +422,39 @@ const Sound = (() => {
     const CHIME_NOTES = { in: 659.25, top: 880, hold: 554.37, out: 440, retain: 329.63 }; // E5 A5 C#5 A4 E4
 
     // kind: 'in' | 'top' (extra sip in) | 'holdIn' | 'out' | 'holdOut' | 'retain' | 'powerIn' | 'powerOut'
-    // from / to: the lung level (0 = empty, 1 = full) at the start and end of the step.
-    // Only the follow-the-breath styles need them.
+    // seconds: how long the step lasts. from / to: the lung level (0 = empty, 1 = full) at its start and end.
     function cue(kind, seconds, from, to) {
         if (!ctx || cueStyle === 'off') return;
         if (cueStyle === 'tone') { shapeTone(kind, seconds); return; }
-        if (FOLLOW_STYLES.includes(cueStyle)) { shapeFollow(cueStyle, seconds, from, to); return; }
+        // Steps with no known length (Wim Hof's open breath hold) and the quick power breaths always sound naturally.
+        const timed = kind !== 'powerIn' && kind !== 'powerOut' && kind !== 'retain' && Number.isFinite(seconds) && seconds >= 1;
+        if (ring === 'swell' && timed) { swell(kind, seconds, from, to); return; }
+        const fit = ring === 'breath' && timed ? seconds : 0;
+        if (ring === 'breath') gateForStep(fit);
+        const now = ctx.currentTime;
         if (PLUCKED[cueStyle]) {
             const spec = PLUCKED[cueStyle], n = spec.notes;
             switch (kind) {
-                case 'in': pluck(spec, n.in, 1); break;
-                case 'top': pluck(spec, n.top, 0.6, ctx.currentTime, 0.6); break;
+                case 'in': pluck(spec, n.in, 1, now, 1, fit); break;
+                case 'top': pluck(spec, n.top, 0.6, now, 0.6, fit); break;
                 case 'holdIn':
-                case 'holdOut': pluck(spec, n.hold, 0.5, ctx.currentTime, 0.6); break;
-                case 'out': pluck(spec, n.out, 1); break;
-                case 'retain': pluck(spec, n.retain, 0.9, ctx.currentTime, 1.3); break;
+                case 'holdOut': pluck(spec, n.hold, 0.5, now, 0.6, fit); break;
+                case 'out': pluck(spec, n.out, 1, now, 1, fit); break;
+                case 'retain': pluck(spec, n.retain, 0.9, now, 1.3, fit); break;
                 case 'powerIn': chime(CHIME_NOTES.top, 0.16); break;
             }
             return;
         }
-        const notes = cueStyle === 'bowl' ? BOWL_NOTES : CHIME_NOTES;
-        const strike = cueStyle === 'bowl'
-            ? (note, level, decay) => bowl(note, level, ctx.currentTime, decay)
-            : (note, level) => chime(note, level);
+        const isBowl = cueStyle === 'bowl';
+        const notes = isBowl ? BOWL_NOTES : CHIME_NOTES;
+        const strike = isBowl
+            ? (note, level, decay) => bowl(note, level, now, decay, fit)
+            : (note, level) => chime(note, level, now, fit);
         switch (kind) {
             case 'in': strike(notes.in, 1, 1); break;
             case 'top': strike(notes.top, 0.5, 0.5); break;
             case 'holdIn':
-            case 'holdOut': strike(notes.hold, cueStyle === 'bowl' ? 0.3 : 0.45, 0.45); break;
+            case 'holdOut': strike(notes.hold, isBowl ? 0.3 : 0.45, 0.45); break;
             case 'out': strike(notes.out, 1, 1); break;
             case 'retain': strike(notes.retain, 0.9, 1.3); break;
             // quick Wim Hof breaths: only a soft tick, a full bell every 2 seconds would be too much
@@ -497,61 +467,72 @@ const Sound = (() => {
     function resume(kind, secondsLeft, from, to) {
         if (!ctx) return;
         if (cueStyle === 'tone') shapeTone(kind, Math.max(0.5, secondsLeft));
-        else if (FOLLOW_STYLES.includes(cueStyle)) shapeFollow(cueStyle, Math.max(0.5, secondsLeft), from, to);
+        else if (ring === 'swell' && cueStyle !== 'off' && kind !== 'powerIn' && kind !== 'powerOut' && kind !== 'retain' && secondsLeft >= 1) {
+            swell(kind, secondsLeft, from, to);
+        }
     }
 
     function pause() {
         clearPreview();
         silenceTone();
-        silenceFollow();
+        silenceSwell();
+        openGate();
     }
 
     function finish() {
         if (!ctx) return;
         clearPreview();
         silenceTone(3);
-        silenceFollow(3);
+        silenceSwell(1.5);
+        openGate();
         if (cueStyle === 'off') return;
         const t = ctx.currentTime;
         bowl(196, 0.9, t + 0.2);
         bowl(293.66, 0.6, t + 1.9);
     }
 
+    // A short sample of the current cue style and ring length: one breath in (and out, for swell).
     function preview(style) {
         ensure();
+        clearPreview();
+        silenceSwell(0.1);
         if (style === 'tone') {
             silenceTone(0.1);
             shapeTone('in', 2.5);
             setTimeout(() => { if (cueStyle === 'tone') silenceTone(2); }, 2600);
-        } else if (FOLLOW_STYLES.includes(style)) {
-            // a short sample: one breath in, one breath out
-            clearPreview();
-            silenceFollow(0.1);
-            shapeFollow(style, 2.2, 0, 1);
-            previewTimers.push(setTimeout(() => { if (cueStyle === style) shapeFollow(style, 2.2, 1, 0); }, 2300));
-            previewTimers.push(setTimeout(() => { if (cueStyle === style) silenceFollow(1); }, 4700));
-        } else if (style === 'bowl') {
-            bowl(BOWL_NOTES.in, 1);
-        } else if (style === 'chime') {
-            chime(CHIME_NOTES.in, 1);
-        } else if (PLUCKED[style]) {
-            pluck(PLUCKED[style], PLUCKED[style].notes.in, 1);
+            return;
         }
+        if (style === 'off') return;
+        if (ring === 'swell') {
+            swell('in', 2.5, 0, 1);
+            previewTimers.push(setTimeout(() => { if (cueStyle === style) swell('out', 2.5, 1, 0); }, 2500));
+            return;
+        }
+        const fit = ring === 'breath' ? 4 : 0;   // a sample as if the step lasted 4 seconds
+        if (ring === 'breath') gateForStep(fit); else openGate();
+        const now = ctx.currentTime;
+        if (style === 'bowl') bowl(BOWL_NOTES.in, 1, now, 1, fit);
+        else if (style === 'chime') chime(CHIME_NOTES.in, 1, now, fit);
+        else if (PLUCKED[style]) pluck(PLUCKED[style], PLUCKED[style].notes.in, 1, now, 1, fit);
     }
 
     function setCueStyle(style) {
         if (style !== 'tone') silenceTone();
         clearPreview();
-        if (follow && follow.style !== style) silenceFollow();
+        silenceSwell(0.2);
         cueStyle = style;
+    }
+
+    function setRing(mode) {
+        ring = mode;
+        clearPreview();
+        silenceSwell(0.2);
+        openGate();
     }
 
     function setCueLevel(level) {
         cueLevel = level;
-        if (ctx) {
-            cueBus.gain.setTargetAtTime(level, ctx.currentTime, 0.05);
-            followBus.gain.setTargetAtTime(level, ctx.currentTime, 0.05);
-        }
+        if (ctx) cueBus.gain.setTargetAtTime(level, ctx.currentTime, 0.05);
     }
 
     // ---------- ambient ----------
@@ -671,7 +652,7 @@ const Sound = (() => {
     return {
         setMuted,
         ensure, cue, resume, pause, finish, preview,
-        setCueStyle, setCueLevel, setAmbient, setAmbientGate,
+        setCueStyle, setRing, setCueLevel, setAmbient, setAmbientGate,
         get ready() { return !!ctx; }
     };
 })();
