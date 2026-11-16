@@ -44,6 +44,7 @@
         lastDark: 'night',           // the dark theme the switch picks first
         prepare: true,
         vibrate: true,
+        vibrateFollow: false, // pulses all through each breath, not just one tap at the start
         wakeLock: true,
         zenShowTime: false,   // show the time left (session-meta) even while calm mode fades the rest
         ambientPlaying: false, // "Keep playing in the background": ambience plays even without a session
@@ -270,6 +271,7 @@
         updateNoticeLink();
         cancelAnimationFrame(session.rafId);
         Sound.pause();
+        stopVibration();
         syncAmbientGate();
         releaseWakeLock();
         setPlayIcon(false);
@@ -285,7 +287,7 @@
         session.state = session.resumeTo || 'running';
         const s = session.step;
         if (session.state === 'running' && s) {
-            Sound.resume(s.cueKind, isFinite(s.secs) ? s.start + s.secs - session.clock : 1);
+            Sound.resume(s.cueKind, isFinite(s.secs) ? s.start + s.secs - session.clock : 1, line.levelAt(session.clock), s.to);
         }
         afterResume();
     }
@@ -311,6 +313,7 @@
         updateNoticeLink();
         cancelAnimationFrame(session.rafId);
         if (completed) Sound.finish(); else Sound.pause();
+        stopVibration();
         syncAmbientGate();
         releaseWakeLock();
         setPlayIcon(false);
@@ -340,7 +343,7 @@
 
     function onStepStart(step) {
         const cueKind = step.cueKind;
-        Sound.cue(cueKind, isFinite(step.secs) ? step.secs : 1);
+        Sound.cue(cueKind, isFinite(step.secs) ? step.secs : 1, step.from, step.to);
         vibrate(step);
         nextBtn.hidden = !step.open;
     }
@@ -422,10 +425,34 @@
     // ---------- vibration & screen wake ----------
 
     const canVibrate = 'vibrate' in navigator;
+    // "Pulse through the breath": one pulse every second for as long as the breath lasts.
+    // Breathing in: single pulses that get longer. Breathing out: double pulses that get shorter.
+    // Holds: stillness. Returns the pattern for navigator.vibrate (0 = stay still).
+    function breathPulses(step) {
+        const rising = step.cueKind === 'in' || step.cueKind === 'top';
+        if (!rising && step.cueKind !== 'out') return 0;
+        const beats = Math.min(30, Math.max(1, Math.round(step.secs)));
+        const pattern = [];
+        for (let i = 0; i < beats; i++) {
+            const x = beats > 1 ? i / (beats - 1) : 1;
+            const len = Math.round(rising ? 20 + 60 * x : 70 - 50 * x);
+            const beat = rising ? [len] : [len, 60, len];
+            pattern.push(...beat);
+            if (i < beats - 1) pattern.push(1000 - beat.reduce((a, b) => a + b, 0));
+        }
+        return pattern;
+    }
+
     function vibrate(step) {
         if (!settings.vibrate || !canVibrate || step.cueKind === 'powerIn' || step.cueKind === 'powerOut') return;
-        const pattern = { in: 40, top: 20, out: [30, 80, 30], retain: [60, 60, 60] }[step.cueKind] || 15;
+        const pattern = settings.vibrateFollow
+            ? breathPulses(step)
+            : { in: 40, top: 20, out: [30, 80, 30], retain: [60, 60, 60] }[step.cueKind] || 15;
         try { navigator.vibrate(pattern); } catch (e) {}
+    }
+
+    function stopVibration() {
+        if (canVibrate) { try { navigator.vibrate(0); } catch (e) {} }
     }
 
     let wakeLock = null;
@@ -1235,6 +1262,8 @@
 
         $('opt-prepare').checked = settings.prepare;
         $('opt-vibrate').checked = settings.vibrate;
+        $('opt-vibrate-follow').checked = settings.vibrateFollow;
+        $('row-vibrate-follow').hidden = !canVibrate || !settings.vibrate;
         $('opt-wake').checked = settings.wakeLock;
         $('opt-zen-time').checked = settings.zenShowTime;
         updateSummaries();
@@ -1263,20 +1292,23 @@
         sessionMeta.classList.toggle('fade-ui', !settings.zenShowTime);
     }
 
-    [['opt-prepare', 'prepare'], ['opt-vibrate', 'vibrate'], ['opt-wake', 'wakeLock'], ['opt-zen-time', 'zenShowTime']].forEach(([id, key]) => {
+    [['opt-prepare', 'prepare'], ['opt-vibrate', 'vibrate'], ['opt-vibrate-follow', 'vibrateFollow'], ['opt-wake', 'wakeLock'], ['opt-zen-time', 'zenShowTime']].forEach(([id, key]) => {
         $(id).addEventListener('change', e => {
             settings[key] = e.target.checked;
             if (key === 'wakeLock') {
                 if (!settings.wakeLock) releaseWakeLock();
                 else if (session.state === 'running') requestWakeLock();
             }
+            if (key === 'vibrate') $('row-vibrate-follow').hidden = !canVibrate || !settings.vibrate;
             if (key === 'vibrate' && settings.vibrate && canVibrate) navigator.vibrate(30);
+            // a taste of it: three seconds of pulses getting stronger, as when breathing in
+            if (key === 'vibrateFollow' && settings.vibrateFollow && settings.vibrate && canVibrate) navigator.vibrate(breathPulses({ cueKind: 'in', secs: 3 }));
             if (key === 'zenShowTime') applyZenShowTime();
             saveSettings();
         });
     });
 
-    if (!canVibrate) $('row-vibrate').hidden = true;
+    if (!canVibrate) { $('row-vibrate').hidden = true; $('row-vibrate-follow').hidden = true; }
     if (!('wakeLock' in navigator)) $('row-wake').hidden = true;
 
     // ---------- language picker (top corner of the menu) ----------

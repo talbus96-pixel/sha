@@ -297,8 +297,12 @@
                             <button data-value="marimba" data-i18n="cue.marimba">Marimba</button>
                             <button data-value="harp" data-i18n="cue.harp">Harp</button>
                             <button data-value="tone" data-i18n="cue.tone">Tone</button>
+                            <button data-value="glide" data-i18n="cue.glide">Rising tone</button>
+                            <button data-value="wave" data-i18n="cue.wave">Breath wave</button>
+                            <button data-value="glidewave" data-i18n="cue.glidewave">Tone + wave</button>
                             <button data-value="off" data-i18n="cue.off">Off</button>
                         </div>
+                        <p class="hint" data-i18n="sounds.cueHint">Rising tone, Breath wave and Tone + wave keep sounding through the whole breath: the sound rises as you breathe in and falls as you breathe out, so you can follow it with your eyes closed. The other sounds ring once at the start of each step and fade.</p>
                         <label class="slider-row">
                             <span data-i18n="sounds.cueVolume">Cue volume</span>
                             <input type="range" id="cue-volume" min="0" max="1" step="0.01">
@@ -352,6 +356,10 @@
                         <label class="toggle-row" id="row-vibrate">
                             <span data-i18n="opt.vibrate">Vibrate on each phase</span>
                             <input type="checkbox" id="opt-vibrate"><span class="switch"></span>
+                        </label>
+                        <label class="toggle-row" id="row-vibrate-follow">
+                            <span data-i18n="opt.vibrateFollow">Pulse through the whole breath</span>
+                            <input type="checkbox" id="opt-vibrate-follow"><span class="switch"></span>
                         </label>
                         <label class="toggle-row" id="row-wake">
                             <span data-i18n="opt.wake">Keep screen on during session</span>

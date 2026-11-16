@@ -78,7 +78,12 @@ How the shape follows the timings:
 - **Bowl**: a Tibetan singing bowl. A higher note means breathe in, a lower note means breathe out, and a soft small "ting" means hold. The extra sip in cyclic sighing gets its own lighter note.
 - **Chime**: a soft, warm chime with a similar high/low pattern.
 - **Tone**: a continuous, gentle hum that swells and brightens as you breathe in and settles as you breathe out. It's good if you prefer to follow sound rather than look at the screen.
+- **Rising tone**: made to be followed with your eyes closed. A soft chord that never stops: its pitch rises as you breathe in, stays steady while you hold, and falls as you breathe out.
+- **Breath wave**: also for eyes closed. A soft "shhh" like a wave: it swells and brightens as you breathe in, stays while you hold, and draws back as you breathe out.
+- **Tone + wave**: the two above together.
 - **Off**: silence.
+
+Bowl, Chime, Kalimba, Marimba and Harp ring once at the start of each step and then fade, which is lovely to listen to. The three eyes-closed styles keep sounding through the whole breath instead. Pick whichever suits the moment; the others stay exactly as they were.
 
 All cues are created live by the app, with a soft "room" echo added.
 
@@ -99,7 +104,7 @@ Below it, a short list of sections. Tap a heading to open it; opening one closes
 - **Look**:
   - **Theme**: five light ones: **Day**, **Sunrise** (warm peach), **Meadow** (fresh green), **Lavender** and **Lagoon** (sea-glass aqua, the default for new installs). Three dark ones for evenings: **Night**, **Dusk** and **Forest**. A 🌙/☀️ button in the top bar switches between the last light and last dark theme you picked.
   - **Dot color**: match the theme, or pick from a curated set of colors, independent of the theme.
-- **Options**: the 3-second get-ready countdown, vibration (Android only; iPhones don't let websites vibrate), keeping the screen on during a session, and whether the time left stays visible during calm mode.
+- **Options**: the 3-second get-ready countdown, vibration (Android only; iPhones don't let websites vibrate), with an extra switch **Pulse through the whole breath**: one pulse a second, longer and stronger as you breathe in, double and softer as you breathe out, still while you hold, keeping the screen on during a session, and whether the time left stays visible during calm mode.
 - **About**: what the app is, and the sound credits.
 
 ## Reminders
@@ -138,7 +143,7 @@ It can come back later if you miss it.
 | `js/notice.js` | The "Notice your surroundings" exercise (its prompts are in `i18n.js` under `notice.*`). |
 | `js/reminders.js` | Builds the calendar reminders (Google Calendar links and the .ics calendar file). |
 | `js/app.js` | Ties it together: the session clock, the buttons and panels, saving your settings. |
-| `js/audio.js` | All the sound: the bowl, chime and tone cues, and playing the nature recordings. |
+| `js/audio.js` | All the sound: the bowl, chime, tone and follow-the-breath cues, and playing the nature recordings. |
 | `sounds/` | The nature recordings. |
 | `design/` | The saved logo options and an icon preview. |
 | `manifest-sha.webmanifest`, `service-worker.js`, `icons/` | Let phones install the app on the home screen and use it without internet. |

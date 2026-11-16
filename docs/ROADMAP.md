@@ -24,7 +24,7 @@ Ideas and decisions saved for later, in the owner's order.
 ## To think about, not to build yet
 These are open questions the owner wants to keep thinking about. No code for them until there's a clearer answer.
 
-1. **The cue sounds and tracking by ear.** Bowl, Chime, Kalimba, Marimba and Harp all leave a beautiful ring that fades — lovely to listen to, but the fade means you can't follow the breathing rhythm by sound alone once it's gone. "Tone" doesn't have this problem, since it never stops until the phase changes. Question to settle: should there be a cue style built to be followed by ear (a sound that still marks the passing of time, not just the start of a phase)? Or is the ringing meant to be atmosphere, with the visual carrying the rhythm?
+1. ~~**The cue sounds and tracking by ear.**~~ Settled: the ringing instruments stay exactly as they were, and three follow-the-breath styles were added next to them (Rising tone, Breath wave, Tone + wave), plus an optional "Pulse through the whole breath" vibration. See "Following the breath with eyes closed" in docs/HOW-IT-WORKS.md.
 2. **Paid extras in Look.** More developed backgrounds (nicer wallpapers) and more elaborate dot designs, offered as a paid option later. Needs a plan for payment and for what stays free.
 3. **A personal "best pace" finder**, so someone doesn't have to discover by trial and error (as the owner did with box breathing) which pace suits them. Open questions: does the app recommend, or just record what was tried and let the person compare later? A pace that feels wrong on day one can turn out to be the best fit after a few days, so a single rating after one try isn't enough — any design needs to account for that.
 
