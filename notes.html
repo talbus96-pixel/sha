@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
     <title>פתקים · שָׁה</title>
+    <script>
+        // Follow the app's language: Hebrew reads right-to-left, English and Russian left-to-right.
+        (() => {
+            let lang = null;
+            try { lang = (JSON.parse(localStorage.getItem('breathe.settings.v2')) || {}).lang; } catch (e) {}
+            if (['he', 'en', 'ru'].indexOf(lang) < 0) {
+                const n = (navigator.language || '').slice(0, 2);
+                lang = (n === 'he' || n === 'iw') ? 'he' : n === 'ru' ? 'ru' : 'en';
+            }
+            window.SHA_LANG = lang;
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'he' ? 'rtl' : 'ltr';
+        })();
+    </script>
     <!-- TEMPORARY owner's notebook. Not part of the app: delete this file (and its line in docs/HOW-IT-WORKS.md)
          before the app is released to the public. Notes live only in this browser (localStorage 'sha.notes.v1'). -->
     <link rel="stylesheet" href="css/style.css">
@@ -25,7 +39,7 @@
         .btn.primary { background: var(--accent); color: var(--on-accent); border-color: transparent; font-weight: 500; }
         .btn.danger { color: #c0392b; }
         .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-        .chip { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--faint); font-size: 0.85rem; color: var(--muted); }
+        .chip { padding: 9px 14px; border-radius: 999px; border: 1px solid var(--faint); font-size: 0.85rem; color: var(--muted); }
         .chip.on { border-color: var(--accent); color: var(--text); background: var(--accent-soft); }
         .note { display: block; width: 100%; text-align: start; padding: 13px 16px; border-radius: 16px; background: var(--surface); margin-bottom: 8px; }
         .note:hover { background: var(--surface-strong); }
@@ -37,50 +51,141 @@
         .row2 { display: flex; gap: 8px; }
         .saved { color: var(--muted); font-size: 0.8rem; min-height: 1.2em; }
         .foot { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
-        a.src { color: var(--accent); font-size: 0.85rem; }
+        a.src { color: var(--accent); font-size: 0.85rem; display: inline-block; padding: 8px 0; }
+        .arr::before { content: '\2190'; }
+        [dir="rtl"] .arr::before { content: '\2192'; }
+        /* New-note button: stays at the bottom of the screen, on the side where reading starts
+           (right in Hebrew, left in English and Russian), and never covers the buttons above it */
+        .fab {
+            position: sticky; bottom: calc(env(safe-area-inset-bottom) + 20px); z-index: 5;
+            width: fit-content; margin-top: 18px; margin-inline-end: auto;
+            height: 56px; min-width: 56px; padding: 0 24px; border-radius: 28px;
+            background: var(--accent); color: var(--on-accent); font-weight: 500;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+        }
+        .fab span { font-size: 1.6rem; line-height: 1; font-weight: 300; }
     </style>
 </head>
 <body data-theme="lagoon">
 <div class="wrap">
     <div id="list-view">
-        <p class="sub"><a class="src" href="index.html">← חזרה לאפליקציה</a></p>
-        <h1>פתקים ומחשבות</h1>
-        <p class="sub">דף זמני לשימוש אישי. הכול נשמר רק בדפדפן הזה, בטלפון או במחשב הזה, ולא נשלח לשום מקום. כדאי לשמור גיבוי מדי פעם (למטה).</p>
+        <p class="sub"><a class="src" href="index.html"><span class="arr" aria-hidden="true"></span> <span data-t="backApp"></span></a></p>
+        <h1 data-t="h1"></h1>
+        <p class="sub" data-t="sub"></p>
         <div class="bar">
-            <input type="search" id="q" placeholder="חיפוש בפתקים" aria-label="חיפוש בפתקים">
-            <button class="btn primary" id="btn-new">+ פתק חדש</button>
+            <input type="search" id="q" data-ph="search" data-aria="search">
         </div>
-        <div class="chips" id="filters" role="group" aria-label="סינון לפי נושא"></div>
+        <div class="chips" id="filters" role="group" data-aria="filter"></div>
         <div id="notes"></div>
         <div class="foot">
-            <button class="btn" id="btn-copy">העתקת הכול כטקסט</button>
-            <button class="btn" id="btn-export">שמירת גיבוי (קובץ)</button>
-            <button class="btn" id="btn-import">שחזור מגיבוי</button>
+            <button class="btn" id="btn-copy" data-t="copy"></button>
+            <button class="btn" id="btn-export" data-t="export"></button>
+            <button class="btn" id="btn-import" data-t="import"></button>
             <input type="file" id="file" accept="application/json,.json" hidden>
         </div>
         <p class="saved" id="foot-msg"></p>
+        <button class="fab" id="btn-new"><span aria-hidden="true">+</span><b data-t="newNote" style="font-weight:500"></b></button>
     </div>
 
     <div id="edit-view" hidden>
         <div class="bar">
-            <button class="btn" id="btn-back">← חזרה</button>
+            <button class="btn" id="btn-back"><span class="arr" aria-hidden="true"></span> <span data-t="back"></span></button>
             <span class="saved" id="saved" aria-live="polite"></span>
         </div>
-        <div class="field"><input type="text" id="title" placeholder="כותרת" aria-label="כותרת" dir="auto"></div>
+        <div class="field"><input type="text" id="title" data-ph="titlePh" data-aria="titlePh"></div>
         <div class="row2 field">
-            <select id="cat" aria-label="נושא"></select>
+            <select id="cat" data-aria="topic"></select>
         </div>
-        <div class="field"><textarea id="body" placeholder="כתבו כאן…" aria-label="תוכן הפתק" dir="auto"></textarea></div>
-        <div class="field"><input type="url" id="src" placeholder="מקור או קישור (למשל מחקר)" aria-label="מקור או קישור" dir="ltr"></div>
-        <div class="foot"><button class="btn danger" id="btn-delete">מחיקת הפתק</button></div>
+        <div class="field"><textarea id="body" data-ph="bodyPh" data-aria="bodyAria"></textarea></div>
+        <div class="field"><input type="url" id="src" data-ph="srcPh" data-aria="srcPh"></div>
+        <div class="foot"><button class="btn danger" id="btn-delete" data-t="del"></button></div>
     </div>
 </div>
 
 <script>
 (() => {
     const KEY = 'sha.notes.v1';
-    const CATS = [['app', 'פיתוח האפליקציה'], ['science', 'חומר מדעי'], ['other', 'אחר']];
+    const LANG = window.SHA_LANG || 'he';
+    const UI_DIR = LANG === 'he' ? 'rtl' : 'ltr';
+
+    // The page's own words, in the app's three languages. The notes you write stay exactly as typed.
+    const TEXT = {
+        he: {
+            title: 'פתקים · שָׁה', backApp: 'חזרה לאפליקציה', h1: 'פתקים ומחשבות',
+            sub: 'דף זמני לשימוש אישי. הכול נשמר רק בדפדפן הזה, בטלפון או במחשב הזה, ולא נשלח לשום מקום. כדאי לשמור גיבוי מדי פעם (למטה).',
+            search: 'חיפוש בפתקים', newNote: 'פתק חדש', filter: 'סינון לפי נושא', all: 'הכול',
+            cats: { app: 'פיתוח האפליקציה', science: 'חומר מדעי', other: 'אחר' },
+            copy: 'העתקת הכול כטקסט', export: 'שמירת גיבוי (קובץ)', import: 'שחזור מגיבוי', back: 'חזרה',
+            titlePh: 'כותרת', topic: 'נושא', bodyPh: 'כתבו כאן…', bodyAria: 'תוכן הפתק', srcPh: 'מקור או קישור (למשל מחקר)',
+            del: 'מחיקת הפתק', untitled: 'פתק ללא כותרת',
+            emptyNone: 'עדיין אין פתקים. לחצו על ״פתק חדש״ והתחילו לכתוב.', emptyFound: 'לא נמצאו פתקים.',
+            saving: 'נשמר…', saved: 'נשמר ✓', saveFail: 'השמירה נכשלה (אולי הזיכרון מלא). העתיקו את הטקסט למקום בטוח.',
+            confirmDel: 'למחוק את הפתק הזה? אי אפשר לשחזר.',
+            copyNone: 'אין עדיין מה להעתיק.', copied: 'כל הפתקים הועתקו. אפשר להדביק אותם בהודעה, במייל או במסמך.',
+            copyBlocked: 'ההעתקה נחסמה בדפדפן. נסו ״שמירת גיבוי״ במקום.',
+            exportNone: 'אין עדיין מה לגבות.', exported: 'הגיבוי נשמר כקובץ.',
+            restored: n => `שוחזרו ${n} פתקים.`, noneNew: 'לא נמצאו פתקים חדשים בקובץ.', badFile: 'הקובץ לא נראה כמו גיבוי של הפתקים.',
+            locale: 'he-IL'
+        },
+        en: {
+            title: 'Notes · Sha', backApp: 'Back to the app', h1: 'Notes and thoughts',
+            sub: 'A temporary page for personal use. Everything is saved only in this browser, on this phone or computer, and is never sent anywhere. It’s worth saving a backup now and then (below).',
+            search: 'Search notes', newNote: 'New note', filter: 'Filter by topic', all: 'All',
+            cats: { app: 'App development', science: 'Scientific material', other: 'Other' },
+            copy: 'Copy all as text', export: 'Save a backup (file)', import: 'Restore from a backup', back: 'Back',
+            titlePh: 'Title', topic: 'Topic', bodyPh: 'Write here…', bodyAria: 'Note text', srcPh: 'Source or link (e.g. a study)',
+            del: 'Delete this note', untitled: 'Untitled note',
+            emptyNone: 'No notes yet. Tap “New note” and start writing.', emptyFound: 'No notes found.',
+            saving: 'Saving…', saved: 'Saved ✓', saveFail: 'Saving failed (the storage may be full). Copy the text somewhere safe.',
+            confirmDel: 'Delete this note? This can’t be undone.',
+            copyNone: 'Nothing to copy yet.', copied: 'All notes copied. You can paste them into a message, an email or a document.',
+            copyBlocked: 'Copying was blocked by the browser. Try “Save a backup” instead.',
+            exportNone: 'Nothing to back up yet.', exported: 'The backup was saved as a file.',
+            restored: n => (n === 1 ? 'Restored 1 note.' : `Restored ${n} notes.`), noneNew: 'No new notes found in the file.', badFile: 'This file doesn’t look like a notes backup.',
+            locale: 'en-GB'
+        },
+        ru: {
+            title: 'Заметки · Ша', backApp: 'Назад в приложение', h1: 'Заметки и мысли',
+            sub: 'Временная страница для личного пользования. Всё хранится только в этом браузере, на этом телефоне или компьютере, и никуда не отправляется. Время от времени делайте резервную копию (внизу).',
+            search: 'Поиск по заметкам', newNote: 'Новая заметка', filter: 'Фильтр по теме', all: 'Все',
+            cats: { app: 'Разработка приложения', science: 'Научные материалы', other: 'Другое' },
+            copy: 'Скопировать всё текстом', export: 'Сохранить копию (файл)', import: 'Восстановить из копии', back: 'Назад',
+            titlePh: 'Заголовок', topic: 'Тема', bodyPh: 'Пишите здесь…', bodyAria: 'Текст заметки', srcPh: 'Источник или ссылка (например, исследование)',
+            del: 'Удалить заметку', untitled: 'Заметка без названия',
+            emptyNone: 'Заметок пока нет. Нажмите «Новая заметка» и начните писать.', emptyFound: 'Заметки не найдены.',
+            saving: 'Сохранение…', saved: 'Сохранено ✓', saveFail: 'Не удалось сохранить (возможно, память заполнена). Скопируйте текст в надёжное место.',
+            confirmDel: 'Удалить эту заметку? Это нельзя отменить.',
+            copyNone: 'Пока нечего копировать.', copied: 'Все заметки скопированы. Их можно вставить в сообщение, письмо или документ.',
+            copyBlocked: 'Браузер заблокировал копирование. Попробуйте «Сохранить копию».',
+            exportNone: 'Пока нечего сохранять.', exported: 'Резервная копия сохранена в файл.',
+            restored: n => `Восстановлено заметок: ${n}.`, noneNew: 'В файле нет новых заметок.', badFile: 'Этот файл не похож на резервную копию заметок.',
+            locale: 'ru-RU'
+        }
+    };
+    const L = TEXT[LANG];
     const $ = id => document.getElementById(id);
+
+    document.title = L.title;
+    document.querySelectorAll('[data-t]').forEach(el => { el.textContent = L[el.dataset.t]; });
+    document.querySelectorAll('[data-ph]').forEach(el => { el.placeholder = L[el.dataset.ph]; });
+    document.querySelectorAll('[data-aria]').forEach(el => { el.setAttribute('aria-label', L[el.dataset.aria]); });
+
+    // The direction a piece of text reads in, from its first letter. Empty text follows the app's language.
+    const RTL_LETTER = /[֐-ࣿיִ-﷿ﹰ-﻿]/;
+    const LTR_LETTER = /[A-Za-zÀ-ʸͰ-ϿЀ-ԯḀ-῿]/;
+    function dirOf(text, fallback = UI_DIR) {
+        const t = String(text || '').slice(0, 400);
+        for (const ch of t) {
+            if (RTL_LETTER.test(ch)) return 'rtl';
+            if (LTR_LETTER.test(ch)) return 'ltr';
+        }
+        return fallback;
+    }
+    const alignToText = el => { el.dir = dirOf(el.value); };
+    const alignSource = () => { $('src').dir = $('src').value ? 'ltr' : UI_DIR; }; // links always read left-to-right
+
+    const CATS = ['app', 'science', 'other'];
     let notes = [];
     let filter = 'all';
     let current = null;
@@ -102,14 +207,14 @@
         try { localStorage.setItem(KEY, JSON.stringify(notes)); return true; } catch (e) { return false; }
     }
 
-    const catName = id => (CATS.find(c => c[0] === id) || CATS[2])[1];
-    const fmtDate = ms => new Date(ms).toLocaleString('he-IL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-    const titleOf = n => n.title.trim() || n.body.trim().split('\n')[0].slice(0, 60) || 'פתק ללא כותרת';
+    const catName = id => L.cats[CATS.includes(id) ? id : 'other'];
+    const fmtDate = ms => new Date(ms).toLocaleString(L.locale, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const titleOf = n => n.title.trim() || n.body.trim().split('\n')[0].slice(0, 60) || L.untitled;
 
     function renderFilters() {
         const box = $('filters');
         box.innerHTML = '';
-        [['all', 'הכול']].concat(CATS).forEach(([id, name]) => {
+        [['all', L.all]].concat(CATS.map(id => [id, catName(id)])).forEach(([id, name]) => {
             const b = document.createElement('button');
             b.className = 'chip' + (filter === id ? ' on' : '');
             b.setAttribute('aria-pressed', filter === id);
@@ -131,18 +236,22 @@
         if (!shown.length) {
             const e = document.createElement('div');
             e.className = 'empty';
-            e.textContent = notes.length ? 'לא נמצאו פתקים.' : 'עדיין אין פתקים. לחצו על ״פתק חדש״ והתחילו לכתוב.';
+            e.textContent = notes.length ? L.emptyFound : L.emptyNone;
             box.appendChild(e);
             return;
         }
         shown.forEach(n => {
             const b = document.createElement('button');
             b.className = 'note';
-            const t = document.createElement('div'); t.className = 'note-title'; t.textContent = titleOf(n); t.dir = 'auto';
+            // each piece of text lines up with the language it is written in
+            const head = n.title.trim() || n.body.trim();
+            b.dir = dirOf(head);
+            const t = document.createElement('div'); t.className = 'note-title'; t.textContent = titleOf(n); t.dir = n.title.trim() || n.body.trim() ? dirOf(head) : UI_DIR;
             const m = document.createElement('div'); m.className = 'note-meta'; m.textContent = `${catName(n.cat)} · ${fmtDate(n.updated)}`;
+            m.dir = UI_DIR; m.style.textAlign = b.dir === 'rtl' ? 'right' : 'left'; // reads in the app's language, sits on the note's side
             b.append(t, m);
             if (n.body.trim()) {
-                const s = document.createElement('div'); s.className = 'note-snip'; s.textContent = n.body.trim(); s.dir = 'auto';
+                const s = document.createElement('div'); s.className = 'note-snip'; s.textContent = n.body.trim(); s.dir = dirOf(n.body);
                 b.appendChild(s);
             }
             b.addEventListener('click', () => openNote(n.id));
@@ -163,6 +272,7 @@
         $('cat').value = current.cat;
         $('body').value = current.body;
         $('src').value = current.src || '';
+        alignToText($('title')); alignToText($('body')); alignSource();
         $('saved').textContent = '';
         show('edit');
         if (!current.body && !current.title) $('title').focus();
@@ -182,14 +292,14 @@
         current.cat = $('cat').value;
         current.src = $('src').value.trim();
         current.updated = Date.now();
-        $('saved').textContent = 'נשמר…';
+        $('saved').textContent = L.saving;
         clearTimeout(saveTimer);
         saveTimer = setTimeout(flush, 400);
     }
     function flush() {
         clearTimeout(saveTimer);
         saveTimer = null;
-        $('saved').textContent = save() ? 'נשמר ✓' : 'השמירה נכשלה (אולי הזיכרון מלא). העתיקו את הטקסט למקום בטוח.';
+        $('saved').textContent = save() ? L.saved : L.saveFail;
     }
 
     function closeNote() {
@@ -204,13 +314,14 @@
         show('list');
     }
 
-    ['title', 'body', 'src'].forEach(id => $(id).addEventListener('input', touch));
+    ['title', 'body'].forEach(id => $(id).addEventListener('input', () => { alignToText($(id)); touch(); }));
+    $('src').addEventListener('input', () => { alignSource(); touch(); });
     $('cat').addEventListener('change', touch);
     $('btn-back').addEventListener('click', closeNote);
     $('btn-new').addEventListener('click', newNote);
-    $('q').addEventListener('input', renderList);
+    $('q').addEventListener('input', () => { alignToText($('q')); renderList(); });
     $('btn-delete').addEventListener('click', () => {
-        if (!current || !window.confirm('למחוק את הפתק הזה? אי אפשר לשחזר.')) return;
+        if (!current || !window.confirm(L.confirmDel)) return;
         notes = notes.filter(n => n !== current);
         save();
         current = null;
@@ -221,9 +332,9 @@
     window.addEventListener('pagehide', () => { if (saveTimer) flush(); });
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && saveTimer) flush(); });
 
-    CATS.forEach(([id, name]) => {
+    CATS.forEach(id => {
         const o = document.createElement('option');
-        o.value = id; o.textContent = name;
+        o.value = id; o.textContent = catName(id);
         $('cat').appendChild(o);
     });
 
@@ -237,13 +348,13 @@
     }
 
     $('btn-copy').addEventListener('click', async () => {
-        if (!notes.length) return msg('אין עדיין מה להעתיק.');
-        try { await navigator.clipboard.writeText(asText()); msg('כל הפתקים הועתקו. אפשר להדביק אותם בהודעה, במייל או במסמך.'); }
-        catch (e) { msg('ההעתקה נחסמה בדפדפן. נסו ״שמירת גיבוי״ במקום.'); }
+        if (!notes.length) return msg(L.copyNone);
+        try { await navigator.clipboard.writeText(asText()); msg(L.copied); }
+        catch (e) { msg(L.copyBlocked); }
     });
 
     $('btn-export').addEventListener('click', () => {
-        if (!notes.length) return msg('אין עדיין מה לגבות.');
+        if (!notes.length) return msg(L.exportNone);
         const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
@@ -252,7 +363,7 @@
         a.click();
         a.remove();
         setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-        msg('הגיבוי נשמר כקובץ.');
+        msg(L.exported);
     });
 
     $('btn-import').addEventListener('click', () => $('file').click());
@@ -267,14 +378,14 @@
             let added = 0;
             list.forEach(n => {
                 if (n && typeof n.id === 'string' && typeof n.body === 'string' && !have.has(n.id)) {
-                    notes.push({ id: n.id, title: String(n.title || ''), body: n.body, cat: CATS.some(c => c[0] === n.cat) ? n.cat : 'other', src: String(n.src || ''), created: n.created || Date.now(), updated: n.updated || Date.now() });
+                    notes.push({ id: n.id, title: String(n.title || ''), body: n.body, cat: CATS.includes(n.cat) ? n.cat : 'other', src: String(n.src || ''), created: n.created || Date.now(), updated: n.updated || Date.now() });
                     added++;
                 }
             });
             save();
             renderList();
-            msg(added ? `שוחזרו ${added} פתקים.` : 'לא נמצאו פתקים חדשים בקובץ.');
-        } catch (err) { msg('הקובץ לא נראה כמו גיבוי של הפתקים.'); }
+            msg(added ? L.restored(added) : L.noneNew);
+        } catch (err) { msg(L.badFile); }
     });
 
     load();

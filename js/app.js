@@ -503,7 +503,8 @@
         openSheet('sheet-research');
         Research.render($('research-body'));
     });
-    $('btn-open-notes').addEventListener('click', () => { location.href = 'notes.html'; }); // temporary, see notes.html
+    // temporary, see notes.html: the menu card and the top-bar button both open the notebook
+    ['btn-open-notes', 'btn-notes'].forEach(id => $(id).addEventListener('click', () => { location.href = 'notes.html'; }));
     $('btn-research-back').addEventListener('click', () => openSheet('sheet-settings'));
     $('btn-length').addEventListener('click', () => {
         if (settings.technique === 'wimhof') openBreathing('wimhof');
