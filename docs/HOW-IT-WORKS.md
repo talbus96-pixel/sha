@@ -69,6 +69,15 @@ manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed
 | Wim Hof safety check (`#safety`) | `openWimhof()` asks the safety question until it has been answered "none apply" `SAFETY_ASKS` (3) times. "One applies" sets `settings.wimhofCheck.blocked`, which greys the row out; tapping it shows an "ask me again" link (`askSafety()`). Closing without answering doesn't count. |
 | Wake lock, vibration, calm mode | As the names say. Switching apps pauses the session, because a web page can't keep accurate time in the background. |
 
+## Following the breath with eyes closed
+Two kinds of cue sit side by side in the Sounds menu, and the person picks one (`settings.cue`):
+- **Ringing instruments** (Bowl, Chime, Kalimba, Marimba, Harp): one note when each step starts, with a long echo that fades. Unchanged.
+- **Follow-the-breath styles** (`glide` = Rising tone, `wave` = Breath wave, `glidewave` = both, listed in `FOLLOW_STYLES` in `audio.js`): a sound that never stops. It follows the lung level of each step (`step.from` to `step.to`, 0 = empty, 1 = full), using the same eased curve as the dot. In: it rises. Hold: it stays put. Out: it falls. `Sound.cue(kind, secs, from, to)` and `Sound.resume(kind, secsLeft, from, to)` take those levels (`app.js` passes `line.levelAt(session.clock)` when resuming mid-step).
+  - Rising tone: a soft chord that glides up one octave (G3 to G4) from empty to full, never fully silent.
+  - Breath wave: soft noise through a low-pass filter that opens from 400 Hz to 2400 Hz, so it swells and brightens like a wave arriving.
+  - These go through `followBus` (no reverb, so the pitch and swell stay clear), which follows the same Cue volume slider.
+- **Vibration:** the existing "Vibrate on each phase" is one tap per step. The extra switch "Pulse through the whole breath" (`settings.vibrateFollow`, shown only when vibration is on and supported) sends one pulse per second: breathing in = single pulses that get longer, breathing out = double pulses that get shorter, holds = still. `breathPulses(step)` in `app.js` builds the pattern; pausing or stopping calls `navigator.vibrate(0)`. Browsers on iPhone don't support vibration at all.
+
 ## Ambience, independent of any breathing session
 Toggling a sound on in the Sounds menu (`settings.ambient`) only adds it to your mix — it doesn't start playing by itself. The mix actually plays when either of two things is true: a breathing session is prepping or running (same as always), or `settings.ambientPlaying` ("Keep playing in the background") is on. `syncAmbientGate()` in `app.js` checks both and opens or closes the master ambient gate accordingly; it's called from `afterResume()`, `pause()`, `stop()`, and the "Keep playing in the background" toggle. Opening the Sounds fold temporarily forces the gate open too, so you can hear your mix while you build it (`openFold()`), and that's undone when you leave it (`closeSheet()`).
 

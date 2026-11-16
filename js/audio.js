@@ -1,4 +1,4 @@
-// Sound engine: synthesised breathing cues (singing bowl, chime, breath tone)
+// Sound engine: synthesised breathing cues (singing bowl, chime, breath tone, follow-the-breath glide and wave)
 // and looping ambient recordings. Everything runs through the Web Audio API.
 const Sound = (() => {
     const AMBIENT_FILES = {
@@ -21,6 +21,9 @@ const Sound = (() => {
     const ambient = {};      // id -> { on, level, voice: {src, gain} | null, loading }
     const bufferCache = {};  // id -> Promise<AudioBuffer>
     let tone = null;         // continuous breath-tone voice
+    let follow = null;       // continuous "follow the breath" voice (rising tone / breath wave)
+    let followBus, followNoise;
+    let previewTimers = [];
 
     // ---------- setup ----------
 
@@ -55,6 +58,12 @@ const Sound = (() => {
             reverb.connect(wet);
             wet.connect(master);
 
+            // Follow-the-breath sounds go straight to the output with no reverb,
+            // so the pitch and the swell stay clear and in step with the breath.
+            followBus = ctx.createGain();
+            followBus.gain.value = cueLevel;
+            followBus.connect(master);
+
             ambientBus = ctx.createGain();
             ambientBus.gain.value = 0;
             ambientBus.connect(master);
@@ -62,6 +71,17 @@ const Sound = (() => {
             noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
             const nd = noiseBuf.getChannelData(0);
             for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+
+            // A few seconds of soft, slightly dark noise for the breath wave (loops without an audible seam)
+            followNoise = ctx.createBuffer(2, ctx.sampleRate * 4, ctx.sampleRate);
+            for (let ch = 0; ch < 2; ch++) {
+                const d = followNoise.getChannelData(ch);
+                let last = 0;
+                for (let i = 0; i < d.length; i++) {
+                    last = last * 0.55 + (Math.random() * 2 - 1) * 0.45;
+                    d[i] = last;
+                }
+            }
 
             Object.keys(ambient).forEach(applyAmbient);
             setAmbientGate(ambientGateOpen);
@@ -286,14 +306,163 @@ const Sound = (() => {
         setTimeout(() => v.out.disconnect(), (fade + 0.3) * 1000);
     }
 
+    // ---------- follow-the-breath sounds ----------
+    // Unlike the ringing instruments above, these never fade away by themselves. They glide up
+    // while you breathe in, glide down while you breathe out and stay put while you hold, so the
+    // sound always says where you are in the breath, even with your eyes closed.
+    //   glide     = a soft chord whose pitch rises and falls by one octave
+    //   wave      = soft noise that swells and brightens like a wave arriving, then draws back
+    //   glidewave = both together
+    const FOLLOW_STYLES = ['glide', 'wave', 'glidewave'];
+    const easeInOutSine = x => -(Math.cos(Math.PI * x) - 1) / 2;
+
+    // Moves a parameter from a to b over `secs` seconds, easing in and out the same way the dot does.
+    function rampEased(param, a, b, t0, secs, exponential) {
+        const N = 12;
+        for (let i = 1; i <= N; i++) {
+            const x = i / N, e = easeInOutSine(x);
+            const v = exponential ? a * Math.pow(b / a, e) : a + (b - a) * e;
+            param.linearRampToValueAtTime(v, t0 + secs * x);
+        }
+    }
+
+    // Each part reacts to the lung level L (0 = empty, 1 = full).
+    // jump(L, t): be at level L right now.  glide(from, to, t, secs): move there over secs.
+    function glidePart(dest, weight) {
+        const lvl = ctx.createGain();
+        lvl.gain.value = 0.0001;
+        lvl.connect(dest);
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 2200;
+        filter.Q.value = 0.5;
+        filter.connect(lvl);
+        const gainAt = L => weight * (0.17 + 0.33 * L);   // never silent, so there is always something to hold on to
+        const centsAt = L => L * 1200;                    // one octave from empty to full
+        const oscs = [
+            // [freq, type, level, detune cents]: G3, a slightly detuned copy, the fifth above, a faint octave
+            [196, 'sine', 0.55, 0],
+            [196, 'sine', 0.3, 6],
+            [294, 'sine', 0.2, -4],
+            [392, 'triangle', 0.08, 3]
+        ].map(([f, type, level, off]) => {
+            const osc = ctx.createOscillator();
+            osc.type = type;
+            osc.frequency.value = f;
+            const g = ctx.createGain();
+            g.gain.value = level;
+            osc.connect(g);
+            g.connect(filter);
+            osc.start();
+            return { osc, off };
+        });
+        return {
+            jump(L, t) {
+                lvl.gain.setValueAtTime(gainAt(L), t);
+                oscs.forEach(({ osc, off }) => osc.detune.setValueAtTime(centsAt(L) + off, t));
+            },
+            glide(from, to, t, secs) {
+                holdParam(lvl.gain, t);
+                rampEased(lvl.gain, gainAt(from), gainAt(to), t, secs, false);
+                oscs.forEach(({ osc, off }) => {
+                    holdParam(osc.detune, t);
+                    rampEased(osc.detune, centsAt(from) + off, centsAt(to) + off, t, secs, false);
+                });
+            },
+            stop(when) {
+                oscs.forEach(({ osc }) => osc.stop(when));
+            }
+        };
+    }
+
+    function wavePart(dest, weight) {
+        const lvl = ctx.createGain();
+        lvl.gain.value = 0.0001;
+        lvl.connect(dest);
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.Q.value = 0.8;
+        filter.frequency.value = 400;
+        filter.connect(lvl);
+        const src = ctx.createBufferSource();
+        src.buffer = followNoise;
+        src.loop = true;
+        src.connect(filter);
+        src.start(0, Math.random() * 3);
+        const gainAt = L => weight * 4 * (0.35 + 0.65 * L);  // noise through a filter is quiet, so make up the level
+        const cutoffAt = L => 400 * Math.pow(6, L);          // 400 Hz (dull, far away) to 2400 Hz (bright, close)
+        return {
+            jump(L, t) {
+                lvl.gain.setValueAtTime(gainAt(L), t);
+                filter.frequency.setValueAtTime(cutoffAt(L), t);
+            },
+            glide(from, to, t, secs) {
+                holdParam(lvl.gain, t);
+                rampEased(lvl.gain, gainAt(from), gainAt(to), t, secs, false);
+                holdParam(filter.frequency, t);
+                rampEased(filter.frequency, cutoffAt(from), cutoffAt(to), t, secs, true);
+            },
+            stop(when) {
+                src.stop(when);
+            }
+        };
+    }
+
+    function followVoice(style, startLevel) {
+        if (follow && follow.style === style) return follow;
+        if (follow) silenceFollow(0.15);
+        const t = ctx.currentTime;
+        const fade = ctx.createGain();
+        fade.gain.setValueAtTime(0.0001, t);
+        fade.gain.linearRampToValueAtTime(1, t + 0.4);
+        fade.connect(followBus);
+        const both = style === 'glidewave';
+        const parts = [];
+        if (style !== 'wave') parts.push(glidePart(fade, both ? 0.75 : 1));
+        if (style !== 'glide') parts.push(wavePart(fade, both ? 0.7 : 1));
+        parts.forEach(p => p.jump(startLevel, t));
+        follow = { style, fade, parts };
+        return follow;
+    }
+
+    // Moves the sound from lung level `from` to `to` over `seconds`. Holds have from == to,
+    // so the sound simply stays where it is.
+    function shapeFollow(style, seconds, from, to) {
+        if (!Number.isFinite(from)) from = 0;
+        if (!Number.isFinite(to)) to = from;
+        const t = ctx.currentTime;
+        const v = followVoice(style, from);
+        const secs = Math.abs(to - from) < 0.001 ? 0.3 : Math.max(0.2, seconds);
+        v.parts.forEach(p => p.glide(from, to, t, secs));
+    }
+
+    function silenceFollow(fade = 0.6) {
+        if (!follow) return;
+        const v = follow;
+        follow = null;
+        const t = ctx.currentTime;
+        holdParam(v.fade.gain, t);
+        v.fade.gain.linearRampToValueAtTime(0.0001, t + fade);
+        v.parts.forEach(p => p.stop(t + fade + 0.05));
+        setTimeout(() => v.fade.disconnect(), (fade + 0.3) * 1000);
+    }
+
+    function clearPreview() {
+        previewTimers.forEach(clearTimeout);
+        previewTimers = [];
+    }
+
     // Notes and levels for each kind of step
     const BOWL_NOTES = { in: 293.66, top: 392, hold: 440, out: 220, retain: 146.83 }; // D4 G4 A4 A3 D3
     const CHIME_NOTES = { in: 659.25, top: 880, hold: 554.37, out: 440, retain: 329.63 }; // E5 A5 C#5 A4 E4
 
     // kind: 'in' | 'top' (extra sip in) | 'holdIn' | 'out' | 'holdOut' | 'retain' | 'powerIn' | 'powerOut'
-    function cue(kind, seconds) {
+    // from / to: the lung level (0 = empty, 1 = full) at the start and end of the step.
+    // Only the follow-the-breath styles need them.
+    function cue(kind, seconds, from, to) {
         if (!ctx || cueStyle === 'off') return;
         if (cueStyle === 'tone') { shapeTone(kind, seconds); return; }
+        if (FOLLOW_STYLES.includes(cueStyle)) { shapeFollow(cueStyle, seconds, from, to); return; }
         if (PLUCKED[cueStyle]) {
             const spec = PLUCKED[cueStyle], n = spec.notes;
             switch (kind) {
@@ -324,17 +493,24 @@ const Sound = (() => {
     }
 
     // Called when a paused session continues mid-step.
-    function resume(kind, secondsLeft) {
-        if (ctx && cueStyle === 'tone') shapeTone(kind, Math.max(0.5, secondsLeft));
+    // from: the lung level right now. to: the level this step ends at.
+    function resume(kind, secondsLeft, from, to) {
+        if (!ctx) return;
+        if (cueStyle === 'tone') shapeTone(kind, Math.max(0.5, secondsLeft));
+        else if (FOLLOW_STYLES.includes(cueStyle)) shapeFollow(cueStyle, Math.max(0.5, secondsLeft), from, to);
     }
 
     function pause() {
+        clearPreview();
         silenceTone();
+        silenceFollow();
     }
 
     function finish() {
         if (!ctx) return;
+        clearPreview();
         silenceTone(3);
+        silenceFollow(3);
         if (cueStyle === 'off') return;
         const t = ctx.currentTime;
         bowl(196, 0.9, t + 0.2);
@@ -347,6 +523,13 @@ const Sound = (() => {
             silenceTone(0.1);
             shapeTone('in', 2.5);
             setTimeout(() => { if (cueStyle === 'tone') silenceTone(2); }, 2600);
+        } else if (FOLLOW_STYLES.includes(style)) {
+            // a short sample: one breath in, one breath out
+            clearPreview();
+            silenceFollow(0.1);
+            shapeFollow(style, 2.2, 0, 1);
+            previewTimers.push(setTimeout(() => { if (cueStyle === style) shapeFollow(style, 2.2, 1, 0); }, 2300));
+            previewTimers.push(setTimeout(() => { if (cueStyle === style) silenceFollow(1); }, 4700));
         } else if (style === 'bowl') {
             bowl(BOWL_NOTES.in, 1);
         } else if (style === 'chime') {
@@ -358,12 +541,17 @@ const Sound = (() => {
 
     function setCueStyle(style) {
         if (style !== 'tone') silenceTone();
+        clearPreview();
+        if (follow && follow.style !== style) silenceFollow();
         cueStyle = style;
     }
 
     function setCueLevel(level) {
         cueLevel = level;
-        if (ctx) cueBus.gain.setTargetAtTime(level, ctx.currentTime, 0.05);
+        if (ctx) {
+            cueBus.gain.setTargetAtTime(level, ctx.currentTime, 0.05);
+            followBus.gain.setTargetAtTime(level, ctx.currentTime, 0.05);
+        }
     }
 
     // ---------- ambient ----------
