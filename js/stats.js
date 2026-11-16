@@ -19,6 +19,8 @@ const Stats = (() => {
     }
 
     // entry: { tech, secs, breaths, holds, detail, start }
+    // Seconds are rounded down, the same way the live timer and the "Well done" screen show them,
+    // so the journal never disagrees with them by a second.
     // 'at' is when the session was logged (used to bucket it by day); 'start' is when it
     // actually began, kept separately so a session that runs past midnight still lands on
     // the day it was practised, and so the journal can show "when" apart from "how long".
@@ -27,11 +29,11 @@ const Stats = (() => {
         list.push({
             at: Date.now(),
             tech: entry.tech,
-            secs: Math.round(entry.secs),
+            secs: Math.floor(entry.secs),
             breaths: entry.breaths || 0,
-            holds: (entry.holds || []).map(Math.round),
+            holds: (entry.holds || []).map(Math.floor),
             detail: entry.detail,
-            start: entry.start || (Date.now() - Math.round(entry.secs) * 1000)
+            start: entry.start || (Date.now() - Math.floor(entry.secs) * 1000)
         });
         save(list);
     }
