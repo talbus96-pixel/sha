@@ -24,7 +24,7 @@ Ideas and decisions saved for later, in the owner's order.
 ## To think about, not to build yet
 These are open questions the owner wants to keep thinking about. No code for them until there's a clearer answer.
 
-1. ~~**The cue sounds and tracking by ear.**~~ Settled: the ringing instruments stay as they were ("Natural"), with two new ways to sound next to it: "Fits the breath" and "Swell" (see "Ring length" in docs/HOW-IT-WORKS.md), plus an optional "Pulse through the whole breath" vibration. A gliding tone and a noise wave were tried first and removed: they sounded like an alarm and like breath into a microphone.
+1. ~~**The cue sounds and tracking by ear.**~~ Partly settled: the ringing instruments stay as they were ("Natural"), with one extra way to sound next to it, "Fits the breath" (see "Ring length" in docs/HOW-IT-WORKS.md), plus an optional "Pulse through the whole breath" vibration. A gliding tone, a noise wave and a held "swell" were tried and removed (alarm-like, like breath into a microphone, and not working). Following the breath by sound alone with eyes closed is still not solved beyond Tone and the vibration.
 2. **Paid extras in Look.** More developed backgrounds (nicer wallpapers) and more elaborate dot designs, offered as a paid option later. Needs a plan for payment and for what stays free.
 3. **A personal "best pace" finder**, so someone doesn't have to discover by trial and error (as the owner did with box breathing) which pace suits them. Open questions: does the app recommend, or just record what was tried and let the person compare later? A pace that feels wrong on day one can turn out to be the best fit after a few days, so a single rating after one try isn't enough — any design needs to account for that.
 

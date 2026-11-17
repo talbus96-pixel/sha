@@ -69,13 +69,12 @@ manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed
 | Wim Hof safety check (`#safety`) | `openWimhof()` asks the safety question until it has been answered "none apply" `SAFETY_ASKS` (3) times. "One applies" sets `settings.wimhofCheck.blocked`, which greys the row out; tapping it shows an "ask me again" link (`askSafety()`). Closing without answering doesn't count. |
 | Wake lock, vibration, calm mode | As the names say. Switching apps pauses the session, because a web page can't keep accurate time in the background. |
 
-## Ring length: following the breath with eyes closed
-The ringing instruments (Bowl, Chime, Kalimba, Marimba, Harp) have a **Ring length** setting in the Sounds menu (`settings.ring`, hidden for Tone and Off). Three ways to sound, all in `audio.js`:
+## Ring length
+The ringing instruments (Bowl, Chime, Kalimba, Marimba, Harp) have a **Ring length** setting in the Sounds menu (`settings.ring`, hidden for Tone and Off). Two ways to sound, all in `audio.js`:
 - **Natural** (`natural`, the default): one note when a step starts, with its own long ring and the hall reverb. Exactly as the app always sounded.
 - **Fits the breath** (`breath`): each note lasts as long as its step. `bowl()`, `chime()` and `pluck()` take a `fit` (the step's seconds) and stretch their ring so the note reaches silence at 1.4 × the step; a short release (`noteDest()`) finishes exactly as the step ends, and `wetGate` fades the reverb out at the same moment (`gateForStep()`), so no tail runs into the next step. Stretched notes are made quieter (`FIT`), because they hold their energy longer.
-- **Swell** (`swell`): the same instrument's tones, held for the whole step by `swell()`. Loudness follows the lung level from `step.from` to `step.to`, on the same eased curve as the dot (`rampEased()`): it grows as you breathe in, stays on a hold, fades as you breathe out. The pitch never moves; only the notes differ between in, out and hold, as before. A soft low-pass keeps it gentle, and a faint detuned twin on the two lowest partials gives a slight shimmer.
-- `Sound.cue(kind, secs, from, to)` and `Sound.resume(kind, secsLeft, from, to)` take the step length and the lung levels (`app.js` passes `line.levelAt(session.clock)` when resuming mid-step). Steps with no known length (Wim Hof's open hold) and the quick power breaths always sound naturally.
-- Two earlier ideas were tried and removed because they sounded wrong: a gliding "alarm-like" tone and a noise "wave".
+- `Sound.cue(kind, secs)` takes the step length. Steps with no known length (Wim Hof's open hold) and the quick power breaths always sound naturally.
+- Three earlier ideas were tried and removed because they didn't work: a gliding "alarm-like" tone, a noise "wave", and a held "swell" (loudness following the breath).
 
 **Vibration:** the existing "Vibrate on each phase" is one tap per step. The extra switch "Pulse through the whole breath" (`settings.vibrateFollow`, shown only when vibration is on and supported) sends one pulse per second: breathing in = single pulses that get longer, breathing out = double pulses that get shorter, holds = still. `breathPulses(step)` in `app.js` builds the pattern; pausing or stopping calls `navigator.vibrate(0)`. Browsers on iPhone don't support vibration at all.
 
