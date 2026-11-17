@@ -31,14 +31,6 @@ const Programs = (() => {
             ],
             summary: p => secs(p.count)
         },
-        wimhof: {
-            controls: [
-                { key: 'breaths', label: 'control.breaths', min: 20, max: 50, step: 5 },
-                { key: 'rounds', label: 'control.rounds', min: 1, max: 5, step: 1 },
-                { key: 'pace', label: 'control.pace', options: [['slow', 'pace.slow'], ['medium', 'pace.medium'], ['fast', 'pace.fast']] }
-            ],
-            summary: p => t('roundsCount', { n: p.rounds })
-        },
         coherent: {
             controls: [
                 { key: 'seconds', label: 'control.eachSide', min: 4, max: 7, step: 0.5, unit: 'unit.s' }
@@ -57,6 +49,14 @@ const Programs = (() => {
                 const w = windDownTimes(p);
                 return `${fmt(w.inhale)}-${fmt(w.hold)}-${fmt(w.exhale)}`;
             }
+        },
+        wimhof: {
+            controls: [
+                { key: 'breaths', label: 'control.breaths', min: 20, max: 50, step: 5 },
+                { key: 'rounds', label: 'control.rounds', min: 1, max: 5, step: 1 },
+                { key: 'pace', label: 'control.pace', options: [['slow', 'pace.slow'], ['medium', 'pace.medium'], ['fast', 'pace.fast']] }
+            ],
+            summary: p => t('roundsCount', { n: p.rounds })
         }
     };
 
