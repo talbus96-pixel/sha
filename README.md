@@ -75,8 +75,8 @@ How the shape follows the timings:
 ## Sounds
 
 **Breathing cue**: the sound at each change of step:
-- **Bowl**: a Tibetan singing bowl. A higher note means breathe in, a lower note means breathe out, and a soft small "ting" means hold. The extra sip in cyclic sighing gets its own lighter note.
-- **Chime**: a soft, warm chime with a similar high/low pattern.
+- **Bowl**: a Tibetan singing bowl. A higher note means breathe in, a lower note means breathe out, and a soft small "ting" **between the two** means hold. The extra sip in cyclic sighing gets its own lighter note.
+- **Chime**: a soft, warm chime with the same pattern. Every instrument follows it: the breath out is the lowest note, the hold is a soft note in between, and the breath in is higher.
 - **Tone**: a continuous, gentle hum that swells and brightens as you breathe in and settles as you breathe out. It's good if you prefer to follow sound rather than look at the screen.
 - **Off**: silence.
 

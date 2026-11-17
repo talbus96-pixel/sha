@@ -177,13 +177,13 @@ const Sound = (() => {
     const PLUCKED = {
         // thumb piano: a pure, round tine with a quick glassy overtone
         kalimba: { partials: [[1, 1, 2.4], [5.4, 0.22, 0.4], [9.2, 0.07, 0.14]], attack: 0.003, tap: 0.05, level: 0.42,
-                   notes: { in: 587.33, top: 880, hold: 739.99, out: 440, retain: 293.66 } },      // D5 A5 F#5 A4 D4
+                   notes: { in: 587.33, top: 880, hold: 493.88, out: 440, retain: 293.66 } },      // D5 A5 B4 A4 D4
         // soft wooden bar: warm, short, with a hollow second tone
         marimba: { partials: [[1, 1, 1.1], [3.98, 0.32, 0.28], [9.8, 0.06, 0.07]], attack: 0.003, tap: 0.1, level: 0.45,
-                   notes: { in: 293.66, top: 440, hold: 369.99, out: 220, retain: 146.83 } },      // D4 A4 F#4 A3 D3
+                   notes: { in: 293.66, top: 440, hold: 246.94, out: 220, retain: 146.83 } },      // D4 A4 B3 A3 D3
         // harp string: a clean pluck that rings and fades
         harp: { partials: [[1, 1, 3.2], [2, 0.5, 2.1], [3, 0.28, 1.4], [4, 0.14, 0.9], [5, 0.06, 0.6]], attack: 0.004, tap: 0.07, level: 0.3,
-                notes: { in: 392, top: 587.33, hold: 493.88, out: 293.66, retain: 196 } }          // G4 D5 B4 D4 G3
+                notes: { in: 392, top: 587.33, hold: 329.63, out: 293.66, retain: 196 } }          // G4 D5 E4 D4 G3
     };
 
     function pluck(spec, freq, level, when = ctx.currentTime, decayScale = 1, fit = 0) {
@@ -342,8 +342,14 @@ const Sound = (() => {
         previewTimers = [];
     }
 
+    // Notes for each kind of step. Every instrument follows the same rule:
+    //   out (lowest of the three)  <  hold (in between)  <  in  <  top (the extra sip, higher still)
+    // and 'retain' (Wim Hof's hold on empty lungs) is the deepest note of all. The hold is a soft,
+    // short note that sits between the breath out and the breath in. All of an instrument's notes
+    // come from one family of notes that sound good together, so they never clash while one is
+    // still ringing under the next.
     // Notes and levels for each kind of step
-    const BOWL_NOTES = { in: 293.66, top: 392, hold: 440, out: 220, retain: 146.83 }; // D4 G4 A4 A3 D3
+    const BOWL_NOTES = { in: 293.66, top: 392, hold: 246.94, out: 220, retain: 146.83 }; // D4 G4 B3 A3 D3
     const CHIME_NOTES = { in: 659.25, top: 880, hold: 554.37, out: 440, retain: 329.63 }; // E5 A5 C#5 A4 E4
 
     // kind: 'in' | 'top' (extra sip in) | 'holdIn' | 'out' | 'holdOut' | 'retain' | 'powerIn' | 'powerOut'
