@@ -69,6 +69,9 @@ manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed
 | Wim Hof safety check (`#safety`) | `openWimhof()` asks the safety question until it has been answered "none apply" `SAFETY_ASKS` (3) times. "One applies" sets `settings.wimhofCheck.blocked`, which greys the row out; tapping it shows an "ask me again" link (`askSafety()`). Closing without answering doesn't count. |
 | Wake lock, vibration, calm mode | As the names say. Switching apps pauses the session, because a web page can't keep accurate time in the background. |
 
+## Which note means what
+Each ringing instrument has a small table of notes (`BOWL_NOTES`, `CHIME_NOTES`, and `notes` inside `PLUCKED` in `audio.js`) and every one follows the same rule: **out < hold < in < top**. The breath out is the lowest of the three, the hold is a soft, short note that sits *between* the breath out and the breath in, the breath in is higher, and the extra sip of cyclic sighing (`top`) is higher still. `retain` (Wim Hof's hold on empty lungs) is the deepest note. The hold is the same note whether the lungs are full or empty. An instrument's notes all come from one family of notes that sound good together (for example D, A, B and G for the bowl), so they never clash while one is still ringing under the next. If you change a note, keep the rule.
+
 ## Ring length
 The ringing instruments (Bowl, Chime, Kalimba, Marimba, Harp) have a **Ring length** setting in the Sounds menu (`settings.ring`, hidden for Tone and Off). Two ways to sound, all in `audio.js`:
 - **Natural** (`natural`, the default): one note when a step starts, with its own long ring and the hall reverb. Exactly as the app always sounded.
