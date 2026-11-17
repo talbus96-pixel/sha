@@ -36,7 +36,7 @@
         minutes: 5,
         visual: 'shape',             // shape | wave
         cue: 'bowl',
-        ring: 'natural',             // how long the ringing cues sound: natural | breath | swell
+        ring: 'natural',             // how long the ringing cues sound: natural | breath
         cueVolume: 0.8,
         ambient: Object.fromEntries(AMBIENTS.map(a => [a.id, { on: false, level: 0.6 }])),
         theme: 'lagoon',             // default light theme
@@ -66,7 +66,7 @@
     // doesn't fit (an old technique that no longer exists, a damaged entry) is dropped on load.
     const MAX_PRACTICES = 5;
     const CUE_STYLES = ['bowl', 'chime', 'kalimba', 'marimba', 'harp', 'tone', 'off'];
-    const RING_STYLES = ['natural', 'breath', 'swell'];
+    const RING_STYLES = ['natural', 'breath'];
     function validPractice(p) {
         if (!p || typeof p !== 'object' || !CUE_STYLES.includes(p.cue) || !Number.isFinite(p.minutes)) return false;
         if (!p.ambient || typeof p.ambient !== 'object') return false;
@@ -293,7 +293,7 @@
         session.state = session.resumeTo || 'running';
         const s = session.step;
         if (session.state === 'running' && s) {
-            Sound.resume(s.cueKind, isFinite(s.secs) ? s.start + s.secs - session.clock : 1, line.levelAt(session.clock), s.to);
+            Sound.resume(s.cueKind, isFinite(s.secs) ? s.start + s.secs - session.clock : 1);
         }
         afterResume();
     }
@@ -349,7 +349,7 @@
 
     function onStepStart(step) {
         const cueKind = step.cueKind;
-        Sound.cue(cueKind, isFinite(step.secs) ? step.secs : 1, step.from, step.to);
+        Sound.cue(cueKind, isFinite(step.secs) ? step.secs : 1);
         vibrate(step);
         nextBtn.hidden = !step.open;
     }

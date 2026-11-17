@@ -83,7 +83,6 @@ How the shape follows the timings:
 **Ring length** (for Bowl, Chime, Kalimba, Marimba and Harp): how long each sound lasts.
 - **Natural**: each sound rings and fades by itself, as it always has.
 - **Fits the breath**: each sound lasts exactly as long as the step and fades out as it ends, with the echo cut off too, so it never runs into the next one.
-- **Swell**: the sound is held through the whole step. It grows as you breathe in, stays on a hold and fades as you breathe out, so you can follow your breath by ear with your eyes closed.
 
 All cues are created live by the app, with a soft "room" echo added.
 

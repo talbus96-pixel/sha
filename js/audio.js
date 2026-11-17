@@ -21,9 +21,8 @@ const Sound = (() => {
     const ambient = {};      // id -> { on, level, voice: {src, gain} | null, loading }
     const bufferCache = {};  // id -> Promise<AudioBuffer>
     let tone = null;         // continuous breath-tone voice
-    let ring = 'natural';    // how long the ringing instruments sound: natural | breath | swell
+    let ring = 'natural';    // how long the ringing instruments sound: natural | breath
     let wetGate;             // lets the reverb be cut off exactly when a step ends ("breath" mode)
-    let swellVoice = null;   // the held note of the current step ("swell" mode)
     let previewTimers = [];
 
     // ---------- setup ----------
@@ -302,12 +301,10 @@ const Sound = (() => {
     }
 
     // ---------- ring length ----------
-    // The ringing instruments can sound in three ways (the "Ring length" setting):
+    // The ringing instruments can sound in two ways (the "Ring length" setting):
     //   natural = each note rings and fades by itself, as it always has
     //   breath  = each note is shaped to last exactly as long as its step, and the reverb is cut off
     //             at the end of the step, so nothing runs into the next one
-    //   swell   = each note is held for the whole step; it gets louder as you breathe in and softer
-    //             as you breathe out (the pitch never moves)
     const FIT = 1.4;   // in "breath" mode a note reaches silence at 1.4 x the step, so it is already very faint by the end
 
     // Where a note is sent. In "breath" mode it passes through a short release that finishes exactly as the step ends.
@@ -340,78 +337,6 @@ const Sound = (() => {
         }
     }
 
-    const easeInOutSine = x => -(Math.cos(Math.PI * x) - 1) / 2;
-
-    // Moves a parameter from a to b over `secs` seconds, easing in and out the same way the dot does.
-    function rampEased(param, a, b, t0, secs) {
-        const N = 12;
-        for (let i = 1; i <= N; i++) {
-            const x = i / N;
-            param.linearRampToValueAtTime(a + (b - a) * easeInOutSine(x), t0 + secs * x);
-        }
-    }
-
-    // The same instruments' own tones, made able to be held.
-    function swellRecipe(style) {
-        if (style === 'bowl') return { partials: [[1, 1], [2.71, 0.42], [5.12, 0.2], [8.3, 0.09], [12.2, 0.04]], level: 0.16, notes: BOWL_NOTES };
-        if (style === 'chime') return { partials: [[1, 1], [2, 0.18], [4.01, 0.08]], level: 0.2, notes: CHIME_NOTES };
-        const spec = PLUCKED[style];
-        return { partials: spec.partials.map(([ratio, amp]) => [ratio, amp]), level: spec.level * (style === 'marimba' ? 0.35 : 0.55), notes: spec.notes };
-    }
-
-    // One held note for a step. Its loudness goes from the lung level `from` to `to`, like the dot.
-    function swell(kind, seconds, from, to) {
-        if (!Number.isFinite(from)) from = 0;
-        if (!Number.isFinite(to)) to = from;
-        const r = swellRecipe(cueStyle);
-        const n = r.notes;
-        const freq = { in: n.in, top: n.top, holdIn: n.hold, holdOut: n.hold, out: n.out, retain: n.retain }[kind] || n.in;
-        const t = ctx.currentTime;
-        const gainAt = L => r.level * (0.2 + 0.8 * L);   // never silent, so there is always something to follow
-
-        const env = ctx.createGain();
-        env.gain.setValueAtTime(0.0001, t);
-        env.gain.linearRampToValueAtTime(gainAt(from), t + 0.3);          // soft start
-        if (Math.abs(to - from) > 0.001 && seconds > 0.6) rampEased(env.gain, gainAt(from), gainAt(to), t + 0.3, seconds - 0.3);
-        env.gain.setValueAtTime(gainAt(to), t + seconds);
-        env.gain.linearRampToValueAtTime(0.0001, t + seconds + 0.6);      // gentle release into the next step
-        const filter = ctx.createBiquadFilter();                          // keeps the held tone soft
-        filter.type = 'lowpass';
-        filter.frequency.value = 1800;
-        filter.Q.value = 0.4;
-        filter.connect(env);
-        env.connect(cueBus);
-
-        const oscs = [];
-        r.partials.forEach(([ratio, amp], k) => {
-            // the two lowest partials get a quiet, slightly detuned twin: a faint shimmer that
-            // never gets loud enough to be mistaken for the swell of the breath
-            (k < 2 ? [[0, 1], [0.4, 0.25]] : [[0, 1]]).forEach(([offset, weight]) => {
-                const osc = ctx.createOscillator();
-                osc.frequency.value = freq * ratio + offset;
-                const g = ctx.createGain();
-                g.gain.value = amp * weight;
-                osc.connect(g);
-                g.connect(filter);
-                osc.start(t);
-                osc.stop(t + seconds + 0.7);
-                oscs.push(osc);
-            });
-        });
-        setTimeout(() => { filter.disconnect(); env.disconnect(); }, (seconds + 1.2) * 1000);
-        swellVoice = { env, oscs };
-    }
-
-    function silenceSwell(fade = 0.4) {
-        if (!swellVoice) return;
-        const v = swellVoice;
-        swellVoice = null;
-        const t = ctx.currentTime;
-        holdParam(v.env.gain, t);
-        v.env.gain.linearRampToValueAtTime(0.0001, t + fade);
-        v.oscs.forEach(o => { try { o.stop(t + fade + 0.05); } catch (e) {} });
-    }
-
     function clearPreview() {
         previewTimers.forEach(clearTimeout);
         previewTimers = [];
@@ -422,13 +347,12 @@ const Sound = (() => {
     const CHIME_NOTES = { in: 659.25, top: 880, hold: 554.37, out: 440, retain: 329.63 }; // E5 A5 C#5 A4 E4
 
     // kind: 'in' | 'top' (extra sip in) | 'holdIn' | 'out' | 'holdOut' | 'retain' | 'powerIn' | 'powerOut'
-    // seconds: how long the step lasts. from / to: the lung level (0 = empty, 1 = full) at its start and end.
-    function cue(kind, seconds, from, to) {
+    // seconds: how long the step lasts.
+    function cue(kind, seconds) {
         if (!ctx || cueStyle === 'off') return;
         if (cueStyle === 'tone') { shapeTone(kind, seconds); return; }
         // Steps with no known length (Wim Hof's open breath hold) and the quick power breaths always sound naturally.
         const timed = kind !== 'powerIn' && kind !== 'powerOut' && kind !== 'retain' && Number.isFinite(seconds) && seconds >= 1;
-        if (ring === 'swell' && timed) { swell(kind, seconds, from, to); return; }
         const fit = ring === 'breath' && timed ? seconds : 0;
         if (ring === 'breath') gateForStep(fit);
         const now = ctx.currentTime;
@@ -463,19 +387,13 @@ const Sound = (() => {
     }
 
     // Called when a paused session continues mid-step.
-    // from: the lung level right now. to: the level this step ends at.
-    function resume(kind, secondsLeft, from, to) {
-        if (!ctx) return;
-        if (cueStyle === 'tone') shapeTone(kind, Math.max(0.5, secondsLeft));
-        else if (ring === 'swell' && cueStyle !== 'off' && kind !== 'powerIn' && kind !== 'powerOut' && kind !== 'retain' && secondsLeft >= 1) {
-            swell(kind, secondsLeft, from, to);
-        }
+    function resume(kind, secondsLeft) {
+        if (ctx && cueStyle === 'tone') shapeTone(kind, Math.max(0.5, secondsLeft));
     }
 
     function pause() {
         clearPreview();
         silenceTone();
-        silenceSwell();
         openGate();
     }
 
@@ -483,7 +401,6 @@ const Sound = (() => {
         if (!ctx) return;
         clearPreview();
         silenceTone(3);
-        silenceSwell(1.5);
         openGate();
         if (cueStyle === 'off') return;
         const t = ctx.currentTime;
@@ -491,11 +408,10 @@ const Sound = (() => {
         bowl(293.66, 0.6, t + 1.9);
     }
 
-    // A short sample of the current cue style and ring length: one breath in (and out, for swell).
+    // A short sample of the current cue style and ring length.
     function preview(style) {
         ensure();
         clearPreview();
-        silenceSwell(0.1);
         if (style === 'tone') {
             silenceTone(0.1);
             shapeTone('in', 2.5);
@@ -503,11 +419,6 @@ const Sound = (() => {
             return;
         }
         if (style === 'off') return;
-        if (ring === 'swell') {
-            swell('in', 2.5, 0, 1);
-            previewTimers.push(setTimeout(() => { if (cueStyle === style) swell('out', 2.5, 1, 0); }, 2500));
-            return;
-        }
         const fit = ring === 'breath' ? 4 : 0;   // a sample as if the step lasted 4 seconds
         if (ring === 'breath') gateForStep(fit); else openGate();
         const now = ctx.currentTime;
@@ -519,14 +430,12 @@ const Sound = (() => {
     function setCueStyle(style) {
         if (style !== 'tone') silenceTone();
         clearPreview();
-        silenceSwell(0.2);
         cueStyle = style;
     }
 
     function setRing(mode) {
         ring = mode;
         clearPreview();
-        silenceSwell(0.2);
         openGate();
     }
 
