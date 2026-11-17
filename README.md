@@ -48,7 +48,7 @@ The main screen is kept minimal:
   - the time left and how many breaths you've taken
 - **Calm mode:** while you breathe, the buttons fade away after 4 seconds. Touch the screen to bring them back.
 - **First visit:** a small welcome offers a one-minute practice with a single instruction. The full guided tour is one tap below it, and can be reopened from the menu.
-- **My practices:** under Breathing → Techniques, **Repeat last practice** and up to five saved practices (method, pace, length and sounds) start in one tap.
+- **My practices:** the first tab of the Breathing sheet (far left in English, far right in Hebrew), with Techniques in the middle and Custom on the other side. Under Breathing → Techniques, **Repeat last practice** and up to five saved practices (method, pace, length and sounds) start in one tap.
 - **Notice your surroundings:** a short exercise with no breathing to follow, for moments when focusing on the breath doesn't feel right. It's in the technique list, and a small link under the controls during a session pauses it and opens the exercise.
 - **Finished screen:** when time is up, the app waits for your last breath out, rings a soft closing bell, and shows your time and number of breaths.
 
