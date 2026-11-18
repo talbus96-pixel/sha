@@ -90,7 +90,7 @@ All cues are created live by the app, with a soft "room" echo added.
 
 Choose sounds in ☰ Menu → **Sounds** — or tap the 🔊 button at the top, which opens straight to this menu. A prominent **Mute all sounds** switch sits right at the top of it. Ambient sounds you switch on are added to your mix and play automatically during a breathing session, the same as always; they don't start playing on their own just because you picked them. If you want one playing right now, with or without a session, switch on **Keep playing in the background**, underneath the ambience tiles.
 
-In Wim Hof's quick breathing, the cue on each breath in is only a soft tick, because a full bell every 2 seconds would be too much. Each breath out has a soft, warm note an octave lower (A4 under the A5 tick), which the **Out tone** button (bottom corner of the breathing area, Wim Hof only) switches on or off. A deep bowl marks the start of the breath hold.
+In Wim Hof's quick breathing, the cue on each breath in is only a soft tick, because a full bell every 2 seconds would be too much. Each breath out has a soft, warm note an octave lower (A4 under the A5 tick) that swells in and fades over the breath out, without reverb, so it never sounds like a thud, which the **Out tone** button (bottom corner of the breathing area, Wim Hof only) switches on or off. A deep bowl marks the start of the breath hold.
 
 ## The menu
 

@@ -353,29 +353,35 @@ const Sound = (() => {
     const CHIME_NOTES = { in: 659.25, top: 880, hold: 554.37, out: 440, retain: 329.63 }; // E5 A5 C#5 A4 E4
 
     // Wim Hof's quick breaths: a soft, warm note on every breath out, which the person can switch
-    // off (the button on the main screen). It is A4, exactly one octave below the breath in's light
-    // tick (A5), so the two always sound good together and the breath out is clearly the lower one.
-    // A gentle attack (no mallet click) and a short fade keep it calm even at a fast pace.
+    // off (the button on the main screen). It is A4, one octave below the breath in's light tick
+    // (A5), so the two always sound good together and the breath out is clearly the lower one.
+    // A short note that starts with a hit and rings into the hall reverb sounds like a "boom", so
+    // this one is shaped like a breath instead: it swells in gently, lasts as long as the breath
+    // out itself and fades away by the end, and it skips the reverb, which only muddies a low note.
+    // A slightly detuned twin gives it a soft shimmer, and two quiet overtones keep it clear on a
+    // phone speaker.
     let lowExhale = true;
-    function lowTick(when = ctx.currentTime) {
+    function lowTick(seconds = 1.2, when = ctx.currentTime) {
+        const len = Math.min(2, Math.max(0.5, seconds * 0.95));
+        const peak = when + len * 0.35;
         const out = ctx.createGain();
-        out.gain.value = 0.16;
-        out.connect(cueBus);
-        // [ratio, amplitude, fade seconds]: a round fundamental, a faint octave and a whisper of the fifth above it
-        [[1, 1, 1.6], [2, 0.12, 0.7], [3, 0.03, 0.35]].forEach(([ratio, amp, dec]) => {
+        out.gain.setValueAtTime(0.0001, when);
+        out.gain.linearRampToValueAtTime(0.13 * cueLevel, peak);
+        out.gain.exponentialRampToValueAtTime(0.0001, when + len);
+        out.connect(master);   // dry: no reverb tail
+        // [ratio, amplitude]
+        [[1, 1], [1.004, 0.45], [2, 0.22], [3, 0.06]].forEach(([ratio, amp]) => {
             const osc = ctx.createOscillator();
             osc.type = 'sine';
             osc.frequency.value = CHIME_NOTES.out * ratio;
             const g = ctx.createGain();
-            g.gain.setValueAtTime(0, when);
-            g.gain.linearRampToValueAtTime(amp, when + 0.03);
-            g.gain.exponentialRampToValueAtTime(0.0001, when + dec);
+            g.gain.value = amp;
             osc.connect(g);
             g.connect(out);
             osc.start(when);
-            osc.stop(when + dec + 0.05);
+            osc.stop(when + len + 0.05);
         });
-        setTimeout(() => out.disconnect(), (when - ctx.currentTime + 2.5) * 1000);
+        setTimeout(() => out.disconnect(), (when - ctx.currentTime + len + 0.5) * 1000);
     }
 
     function setLowExhale(on) { lowExhale = !!on; }
@@ -393,7 +399,7 @@ const Sound = (() => {
         if (!ctx || cueStyle === 'off') return;
         if (cueStyle === 'tone') { shapeTone(kind, seconds); return; }
         if (kind === 'powerOut') {
-            if (lowExhale) lowTick();
+            if (lowExhale) lowTick(seconds);
             return;
         }
         // Steps with no known length (Wim Hof's open breath hold) and the quick power breaths always sound naturally.
