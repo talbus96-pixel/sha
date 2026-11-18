@@ -76,7 +76,7 @@ Each ringing instrument has a small table of notes (`BOWL_NOTES`, `CHIME_NOTES`,
 The ringing instruments (Bowl, Chime, Kalimba, Marimba, Harp) have a **Ring length** setting in the Sounds menu (`settings.ring`, hidden for Tone and Off). Two ways to sound, all in `audio.js`:
 - **Natural** (`natural`, the default): one note when a step starts, with its own long ring and the hall reverb. Exactly as the app always sounded.
 - **Fits the breath** (`breath`): each note lasts as long as its step. `bowl()`, `chime()` and `pluck()` take a `fit` (the step's seconds) and stretch their ring so the note reaches silence at 1.4 × the step; a short release (`noteDest()`) finishes exactly as the step ends, and `wetGate` fades the reverb out at the same moment (`gateForStep()`), so no tail runs into the next step. Stretched notes are made quieter (`FIT`), because they hold their energy longer.
-- `Sound.setLowExhale(on)` turns Wim Hof's low breath-out thump (`lowTick()`, sent for `powerOut`) on or off; it is the `settings.wimhofExhale` switch, the "Out tone" button on the main screen.
+- `Sound.setLowExhale(on)` turns Wim Hof's breath-out note (`lowTick()`, A4, an octave under the breath-in tick, sent for `powerOut`) on or off; it is the `settings.wimhofExhale` switch, the "Out tone" button on the main screen.
 - `Sound.cue(kind, secs)` takes the step length. Steps with no known length (Wim Hof's open hold) and the quick power breaths always sound naturally.
 - Three earlier ideas were tried and removed because they didn't work: a gliding "alarm-like" tone, a noise "wave", and a held "swell" (loudness following the breath).
 

@@ -352,29 +352,30 @@ const Sound = (() => {
     const BOWL_NOTES = { in: 293.66, top: 392, hold: 246.94, out: 220, retain: 146.83 }; // D4 G4 B3 A3 D3
     const CHIME_NOTES = { in: 659.25, top: 880, hold: 554.37, out: 440, retain: 329.63 }; // E5 A5 C#5 A4 E4
 
-    // Wim Hof's quick breaths: a soft, low "thump" on every breath out, which the person can switch
-    // off (the button on the main screen). The breath in keeps its light chime tick. The second
-    // harmonic is what lets a phone speaker, which can't play very low notes, still be heard.
+    // Wim Hof's quick breaths: a soft, warm note on every breath out, which the person can switch
+    // off (the button on the main screen). It is A4, exactly one octave below the breath in's light
+    // tick (A5), so the two always sound good together and the breath out is clearly the lower one.
+    // A gentle attack (no mallet click) and a short fade keep it calm even at a fast pace.
     let lowExhale = true;
     function lowTick(when = ctx.currentTime) {
         const out = ctx.createGain();
-        out.gain.value = 0.55;
+        out.gain.value = 0.16;
         out.connect(cueBus);
-        [[1, 1], [2, 0.4]].forEach(([ratio, amp]) => {
+        // [ratio, amplitude, fade seconds]: a round fundamental, a faint octave and a whisper of the fifth above it
+        [[1, 1, 1.6], [2, 0.12, 0.7], [3, 0.03, 0.35]].forEach(([ratio, amp, dec]) => {
             const osc = ctx.createOscillator();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(150 * ratio, when);
-            osc.frequency.exponentialRampToValueAtTime(98 * ratio, when + 0.28);
+            osc.frequency.value = CHIME_NOTES.out * ratio;
             const g = ctx.createGain();
             g.gain.setValueAtTime(0, when);
-            g.gain.linearRampToValueAtTime(amp, when + 0.02);
-            g.gain.exponentialRampToValueAtTime(0.0001, when + 0.45);
+            g.gain.linearRampToValueAtTime(amp, when + 0.03);
+            g.gain.exponentialRampToValueAtTime(0.0001, when + dec);
             osc.connect(g);
             g.connect(out);
             osc.start(when);
-            osc.stop(when + 0.5);
+            osc.stop(when + dec + 0.05);
         });
-        setTimeout(() => out.disconnect(), (when - ctx.currentTime + 1.5) * 1000);
+        setTimeout(() => out.disconnect(), (when - ctx.currentTime + 2.5) * 1000);
     }
 
     function setLowExhale(on) { lowExhale = !!on; }
