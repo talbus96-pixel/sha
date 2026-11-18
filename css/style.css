@@ -316,6 +316,34 @@ body.zen .fade-ui { opacity: 0; pointer-events: none; }
     animation: fade-in 0.4s ease;
 }
 
+/* Wim Hof: switch for the low sound on each breath out, in the bottom corner of the stage (level with the shape/wave switch) */
+.tone-toggle {
+    position: absolute;
+    bottom: 2px;
+    inset-inline-end: 10px;
+    z-index: 2;
+    min-width: 56px;
+    padding: 7px 8px 6px;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    background: var(--surface);
+    color: var(--muted);
+    border: 1px solid transparent;
+    font-size: 0.64rem;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+}
+.tone-toggle svg { width: 22px; height: 22px; }
+.tone-toggle[aria-pressed="true"] {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+}
+.tone-toggle[aria-pressed="true"] .slash { display: none; }
+
 /* ---------- Dock ---------- */
 .dock {
     display: flex;

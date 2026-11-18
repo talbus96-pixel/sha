@@ -60,7 +60,7 @@ Tap the technique name at the bottom → **Techniques**. **Cyclic sighing** is m
 |---|---|---|
 | **Cyclic sighing** | Breathe in through the nose, take a short extra sip of air to fill the lungs, then a long, slow breath out. In a 2023 Stanford study, 5 minutes a day lifted mood more than meditation. | Pace: Quick (1.5 + 0.5 · 4 s), Steady (2 + 1 · 6 s), Slow (3 + 1 · 8 s) or Deep (4 + 1 · 10 s). The breath out is always twice the breaths in, so it can't be set up wrong. |
 | **Box breathing** | Breathe in, hold, breathe out, hold, all the same length. Used to stay calm and focused under pressure. | The length of each side |
-| **Wim Hof** | Rounds of quick, deep breaths, then a hold on empty lungs (you tap **Breathe in** when you need air), then a 15-second recovery hold. Includes a safety note, and the first 3 times you open it, a short safety question (pregnancy, epilepsy, heart problems, high blood pressure, fainting). Answering that one applies greys Wim Hof out; a small "ask me again" link under it unlocks it later. Your hold times are shown at the end. | Breaths per round, number of rounds, pace |
+| **Wim Hof** | Rounds of quick, deep breaths, then a hold on empty lungs (you tap anywhere on the breathing area, or the **Out of air? Tap to breathe in** button, the moment you need air), then a deep breath in and a 15-second recovery hold. While you wait, the shape view keeps gliding the dot with a soft ring, and the wave view rolls gentle swells and previews the breath in to come. Includes a safety note, and the first 3 times you open it, a short safety question (pregnancy, epilepsy, heart problems, high blood pressure, fainting). Answering that one applies greys Wim Hof out; a small "ask me again" link under it unlocks it later. Your hold times are shown at the end. | Breaths per round, number of rounds, pace |
 
 ## Custom patterns
 
@@ -90,7 +90,7 @@ All cues are created live by the app, with a soft "room" echo added.
 
 Choose sounds in ☰ Menu → **Sounds** — or tap the 🔊 button at the top, which opens straight to this menu. A prominent **Mute all sounds** switch sits right at the top of it. Ambient sounds you switch on are added to your mix and play automatically during a breathing session, the same as always; they don't start playing on their own just because you picked them. If you want one playing right now, with or without a session, switch on **Keep playing in the background**, underneath the ambience tiles.
 
-In Wim Hof's quick breathing, the cue is only a soft tick, because a full bell every 2 seconds would be too much. A deep bowl marks the start of the breath hold.
+In Wim Hof's quick breathing, the cue on each breath in is only a soft tick, because a full bell every 2 seconds would be too much. Each breath out has a soft, low thump, which the **Out tone** button (bottom corner of the breathing area, Wim Hof only) switches on or off. A deep bowl marks the start of the breath hold.
 
 ## The menu
 

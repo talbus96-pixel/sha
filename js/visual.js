@@ -69,7 +69,8 @@ const Visual = (() => {
     }
 
     // activeEdge: the side to highlight, or -1 for none
-    function drawShape(ctx, box, shape, activeEdge, dot, trail, lineWidth = 3) {
+    // pulse: 0..1 while waiting on an open-ended hold, a ring spreads out from the dot so it never feels still
+    function drawShape(ctx, box, shape, activeEdge, dot, trail, pulse, lineWidth = 3) {
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.lineWidth = lineWidth;
@@ -104,6 +105,14 @@ const Visual = (() => {
                 ctx.fillStyle = withAlpha(colors.ball, 0.28 * a);
                 ctx.fill();
             });
+        }
+        if (dot && pulse != null) {
+            const r = lineWidth > 2 ? 9 : 6;
+            ctx.beginPath();
+            ctx.arc(dot[0], dot[1], r + pulse * r * 3.4, 0, Math.PI * 2);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = withAlpha(colors.ball, 0.45 * (1 - pulse));
+            ctx.stroke();
         }
         if (dot) drawDot(ctx, dot[0], dot[1], lineWidth > 2 ? 9 : 6);
     }

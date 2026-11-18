@@ -30,6 +30,7 @@
         sigh: { pace: 'steady' },
         box: { count: 4 },
         wimhof: { breaths: 30, rounds: 3, pace: 'medium' },
+        wimhofExhale: true,          // Wim Hof: a low sound on each quick breath out (button on the main screen)
         coherent: { seconds: 5.5 },
         windDown: { pace: 'steady' },
         custom: { pattern: [4, 7, 8, 0] },
@@ -154,12 +155,19 @@
         rafId: 0
     };
 
+    // Wim Hof's wait on empty lungs: when it began and (once the person taps) ended, so the wave
+    // view can show gentle swells instead of a flat line, and the dot can glide back to the next step.
+    let holdSpan = null;   // { start, end (Infinity while waiting), tapLevel }
+    let dotBlend = null;   // { from: [x, y], at: clock } after a tap, the dot eases to where the breath in begins
+    let lastDot = null;
+
     function rebuildProgram() {
         program = Programs.build(settings);
         line = Programs.timeline(program);
         session.clock = 0;
         session.step = null;
         session.trail = [];
+        holdSpan = dotBlend = null;
         updateChip();
         if (session.state === 'idle') drawIdle();
         else render();
@@ -184,23 +192,63 @@
         if (!step) return;
         const at = session.state === 'prepare' || !session.step ? 0 : session.clock;
         if (settings.visual === 'wave') {
-            Visual.drawWave(ctx, box, line.levelAt, at, waveWindow());
+            Visual.drawWave(ctx, box, waveLevel, at, waveWindow());
         } else {
             const prog = session.step ? line.progress(step, session.clock) : 0;
-            const dot = Visual.shapePoint(step, openHoldProgress(step) ?? prog, box);
+            let dot = Visual.shapePoint(step, openHoldProgress(step) ?? prog, box);
+            // just after a tap the dot eases from where it was to where the breath in begins
+            if (dotBlend && lastDot) {
+                const k = (session.clock - dotBlend.at) / BLEND_SECONDS;
+                if (k >= 1 || k < 0) dotBlend = null;
+                else {
+                    const e = smoothstep(k);
+                    dot = [dotBlend.from[0] + (dot[0] - dotBlend.from[0]) * e, dotBlend.from[1] + (dot[1] - dotBlend.from[1]) * e];
+                }
+            }
+            lastDot = dot;
             if (session.state === 'running') {
                 session.trail.push(dot);
                 if (session.trail.length > TRAIL_LENGTH) session.trail.shift();
             }
-            Visual.drawShape(ctx, box, step.shape, session.step ? step.edge : -1, dot, session.trail);
+            const waiting = openHoldActive(step);
+            const pulse = waiting ? ((session.clock - step.start) % PULSE_SECONDS) / PULSE_SECONDS : null;
+            Visual.drawShape(ctx, box, step.shape, session.step ? step.edge : -1, dot, session.trail, pulse);
         }
     }
 
-    // An open-ended hold has no known end, so the dot creeps along ever more slowly.
+    const smoothstep = x => { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
+    const easeSine = x => -(Math.cos(Math.PI * x) - 1) / 2;
+    const BLEND_SECONDS = 0.7;
+    const PULSE_SECONDS = 2.4;     // how often a ring spreads out from the dot while waiting
+    const HOLD_SWEEP = 12;         // seconds for the dot to cross the waiting edge, then it glides back
+    const SWELL_SECONDS = 3.6;     // length of one gentle swell in the wave view while waiting
+    const SWELL_SIZE = 0.07;       // how high the swells rise (1 = a full breath)
+    const PREVIEW_AHEAD = 3.5;     // seconds ahead of the dot where the wave shows the breath in to come
+
+    // true while a Wim Hof wait is running (the hold on empty lungs, before the tap)
+    const openHoldActive = step => !!(step && step.open && !isFinite(step.secs) && session.step === step);
+
+    // An open-ended hold has no known end, so the dot glides along the edge at an even pace and
+    // back again, easing at each end. It always moves, so the wait never feels stuck.
     function openHoldProgress(step) {
-        if (!step.open || !session.step) return null;
+        if (!openHoldActive(step)) return null;
         const held = session.clock - step.start;
-        return held / (held + 45);
+        return 0.5 - 0.5 * Math.cos(Math.PI * held / HOLD_SWEEP);
+    }
+
+    // Wave view of lung level over time. During the wait on empty lungs the line rolls in slow,
+    // low swells, and ahead of the dot it shows the deep breath in that comes after the tap.
+    const swell = x => SWELL_SIZE * (1 - Math.cos(2 * Math.PI * x / SWELL_SECONDS));
+    function waveLevel(tt) {
+        const h = holdSpan;
+        if (!h || tt < h.start) return line.levelAt(tt);
+        if (!isFinite(h.end)) {
+            const p0 = session.clock + PREVIEW_AHEAD;
+            if (tt >= p0) return easeSine(Math.min(1, (tt - p0) / 2));
+            return swell(tt - h.start) * (tt > session.clock ? smoothstep((p0 - tt) / 1.2) : 1);
+        }
+        if (tt <= h.end) return swell(tt - h.start);
+        return line.levelAt(tt) + h.tapLevel * (1 - smoothstep((tt - h.end) / 0.7));
     }
 
     function waveWindow() {
@@ -259,6 +307,7 @@
     function start(opts) {
         Sound.ensure();
         line = Programs.timeline(program);
+        holdSpan = dotBlend = null;
         Object.assign(session, {
             state: settings.prepare ? 'prepare' : 'running',
             time: 0, clock: 0, prep: PREPARE_SECONDS, step: null, breaths: 0, holds: [], trail: [],
@@ -327,6 +376,7 @@
         document.body.classList.remove('running');
         showUI();
         line = Programs.timeline(program);
+        holdSpan = dotBlend = null;
         drawIdle();
         if (wasActive && (completed || time >= 30)) {
             Stats.add({ tech: settings.technique, secs: time, breaths, holds, detail: techDetail(), start: startedAt });
@@ -352,6 +402,7 @@
         Sound.cue(cueKind, isFinite(step.secs) ? step.secs : 1);
         vibrate(step);
         nextBtn.hidden = !step.open;
+        if (step.open) holdSpan = { start: step.start, end: Infinity, tapLevel: 0 };
     }
 
     function tick(now) {
@@ -395,6 +446,11 @@
     function endOpenHold() {
         const s = session.step;
         if (!s || !s.open || session.state !== 'running') return;
+        if (holdSpan) {
+            holdSpan.end = session.clock;
+            holdSpan.tapLevel = swell(session.clock - holdSpan.start);
+        }
+        if (lastDot) dotBlend = { from: lastDot, at: session.clock };
         line.close(s, session.clock);
         session.holds.push(s.secs);
         nextBtn.hidden = true;
@@ -408,6 +464,12 @@
 
     stopBtn.addEventListener('click', () => stop(false));
     nextBtn.addEventListener('click', endOpenHold);
+    // While holding on empty lungs, a tap anywhere on the breathing area means "I need air": the
+    // breath in starts at once, followed by the 15-second hold. (Taps on buttons keep their own job.)
+    $('stage').addEventListener('click', e => {
+        if (e.target.closest('button')) return;
+        endOpenHold();
+    });
     $('btn-done').addEventListener('click', () => { $('complete').hidden = true; });
 
     // Switching apps or locking the phone pauses the session (the timing can't run in the background).
@@ -665,6 +727,7 @@
             $('pattern-nums').textContent = T[tech].summary(settings[tech]);
         }
         const wim = tech === 'wimhof';
+        $('btn-exhale-tone').hidden = !wim;
         $('length-value').textContent = wim ? settings.wimhof.rounds : (settings.minutes > 0 ? settings.minutes : '∞');
         $('length-label').textContent = wim ? t('rounds', { n: settings.wimhof.rounds }) : t(settings.minutes > 0 ? 'unit.min' : 'unit.open');
     }
@@ -1108,7 +1171,7 @@
         const prev = $('shape-preview');
         const { ctx, w, h } = Visual.fit(prev);
         const cycle = Programs.build({ ...settings, technique: 'custom' }).cycle;
-        Visual.drawShape(ctx, { x: 0, y: 6, w, h: h - 12 }, cycle[0].shape, -1, null, null, 2.5);
+        Visual.drawShape(ctx, { x: 0, y: 6, w, h: h - 12 }, cycle[0].shape, -1, null, null, null, 2.5);
     }
 
     // ---------- sounds sheet ----------
@@ -1317,6 +1380,19 @@
     });
     renderViewToggle();
 
+    // Wim Hof: the low sound on each quick breath out, on or off
+    function renderExhaleTone() {
+        $('btn-exhale-tone').setAttribute('aria-pressed', String(settings.wimhofExhale));
+    }
+    $('btn-exhale-tone').addEventListener('click', () => {
+        settings.wimhofExhale = !settings.wimhofExhale;
+        Sound.setLowExhale(settings.wimhofExhale);
+        saveSettings();
+        renderExhaleTone();
+        if (settings.wimhofExhale) Sound.previewLowExhale();   // a sample, so you hear what you switched on
+    });
+    renderExhaleTone();
+
     // Calm mode fades out everything marked .fade-ui; #session-meta carries that class only
     // when the person has chosen to hide the time, so it can be excluded on its own.
     function applyZenShowTime() {
@@ -1512,6 +1588,7 @@
     Sound.setCueStyle(settings.cue);
     Sound.setRing(settings.ring);
     Sound.setCueLevel(settings.cueVolume);
+    Sound.setLowExhale(settings.wimhofExhale);
     AMBIENTS.forEach(a => {
         const s = settings.ambient[a.id];
         if (s.on) Sound.setAmbient(a.id, true, s.level);

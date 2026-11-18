@@ -352,11 +352,49 @@ const Sound = (() => {
     const BOWL_NOTES = { in: 293.66, top: 392, hold: 246.94, out: 220, retain: 146.83 }; // D4 G4 B3 A3 D3
     const CHIME_NOTES = { in: 659.25, top: 880, hold: 554.37, out: 440, retain: 329.63 }; // E5 A5 C#5 A4 E4
 
+    // Wim Hof's quick breaths: a soft, low "thump" on every breath out, which the person can switch
+    // off (the button on the main screen). The breath in keeps its light chime tick. The second
+    // harmonic is what lets a phone speaker, which can't play very low notes, still be heard.
+    let lowExhale = true;
+    function lowTick(when = ctx.currentTime) {
+        const out = ctx.createGain();
+        out.gain.value = 0.55;
+        out.connect(cueBus);
+        [[1, 1], [2, 0.4]].forEach(([ratio, amp]) => {
+            const osc = ctx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(150 * ratio, when);
+            osc.frequency.exponentialRampToValueAtTime(98 * ratio, when + 0.28);
+            const g = ctx.createGain();
+            g.gain.setValueAtTime(0, when);
+            g.gain.linearRampToValueAtTime(amp, when + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.0001, when + 0.45);
+            osc.connect(g);
+            g.connect(out);
+            osc.start(when);
+            osc.stop(when + 0.5);
+        });
+        setTimeout(() => out.disconnect(), (when - ctx.currentTime + 1.5) * 1000);
+    }
+
+    function setLowExhale(on) { lowExhale = !!on; }
+
+    // A sample of the low breath-out sound (used when the button is switched on).
+    function previewLowExhale() {
+        ensure();
+        if (cueStyle === 'off') return;
+        lowTick();
+    }
+
     // kind: 'in' | 'top' (extra sip in) | 'holdIn' | 'out' | 'holdOut' | 'retain' | 'powerIn' | 'powerOut'
     // seconds: how long the step lasts.
     function cue(kind, seconds) {
         if (!ctx || cueStyle === 'off') return;
         if (cueStyle === 'tone') { shapeTone(kind, seconds); return; }
+        if (kind === 'powerOut') {
+            if (lowExhale) lowTick();
+            return;
+        }
         // Steps with no known length (Wim Hof's open breath hold) and the quick power breaths always sound naturally.
         const timed = kind !== 'powerIn' && kind !== 'powerOut' && kind !== 'retain' && Number.isFinite(seconds) && seconds >= 1;
         const fit = ring === 'breath' && timed ? seconds : 0;
@@ -568,6 +606,7 @@ const Sound = (() => {
         setMuted,
         ensure, cue, resume, pause, finish, preview,
         setCueStyle, setRing, setCueLevel, setAmbient, setAmbientGate,
+        setLowExhale, previewLowExhale,
         get ready() { return !!ctx; }
     };
 })();
