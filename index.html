@@ -54,6 +54,7 @@
         <symbol id="i-chart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19.5V13M10 19.5V7.5M15 19.5v-9M20 19.5V4.5"/></g></symbol>
         <symbol id="i-book" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7.5 4.5 4.5 4.5v13c3 0 5.5.5 7.5 2 2-1.5 4.5-2 7.5-2v-13c-3 0-5.5.5-7.5 2zM12 6.5v13"/></g></symbol>
         <symbol id="i-note" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20l1-4.5L16.5 5a2 2 0 0 1 3 3L9 18.5z"/><path d="M14.5 7l3 3"/></g></symbol>
+        <symbol id="i-exhale" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10.5M7.5 10.5l4.5 4.5 4.5-4.5"/><path d="M5.5 19.5h13"/><path class="slash" d="M4.5 4.5l15 15"/></g></symbol>
         <symbol id="i-noise" viewBox="0 0 24 24"><path d="M3 12h2.5l1.5-4 2.5 9 2.5-12 2.5 13 2-8 1.5 4H21" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     </svg>
 
@@ -75,7 +76,12 @@
                 <div class="phase-count" id="phase-count">&nbsp;</div>
             </div>
             <canvas id="visual" aria-hidden="true"></canvas>
-            <button class="next-btn" id="btn-next" data-i18n="next" hidden>Breathe in</button>
+            <button class="next-btn" id="btn-next" data-i18n="next" hidden>Out of air? Tap to breathe in</button>
+            <!-- Wim Hof only: the low sound on each quick breath out, on or off -->
+            <button class="tone-toggle fade-ui" id="btn-exhale-tone" data-i18n-aria="aria.exhaleTone" aria-label="Low sound on each breath out" aria-pressed="true" hidden>
+                <svg aria-hidden="true"><use href="#i-exhale"/></svg>
+                <span data-i18n="exhaleTone">Out tone</span>
+            </button>
             <div class="view-toggle fade-ui" id="view-toggle">
                 <button data-value="shape" data-i18n-aria="visual.shape" aria-label="Shape" aria-pressed="true">
                     <svg class="shapes-icon" viewBox="0 0 48 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2" y="3" width="10" height="10" rx="1.2"/><circle cx="24" cy="8" r="5.2"/><path d="M42 2.8l5 9.4H37z"/></g></svg>

@@ -41,7 +41,7 @@ manifest-sha.webmanifest  home-screen install info (name, icons, the app's fixed
 - `TECHNIQUES` holds the controls for Cyclic sighing, Box and Wim Hof. Their texts are in `i18n.js` (`sigh.intro`, `box.steps`…) and are read with `Programs.text(id, field)`. A step's `label` is a translation key, looked up when it's shown. Cyclic sighing uses fixed paces (`SIGH_PACES`), which keep the breath out twice as long as the breaths in. Their settings are stored as `settings.sigh`, `settings.box` and `settings.wimhof`. `QUICK_PATTERNS` are the quick picks on the Custom tab.
 - `build(settings)` turns the chosen technique into a program:
   - `{ cycle }`: steps that repeat until the session time runs out
-  - `{ list }`: a fixed list with an end (Wim Hof). Wim Hof's breath hold has `secs: Infinity` and `open: true`. It lasts until the person taps "Breathe in", which calls `timeline.close()`.
+  - `{ list }`: a fixed list with an end (Wim Hof). Wim Hof's breath hold has `secs: Infinity` and `open: true`. It lasts until the person taps the breathing area or the "Out of air? Tap to breathe in" button, which calls `endOpenHold()` and `timeline.close()`. While it waits, `openHoldProgress()` glides the dot back and forth along the hold edge (`HOLD_SWEEP`) and `drawShape` adds a spreading ring (`pulse`); in the wave view `waveLevel()` replaces the flat line with low swells and previews the breath in that follows. `holdSpan` and `dotBlend` keep the picture continuous at the moment of the tap.
 - `timeline(program)` lays the steps out in time:
   - `stepAt(t)`: the step running at time t (`null` once a fixed program has ended)
   - `progress(step, t)`: how far through that step, with a smooth ease for breaths
@@ -76,6 +76,7 @@ Each ringing instrument has a small table of notes (`BOWL_NOTES`, `CHIME_NOTES`,
 The ringing instruments (Bowl, Chime, Kalimba, Marimba, Harp) have a **Ring length** setting in the Sounds menu (`settings.ring`, hidden for Tone and Off). Two ways to sound, all in `audio.js`:
 - **Natural** (`natural`, the default): one note when a step starts, with its own long ring and the hall reverb. Exactly as the app always sounded.
 - **Fits the breath** (`breath`): each note lasts as long as its step. `bowl()`, `chime()` and `pluck()` take a `fit` (the step's seconds) and stretch their ring so the note reaches silence at 1.4 × the step; a short release (`noteDest()`) finishes exactly as the step ends, and `wetGate` fades the reverb out at the same moment (`gateForStep()`), so no tail runs into the next step. Stretched notes are made quieter (`FIT`), because they hold their energy longer.
+- `Sound.setLowExhale(on)` turns Wim Hof's low breath-out thump (`lowTick()`, sent for `powerOut`) on or off; it is the `settings.wimhofExhale` switch, the "Out tone" button on the main screen.
 - `Sound.cue(kind, secs)` takes the step length. Steps with no known length (Wim Hof's open hold) and the quick power breaths always sound naturally.
 - Three earlier ideas were tried and removed because they didn't work: a gliding "alarm-like" tone, a noise "wave", and a held "swell" (loudness following the breath).
 
