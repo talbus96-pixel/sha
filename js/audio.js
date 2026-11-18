@@ -353,7 +353,7 @@ const Sound = (() => {
     const CHIME_NOTES = { in: 659.25, top: 880, hold: 554.37, out: 440, retain: 329.63 }; // E5 A5 C#5 A4 E4
 
     // Wim Hof's quick breaths: a soft, warm note on every breath out, which the person can switch
-    // off (the button on the main screen). It is A4, one octave below the breath in's light tick
+    // off (the button on the main screen). It is A3, two octaves below the breath in's light tick
     // (A5), so the two always sound good together and the breath out is clearly the lower one.
     // A short note that starts with a hit and rings into the hall reverb sounds like a "boom", so
     // this one is shaped like a breath instead: it swells in gently, lasts as long as the breath
@@ -366,14 +366,14 @@ const Sound = (() => {
         const peak = when + len * 0.35;
         const out = ctx.createGain();
         out.gain.setValueAtTime(0.0001, when);
-        out.gain.linearRampToValueAtTime(0.13 * cueLevel, peak);
+        out.gain.linearRampToValueAtTime(0.16 * cueLevel, peak);
         out.gain.exponentialRampToValueAtTime(0.0001, when + len);
         out.connect(master);   // dry: no reverb tail
         // [ratio, amplitude]
-        [[1, 1], [1.004, 0.45], [2, 0.22], [3, 0.06]].forEach(([ratio, amp]) => {
+        [[1, 1], [1.004, 0.45], [2, 0.35], [3, 0.1]].forEach(([ratio, amp]) => {
             const osc = ctx.createOscillator();
             osc.type = 'sine';
-            osc.frequency.value = CHIME_NOTES.out * ratio;
+            osc.frequency.value = 220 * ratio;   // A3
             const g = ctx.createGain();
             g.gain.value = amp;
             osc.connect(g);
